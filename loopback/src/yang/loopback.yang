@@ -8,14 +8,18 @@ module loopback {
   import tailf-ncs {
     prefix ncs;
   }
+  import tailf-common {
+    prefix tailf;
+  }
 
   list loopback {
-    key name;
+    key id;
 
     uses ncs:service-data;
     ncs:servicepoint "loopback";
 
-    leaf name {
+    leaf id {
+      tailf:info "loopback ID";
       type string;
     }
 
@@ -27,8 +31,13 @@ module loopback {
     }
 
     // replace with your own stuff here
-    leaf dummy {
+    leaf ip {
+      tailf:info "ip address";
       type inet:ipv4-address;
+    }
+    leaf mask {
+      tailf:info "subnet mask";
+      type string;
     }
   }
 }
