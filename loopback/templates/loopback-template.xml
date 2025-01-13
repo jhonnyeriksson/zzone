@@ -16,6 +16,19 @@
 						</ip>
 					</Loopback>
 				</interface>
+				<interfaces xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-um-interface-cfg">
+					<interface>
+						<interface-name>Loopback {/id}</interface-name>
+						<ipv4>
+							<addresses xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-um-if-ip-address-cfg">
+								<address>
+									<address>{/ip}</address>
+									<netmask>{/mask}</netmask>
+								</address>
+							</addresses>
+						</ipv4>
+					</interface>
+				</interfaces>
 			</config>
 		</device>
 	</devices>
