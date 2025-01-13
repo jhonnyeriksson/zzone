@@ -16,19 +16,17 @@
 						</ip>
 					</Loopback>
 				</interface>
-				<interfaces xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-um-interface-cfg">
-					<interface>
-						<interface-name>Loopback {/id}</interface-name>
+				<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+					<Loopback>
+						<id>349</id>
 						<ipv4>
-							<addresses xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-um-if-ip-address-cfg">
-								<address>
-									<address>{/ip}</address>
-									<netmask>{/mask}</netmask>
-								</address>
-							</addresses>
+							<address>
+								<ip>5.5.5.5</ip>
+								<mask>/32</mask>
+							</address>
 						</ipv4>
-					</interface>
-				</interfaces>
+					</Loopback>
+				</interface>
 			</config>
 		</device>
 	</devices>
