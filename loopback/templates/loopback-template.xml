@@ -18,11 +18,11 @@
 				</interface>
 				<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
 					<Loopback>
-						<id>349</id>
+						<id>{/id}</id>
 						<ipv4>
 							<address>
-								<ip>5.5.5.5</ip>
-								<mask>/32</mask>
+								<ip>{/ip}</ip>
+								<mask>{/mask}</mask>
 							</address>
 						</ipv4>
 					</Loopback>
