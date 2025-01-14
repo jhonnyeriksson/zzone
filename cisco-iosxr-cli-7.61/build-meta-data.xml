@@ -1,0 +1,24 @@
+<ncs-pkg-build xmlns='http://tail-f.com/ns/ncs-pkg-build'>
+    <date>2024-11-20 08:36:48</date>
+    <file>ncs-6.4-cisco-iosxr-7.61.tar.gz</file>
+    <type>release</type>
+    <arch>linux.x86_64</arch>
+    <java>compiled Java class data, version 61.0 (Java SE 17)</java>
+    <python></python>
+    <erlang></erlang>
+    <package>
+        <name>cisco-iosxr-cli-7.61</name>
+        <version>7.61</version>
+        <ref>7.61</ref>
+        <sha1>ea5027ae</sha1>
+    </package>
+    <ncs>
+        <version>6.4</version>
+        <sha1></sha1>
+    </ncs>
+    <dev-support>
+        <version>1.0</version>
+        <branch>afb5251</branch>
+        <sha1>afb5251</sha1>
+    </dev-support>
+</ncs-pkg-build>
