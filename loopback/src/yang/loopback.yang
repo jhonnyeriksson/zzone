@@ -31,6 +31,10 @@ module loopback {
     }
 
     // replace with your own stuff here
+    leaf descrition {
+      tailf:info "description_string";
+      type string;
+    }
     leaf ip {
       tailf:info "ip address";
       type inet:ipv4-address;
