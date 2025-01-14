@@ -31,7 +31,7 @@ module loopback {
     }
 
     // replace with your own stuff here
-    leaf descrition {
+    leaf description {
       tailf:info "description_string";
       type string;
     }

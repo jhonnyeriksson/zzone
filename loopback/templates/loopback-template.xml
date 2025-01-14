@@ -6,7 +6,7 @@
 				<interface xmlns="urn:ios">
 					<Loopback>
 						<name>{/id}</name>
-						<description>{/descrition}</description>
+						<description>{/description}</description>
 						<ip>
 							<address>
 								<primary>
@@ -20,7 +20,7 @@
 				<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
 					<Loopback>
 						<id>{/id}</id>
-						<description>{/descrition}</description>
+						<description>{/description}</description>
 						<ipv4>
 							<address>
 								<ip>{/ip}</ip>
