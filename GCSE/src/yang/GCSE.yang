@@ -172,7 +172,7 @@ module GCSE {
           list ip {
             key address_family;
             leaf address_family {
-              enumeration {
+              type enumeration {
                 enum ipv4;
               }
             }
