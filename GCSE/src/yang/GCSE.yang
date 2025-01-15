@@ -173,7 +173,7 @@ module GCSE {
             key address_family;
             leaf address_family {
               enumeration {
-                ipv4;
+                enum ipv4;
               }
             }
             leaf role {
