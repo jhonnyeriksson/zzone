@@ -28,6 +28,16 @@ module GCSE {
     container transport_information {
       container options {
         container settings {
+          container equipment_information {
+            leaf software {
+              type string;
+            }
+            container interface {
+              leaf id {
+                type string;
+              }
+            }
+          }
           container circuit_information {
             list fttx {
               key transport_service_id;
@@ -169,8 +179,11 @@ module GCSE {
             leaf role {
               type string;
             }
-            leaf network_prefix {
-              type inet:ipv4-prefix;
+            leaf address {
+              type string;
+            }
+            leaf mask {
+              type string;
             }
           }
           container routing {

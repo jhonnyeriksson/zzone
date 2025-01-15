@@ -1,21 +1,50 @@
-<config-template xmlns="http://tail-f.com/ns/config/1.0"
-                 servicepoint="GCSE">
-  <devices xmlns="http://tail-f.com/ns/ncs">
-    <device>
-      <!--
-          Select the devices from some data structure in the service
-          model. In this skeleton the devices are specified in a leaf-list.
-          Select all devices in that leaf-list:
-      -->
-      <name>{/device}</name>
-      <config>
-        <!--
-            Add device-specific parameters here.
-            In this skeleton the service has a leaf "dummy"; use that
-            to set something on the device e.g.:
-            <ip-address-on-device>{/dummy}</ip-address-on-device>
-        -->
-      </config>
-    </device>
-  </devices>
+<config-template xmlns="http://tail-f.com/ns/config/1.0" servicepoint="GCSE">
+	<devices xmlns="http://tail-f.com/ns/ncs">
+		<device>
+			<name>{/device}</name>
+			<config>
+        <?if {/transport_information/options/settings/equipment_information/model = 'iosxe'}?>
+  				<vrf xmlns="urn:ios">
+  					<definition>
+  						<name>{/service_information/network_options/mpls/vpnv4/vrf}</name>
+  						<rd>{/service_information/network_options/mpls/vpnv4/route_distinguisher}</rd>
+  						<address-family>
+  							<ipv4>
+  								<route-target>
+  									<export>
+  										<asn-ip>{/service_information/network_options/mpls/vpnv4/route_target_export}</asn-ip>
+  									</export>
+  									<import>
+  										<asn-ip>{/service_information/network_options/mpls/vpnv4/route_target_import}</asn-ip>
+  									</import>
+  								</route-target>
+  							</ipv4>
+  						</address-family>
+  					</definition>
+  				</vrf>
+  				<interface xmlns="urn:ios">
+  					<GigabitEthernet>
+  						<name>{/transport_information/options/settings/equipment_information/interface/id}</name>
+  						<encapsulation>
+  							<dot1Q>
+  								<vlan-id>{/transport_information/options/settings/circuit_information/fttx/svlan}</vlan-id>
+  							</dot1Q>
+  						</encapsulation>
+  						<vrf>
+  							<forwarding>{/service_information/network_options/mpls/vpnv4/vrf}</forwarding>
+  						</vrf>
+  						<ip>
+  							<address>
+  								<primary>
+  									<address>{/service_information/service_options/ip_settings/ip/address}</address>
+  									<mask>{/service_information/service_options/ip_settings/ip/mask}</mask>
+  								</primary>
+  							</address>
+  						</ip>
+  					</GigabitEthernet>
+  				</interface>
+        <?ifend?>
+			</config>
+		</device>
+	</devices>
 </config-template>
