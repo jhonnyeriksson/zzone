@@ -25,13 +25,43 @@ module GCSE {
         path "/ncs:devices/ncs:device/ncs:name";
       }
     }
+    container transport_information {
+      container options {
+        container settings {
+          container circuit_information {
+            list fttx {
+              key transport_service_id;
+              leaf transport_service_id {
+                tailf:info "Transport Service ID";
+                type string;
+              }
+              leaf encapsulation {
+                tailf:info "Encapsulation Type";
+                type enumeration {
+                  enum dot1q;
+                  enum qinq;
+                }
+              }
+              leaf cvlan {
+                tailf:info "Customer VLAN";
+                type string;
+              }
+              leaf svlan {
+                tailf:info "Service VLAN";
+                type string;
+              }
+            }
+          }
+        }
+      }
+    }
     container service_information {
       description "service information";
       leaf service_product {
         tailf:info "Service Product";
         type enumeration  {
-          enum INTERNET;
-          enum IP-LINK;
+          enum internet;
+          enum l3vpn;
         }
       }
       container service_bandwidth {
@@ -57,9 +87,11 @@ module GCSE {
           list tldp {
             key "id";
             leaf id {
+              tailf:info "TLDP-ID";
               type string;
             }
             leaf remote_address {
+              tailf:info "Remote Peer Address";
               type inet:ipv4-address;
             }
             leaf vcid {
