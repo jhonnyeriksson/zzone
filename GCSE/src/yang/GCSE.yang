@@ -68,6 +68,7 @@ module GCSE {
     container service_information {
       description "service information";
       leaf service_product {
+        tailf:display-status-name "Service Product";
         tailf:info "Service Product";
         type enumeration  {
           enum internet;
