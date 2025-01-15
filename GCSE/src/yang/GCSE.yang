@@ -8,27 +8,161 @@ module GCSE {
   import tailf-ncs {
     prefix ncs;
   }
+  import tailf-common {
+    prefix tailf;
+  }
 
   list GCSE {
-    key name;
-
+    key id;
     uses ncs:service-data;
     ncs:servicepoint "GCSE";
-
-    leaf name {
+    leaf id {
+      tailf:info "Access Service ID";
       type string;
     }
-
-    // may replace this with other ways of refering to the devices.
     leaf-list device {
       type leafref {
         path "/ncs:devices/ncs:device/ncs:name";
       }
     }
-
-    // replace with your own stuff here
-    leaf dummy {
-      type inet:ipv4-address;
+    container service_information {
+      description "service information";
+      leaf service_product {
+        tailf:info "Service Product";
+        type enumeration  {
+          enum INTERNET;
+          enum IP-LINK;
+        }
+      }
+      container service_bandwidth {
+        leaf capacity {
+          tailf:info "Bandwidth Capacity"
+          type int8;
+        }
+        leaf unit {
+          tailf:info "Unit"
+          type string;
+        }
+      }
+      container network_options {
+        leaf asn {
+          tailf:info "Network ASN";
+          type string;
+        }
+        leaf protocol {
+          tailf:info "Network Protocol";
+          type string;
+        }
+        container mpls {
+          list tldp {
+            key "id";
+            leaf id {
+              type string;
+            }
+            leaf remote_address {
+              type inet:ipv4-address;
+            }
+            leaf vcid {
+              type int8;
+            }
+            leaf path_mtu {
+              type int8;
+            }
+          }
+          container vpls {
+            leaf id {
+              type string;
+            }
+            leaf bridge_domain {
+              type string;
+            }
+            leaf route_distinguisher {
+              type string;
+            }
+            leaf-list route_target_import {
+              type string;
+            } 
+            leaf-list route_target_export {
+              type string;
+            }
+          }
+          container vpnv4 {
+            leaf vrf {
+              type string;
+            }
+            leaf route_distinguisher {
+              type string;
+            }
+            leaf-list route_target_import {
+              type string;
+            }
+            leaf-list route_target_export {
+              type string;
+            }
+          }
+        }
+      }
+      container service_options {
+        leaf active {
+          type boolean;
+        }
+        leaf mode {
+          type string;
+        }
+        leaf nsid {
+          type string;
+        }
+        leaf nokia_service_type {
+          type string;
+        }
+        container ethernet_settings {
+          leaf service_mtu {
+            type string;
+          }
+          leaf mac_table_size {
+            type string;
+          }
+          leaf mac_limit {
+            type string;
+          }
+        }
+        container ip_settings {
+          list ip {
+            key address_family;
+            leaf address_family {
+              enumeration {
+                ipv4;
+              }
+            }
+            leaf role {
+              type string;
+            }
+            leaf network_prefix {
+              type inet:ipv4-prefix;
+            }
+          }
+          container routing {
+            leaf protocol {
+              type string;
+            }
+            list bgp {
+              key id;
+              leaf id {
+                type string;
+              }
+              leaf state {
+                type boolean;
+              }
+              leaf afi {
+                type string;
+              }
+              leaf authentication_key {
+                type string;
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
