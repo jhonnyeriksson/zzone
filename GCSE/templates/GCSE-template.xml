@@ -3,7 +3,7 @@
 		<device>
 			<name>{/device}</name>
 			<config>
-        <?if {/transport_information/options/settings/equipment_information/model = 'iosxe'}?>
+        <?if {/transport_information/options/settings/equipment_information/software = 'iosxe'}?>
   				<vrf xmlns="urn:ios">
   					<definition>
   						<name>{/service_information/network_options/mpls/vpnv4/vrf}</name>
