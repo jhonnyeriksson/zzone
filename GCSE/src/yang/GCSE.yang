@@ -76,11 +76,11 @@ module GCSE {
       }
       container service_bandwidth {
         leaf capacity {
-          tailf:info "Bandwidth Capacity"
+          tailf:info "Bandwidth Capacity";
           type int8;
         }
         leaf unit {
-          tailf:info "Unit"
+          tailf:info "Unit";
           type string;
         }
       }
