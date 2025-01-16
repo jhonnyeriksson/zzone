@@ -277,7 +277,7 @@ module GCSE {
                                     }
                                     leaf role {
                                         tailf:info "Primary/Secondary";
-                                        enumeration {
+                                        type enumeration {
                                           enum primary;
                                           enum secondary;
                                         }
