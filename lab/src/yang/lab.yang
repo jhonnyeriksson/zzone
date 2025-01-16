@@ -32,15 +32,31 @@ module lab {
       }
       choice conditional {
         case a {
-          leaf first {
+          container first {
             when "../option = 'one'";
-            type string;
+            list options {
+              key "id";
+              leaf id {
+                type string;
+              }
+              leaf gold {
+                type string;
+              }
+            }
           }
         }
         case b {
-          leaf second {
+          container second {
             when "../option = 'two'";
-            type string;
+            list options {
+              key "id";
+              leaf id {
+                type string;
+              }
+              leaf silver {
+                type string;
+              }
+            }
           }
         }
       }
