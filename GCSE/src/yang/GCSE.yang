@@ -57,9 +57,9 @@ module GCSE {
                         list nodes {
                             key "node-type";
                             leaf-list node-type {
-                                type enumeration [
+                                type enumeration {
                                     PE CPE
-                                ]
+                                }
                             }
                             choice conditional {
                                 case PE {
