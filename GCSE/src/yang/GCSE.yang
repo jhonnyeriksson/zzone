@@ -164,7 +164,7 @@ module GCSE {
                                         }
                                     }
                                     case qinq {
-                                        when "./encapsulation/encapsulation-type = 'qinq'";
+                                        when "../encapsulation/encapsulation-type = 'qinq'";
                                         leaf cvlan {
                                             type string;
                                         }
