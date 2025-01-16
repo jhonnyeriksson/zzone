@@ -4,7 +4,7 @@
     <device>
       <name>{/device}</name>
       <config>
-      <? if string-compare(/device, /hostname_old)?>
+      <?if {string-compare(/device, /hostname_old)}?>
         <hostname xmlns="urn:ios">{/hostname_new}</hostname>
       <?end?>
       </config>
