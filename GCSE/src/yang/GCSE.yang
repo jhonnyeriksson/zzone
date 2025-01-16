@@ -154,7 +154,7 @@ module GCSE {
                 }
                 choice conditional {
                     case tldp {
-                        when "../protocol = 'tldp'";
+                        when "../network-options/protocol = 'tldp'";
                         container tldp {
                             list peer {
                                 key "id";
@@ -178,7 +178,7 @@ module GCSE {
                         }
                     }
                     case vpls {
-                        when "../protocol = 'vpls'";
+                        when "../network-options/protocol = 'vpls'";
                         container vpls {
                             leaf bridge-domain {
                                 tailf:info "Bridge Domain Name";
@@ -199,7 +199,7 @@ module GCSE {
                         }
                     }
                     case vpnv4 {
-                        when "../protocol = 'vpnv4'";
+                        when "../network-options/protocol = 'vpnv4'";
                         container vpnv4 {
                             leaf vrf {
                                 tailf:info "VRF Name";
@@ -268,7 +268,7 @@ module GCSE {
                         }
                         choice version {
                             case v4 {
-                                when "../address-family = 'ipv4'";
+                                when "../service-options/ip-settings/ip/address-family = 'ipv4'";
                                 leaf role {
                                     tailf:info "Primary/Secondary";
                                     type string;
@@ -283,7 +283,7 @@ module GCSE {
                                 }
                             }
                             case v6 {
-                                when "../address-family = 'ipv6'";
+                                when "../service-options/ip-settings/ip/address-family = 'ipv6'";
                                 leaf role {
                                     tailf:info "Primary/Secondary";
                                     type string;
