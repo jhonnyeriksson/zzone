@@ -39,7 +39,7 @@ module lab {
         }
         case b {
           leaf second {
-            when "/option = two"
+            when "/option = two";
             type string;
           }
         }
