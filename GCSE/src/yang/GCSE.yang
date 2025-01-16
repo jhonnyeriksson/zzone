@@ -159,17 +159,21 @@ module GCSE {
                                     }
                                     case dot1q {
                                         when "../encapsulation/encapsulation-type = 'dot1q'";
-                                        leaf cvlan {
-                                            type string;
+                                        container dot1q {
+                                            leaf vlan {
+                                                type string;
+                                            }
                                         }
                                     }
                                     case qinq {
                                         when "../encapsulation/encapsulation-type = 'qinq'";
-                                        leaf cvlan {
-                                            type string;
-                                        }
-                                        leaf svlan {
-                                            type string;
+                                        container qinq {
+                                            leaf cvlan {
+                                                type string;
+                                            }
+                                            leaf svlan {
+                                                type string;
+                                            }
                                         }
                                     }
                                 } 
