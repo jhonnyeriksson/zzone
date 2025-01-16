@@ -60,7 +60,7 @@ module GCSE {
                                 type string;
                             }
                             container PE {
-                                when "../node-type = 'PE'"
+                                when "../node-type = 'PE'";
                                 list host {
                                     key "hostname";
                                     leaf hostname {
@@ -94,7 +94,7 @@ module GCSE {
                                 }
                             }
                             container CPE {
-                                when "../node-type = 'CPE'"
+                                when "../node-type = 'CPE'";
                                 list host {
                                     key "hostname";
                                     leaf hostname {
