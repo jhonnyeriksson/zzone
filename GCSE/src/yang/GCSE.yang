@@ -21,6 +21,7 @@ module GCSE {
             type string;
         }
         leaf-list device {
+            tailf:info "Devices";
             type leafref {
                 path "/ncs:devices/ncs:device/ncs:name";
             }
