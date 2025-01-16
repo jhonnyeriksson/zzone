@@ -268,7 +268,7 @@ module GCSE {
                         }
                         choice version {
                             case v4 {
-                                when "../ip-settings/ip/address-family = 'ipv4'";
+                                when "../ip-settings/address-family = 'ipv4'";
                                 leaf state {
                                     tailf:info "Primary/Secondary";
                                     type string;
@@ -283,7 +283,7 @@ module GCSE {
                                 }
                             }
                             case v6 {
-                                when "../ip-settings/ip/address-family = 'ipv6'";
+                                when "../ip-settings/address-family = 'ipv6'";
                                 leaf state {
                                     tailf:info "Primary/Secondary";
                                     type string;
