@@ -144,7 +144,6 @@ module GCSE {
                 }
                 leaf protocol {
                     tailf:info "Network Protocol";
-                    mandatory true;
                     type enumeration {
                         enum ip;
                         enum tldp;
