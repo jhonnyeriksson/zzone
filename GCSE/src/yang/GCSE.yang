@@ -160,7 +160,7 @@ module GCSE {
                                     case dot1q {
                                         when "../encapsulation/encapsulation-type = 'dot1q'";
                                         container dot1q {
-                                            leaf vlan {
+                                            leaf cvlan {
                                                 type string;
                                             }
                                         }
