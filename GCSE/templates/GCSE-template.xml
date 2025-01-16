@@ -36,9 +36,7 @@
 						<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
 							<GigabitEthernet-subinterface>
 								<GigabitEthernet>
-									<?if {/device = /GCSE/transport-information/options/settings/equipment-information/nodes/PE/hostname}?>
-										<id>{/GCSE/transport-information/options/settings/equipment-information/nodes/PE/service-transport/service-interface}</id>
-									<?end?>
+									<id>{/GCSE/transport-information/options/settings/equipment-information/nodes/PE/service-transport/service-interface}</id>
 									<?if {/GCSE/transport-information/options/settings/circuit-information/fttx/encapsulation/encapsulation-type = 'dot1q'}?>
 										<encapsulation>
 											<dot1q>
