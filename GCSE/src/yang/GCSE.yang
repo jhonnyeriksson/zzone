@@ -155,16 +155,16 @@ module GCSE {
                                 }
                                 choice conditional {
                                     case null {
-                                        when "../encapsulation-type = 'null'"
+                                        when "../encapsulation-type = 'null'";
                                     }
                                     case dot1q {
-                                        when "../encapsulation-type = 'dot1q'"
+                                        when "../encapsulation-type = 'dot1q'";
                                         leaf cvlan {
                                             type string;
                                         }
                                     }
                                     case qinq {
-                                        when "../encapsulation-type = 'qinq'"
+                                        when "../encapsulation-type = 'qinq'";
                                         leaf cvlan {
                                             type string;
                                         }
