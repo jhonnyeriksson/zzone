@@ -8,27 +8,42 @@ module lab {
   import tailf-ncs {
     prefix ncs;
   }
-
+  import tailf-common {
+    prefix tailf;
+  }
   list lab {
-    key name;
-
+    key id;
     uses ncs:service-data;
     ncs:servicepoint "lab";
-
-    leaf name {
+    leaf id {
       type string;
     }
-
-    // may replace this with other ways of refering to the devices.
     leaf-list device {
       type leafref {
         path "/ncs:devices/ncs:device/ncs:name";
       }
     }
-
-    // replace with your own stuff here
-    leaf dummy {
-      type inet:ipv4-address;
+    container root {
+      leaf option {
+        type enumeration {
+          enum one;
+          enum two;
+        }
+      }
+      choice conditional {
+        case a {
+          when "../option = one";
+          leaf first {
+            type string;
+          }
+        }
+        case b {
+          when "../option = two"
+          leaf second {
+            type string;
+          }
+        }
+      }
     }
   }
 }
