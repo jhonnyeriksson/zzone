@@ -4,35 +4,41 @@
 			<name>{/device}</name>
 			<config>
 				<?if {/transport_information/options/settings/equipment_information/software = 'iosxe'}?>
-					<vrf xmlns="urn:ios">
-						<definition>
-							<name>{/service_information/network_options/mpls/vpnv4/vrf}</name>
-							<rd>{/service_information/network_options/mpls/vpnv4/route_distinguisher}</rd>
-							<address-family>
-								<ipv4>
-									<route-target>
-										<export>
-											<asn-ip>{/service_information/network_options/mpls/vpnv4/route_target_export}</asn-ip>
-										</export>
-										<import>
-											<asn-ip>{/service_information/network_options/mpls/vpnv4/route_target_import}</asn-ip>
-										</import>
-									</route-target>
-								</ipv4>
-							</address-family>
-						</definition>
-					</vrf>
+          <?if {/service_information/network_options/protocol = 'vpnv4'}?>
+					  <vrf xmlns="urn:ios">
+					  	<definition>
+					  		<name>{/service_information/network_options/mpls/vpnv4/vrf}</name>
+					  		<rd>{/service_information/network_options/mpls/vpnv4/route_distinguisher}</rd>
+					  		<address-family>
+					  			<ipv4>
+					  				<route-target>
+					  					<export>
+					  						<asn-ip>{/service_information/network_options/mpls/vpnv4/route_target_export}</asn-ip>
+					  					</export>
+					  					<import>
+					  						<asn-ip>{/service_information/network_options/mpls/vpnv4/route_target_import}</asn-ip>
+					  					</import>
+					  				</route-target>
+					  			</ipv4>
+					  		</address-family>
+					  	</definition>
+					  </vrf>
+          <?end?>
 					<interface xmlns="urn:ios">
 						<GigabitEthernet>
 							<name>{/transport_information/options/settings/equipment_information/interface/id}</name>
 							<encapsulation>
-								<dot1Q>
-									<vlan-id>{/transport_information/options/settings/circuit_information/fttx/svlan}</vlan-id>
-								</dot1Q>
+                <?if {/transport_information/options/settings/circuit_information/fttx/encapsulation = 'dot1q'}?>
+								  <dot1Q>
+								  	<vlan-id>{/transport_information/options/settings/circuit_information/fttx/svlan}</vlan-id>
+								  </dot1Q>
+                <?end?>
 							</encapsulation>
-							<vrf>
-								<forwarding>{/service_information/network_options/mpls/vpnv4/vrf}</forwarding>
-							</vrf>
+              <?if {/service_information/network_options/protocol = 'vpnv4'}?>
+							  <vrf>
+							  	<forwarding>{/service_information/network_options/mpls/vpnv4/vrf}</forwarding>
+							  </vrf>
+              <?end?>
 							<ip>
 								<address>
 									<primary>
@@ -45,42 +51,48 @@
 					</interface>
 				<?end?>
 				<?if {/transport_information/options/settings/equipment_information/software = 'iosxr'}?>
-					<vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
-						<vrf-list>
-							<name>{/service_information/network_options/mpls/vpnv4/vrf}</name>
-							<rd>{/service_information/network_options/mpls/vpnv4/route_distinguisher}</rd>
-							<address-family>
-								<ipv4>
-									<unicast>
-										<import>
-											<route-target>
-												<address-list>
-													<name>{/service_information/network_options/mpls/vpnv4/route_target_import}</name>
-												</address-list>
-											</route-target>
-										</import>
-										<export>
-											<route-target>
-												<address-list>
-													<name>{/service_information/network_options/mpls/vpnv4/route_target_export}</name>
-												</address-list>
-											</route-target>
-										</export>
-									</unicast>
-								</ipv4>
-							</address-family>
-						</vrf-list>
-					</vrf>
+          <?if {/service_information/network_options/protocol = 'vpnv4'}?>
+					  <vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
+					  	<vrf-list>
+					  		<name>{/service_information/network_options/mpls/vpnv4/vrf}</name>
+					  		<rd>{/service_information/network_options/mpls/vpnv4/route_distinguisher}</rd>
+					  		<address-family>
+					  			<ipv4>
+					  				<unicast>
+					  					<import>
+					  						<route-target>
+					  							<address-list>
+					  								<name>{/service_information/network_options/mpls/vpnv4/route_target_import}</name>
+					  							</address-list>
+					  						</route-target>
+					  					</import>
+					  					<export>
+					  						<route-target>
+					  							<address-list>
+					  								<name>{/service_information/network_options/mpls/vpnv4/route_target_export}</name>
+					  							</address-list>
+					  						</route-target>
+					  					</export>
+					  				</unicast>
+					  			</ipv4>
+					  		</address-family>
+					  	</vrf-list>
+					  </vrf>
+          <?end?>
 					<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
 						<GigabitEthernet-subinterface>
 							<GigabitEthernet>
 								<id>{/transport_information/options/settings/equipment_information/interface/id}</id>
 								<encapsulation>
-									<dot1q>
-										<vlan-id>{/transport_information/options/settings/circuit_information/fttx/svlan}</vlan-id>
-									</dot1q>
+                  <?if {/transport_information/options/settings/circuit_information/fttx/encapsulation = 'dot1q'}?>
+									  <dot1q>
+									  	<vlan-id>{/transport_information/options/settings/circuit_information/fttx/svlan}</vlan-id>
+									  </dot1q>
+                  <?end?>
 								</encapsulation>
-								<vrf>{/service_information/network_options/mpls/vpnv4/vrf}</vrf>
+                <?if {/service_information/network_options/protocol = 'vpnv4'}?>
+								  <vrf>{/service_information/network_options/mpls/vpnv4/vrf}</vrf>
+                <?end?>
 								<ipv4>
 									<address>
 										<ip>{/service_information/service_options/ip_settings/ip/address}</ip>

@@ -68,7 +68,6 @@ module GCSE {
     container service_information {
       description "service information";
       leaf service-product {
-        tailf:display-status-name "display name";
         tailf:info "Service Product";
         type enumeration  {
           enum internet;
@@ -92,7 +91,13 @@ module GCSE {
         }
         leaf protocol {
           tailf:info "Network Protocol";
-          type string;
+          mandatory true;
+          type enumeration {
+            enum ipv4;
+            enum tldp;
+            enum vpls;
+            enum vpnv4;
+          }
         }
         container mpls {
           list tldp {
