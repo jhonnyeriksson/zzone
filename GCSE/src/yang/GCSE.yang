@@ -28,6 +28,7 @@ module GCSE {
         container transport-information {
             tailf:info "Transport Information";
             leaf registration-status {
+                tailf:info "Enable/Disable";
                 type boolean;
             }
             container options {
@@ -126,7 +127,7 @@ module GCSE {
             }
         }
         container service-information {
-            description "service information";
+            tailf:info "Service Information";
             container bandwidth {
                 leaf capacity {
                     tailf:info "Bandwidth Capacity";
