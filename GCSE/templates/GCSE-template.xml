@@ -4,7 +4,7 @@
 			<name>{/device}</name>
 			<config>
 				<?if {/transport_information/options/settings/equipment_information/software = 'iosxe'}?>
-					vrf xmlns="urn:ios">
+					<vrf xmlns="urn:ios">
 						<definition>
 							<name>{/service_information/network_options/mpls/vpnv4/vrf}</name>
 							<rd>{/service_information/network_options/mpls/vpnv4/route_distinguisher}</rd>
@@ -21,8 +21,8 @@
 								</ipv4>
 							</address-family>
 						</definition>
-					/vrf>
-					interface xmlns="urn:ios">
+					</vrf>
+					<interface xmlns="urn:ios">
 						<GigabitEthernet>
 							<name>{/transport_information/options/settings/equipment_information/interface/id}</name>
 							<encapsulation>
@@ -42,7 +42,7 @@
 								</address>
 							</ip>
 						</GigabitEthernet>
-					/interface>
+					</interface>
 				<?end?>
 				<?if {/transport_information/options/settings/equipment_information/software = 'iosxr'}?>
 					<vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
