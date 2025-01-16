@@ -3,105 +3,175 @@
 		<device>
 			<name>{/device}</name>
 			<config>
-				<?if {/transport_information/options/settings/equipment_information/software = 'iosxe'}?>
-          <?if {/service_information/network_options/protocol = 'vpnv4'}?>
-					  <vrf xmlns="urn:ios">
-					  	<definition>
-					  		<name>{/service_information/network_options/mpls/vpnv4/vrf}</name>
-					  		<rd>{/service_information/network_options/mpls/vpnv4/route_distinguisher}</rd>
-					  		<address-family>
-					  			<ipv4>
-					  				<route-target>
-					  					<export>
-					  						<asn-ip>{/service_information/network_options/mpls/vpnv4/route_target_export}</asn-ip>
-					  					</export>
-					  					<import>
-					  						<asn-ip>{/service_information/network_options/mpls/vpnv4/route_target_import}</asn-ip>
-					  					</import>
-					  				</route-target>
-					  			</ipv4>
-					  		</address-family>
-					  	</definition>
-					  </vrf>
-          <?end?>
+				<?if {/GCSE/transport-information/options/settings/equipment-information/nodes/node-type = 'PE'}?>
+					<?if {/GCSE/transport-information/options/settings/equipment-information/nodes/PE/software = 'iosxr'}?>
+						<?if {/GCSE/service-information/network-options/protocol = 'vpnv4'}?>
+							<vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
+								<vrf-list>
+									<name>{/GCSE/service-information/network-options/vpnv4/vrf}</name>
+									<rd>{/GCSE/service-information/network-options/vpnv4/route-distinguisher}</rd>
+									<address-family>
+										<ipv4>
+											<unicast>
+												<import>
+													<route-target>
+														<address-list>
+															<name>{/GCSE/service-information/network-options/vpnv4/route-target-import}</name>
+														</address-list>
+													</route-target>
+												</import>
+												<export>
+													<route-target>
+														<address-list>
+															<name>{/GCSE/service-information/network-options/vpnv4/route-target-export}</name>
+														</address-list>
+													</route-target>
+												</export>
+											</unicast>
+										</ipv4>
+									</address-family>
+								</vrf-list>
+							</vrf>
+						<?end?>
+						<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+							<GigabitEthernet-subinterface>
+								<GigabitEthernet>
+									<?if {/device = /GCSE/transport-information/options/settings/equipment-information/nodes/PE/hostname}?>
+										<id>{/GCSE/transport-information/options/settings/equipment-information/nodes/PE/service-transport/service-interface}</id>
+									<?end?>
+									<?if {/GCSE/transport-information/options/settings/circuit-information/fttx/encapsulation/encapsulation-type = 'dot1q'}?>
+										<encapsulation>
+											<dot1q>
+												<vlan-id>{/GCSE/transport-information/options/settings/circuit-information/fttx/encapsulation/dot1q/cvlan}</vlan-id>
+											</dot1q>
+										</encapsulation>
+									<?end?>
+									<?if {/GCSE/service-information/network-options/protocol = 'vpnv4'}?>
+										<vrf>{/GCSE/service-information/network-options/vpnv4/vrf}</vrf>
+									<?end?>
+									<?if {/device = /GCSE/service-information/service-options/ip-settings/ip/network/hosts/node}?>
+										<ipv4>
+											<address>
+												<ip>{/GCSE/service-information/service-options/ip-settings/ip/network/hosts/address}</ip>
+												<mask>{/GCSE/service-information/service-options/ip-settings/ip/network/hosts/subnet-mask}</mask>
+											</address>
+										</ipv4>
+									<?end?>
+								</GigabitEthernet>
+							</GigabitEthernet-subinterface>
+						</interface>
+						<router xmlns="http://tail-f.com/ned/cisco-ios-xr">
+							<?if {/device = /GCSE/service-information/service-options/ip-settings/routing/bgp/peering/node}?>
+								<bgp>
+									<bgp-no-instance>
+										<id>{/GCSE/service-information/service-options/ip-settings/routing/bgp/peering/local-asn}</id>
+										<vrf>
+											<name>{/GCSE/service-information/network-options/vpnv4/vrf}</name>
+											<address-family>
+												<ipv4>
+													<unicast/>
+												</ipv4>
+											</address-family>
+											<neighbor>
+												<id>{/GCSE/service-information/service-options/ip-settings/routing/bgp/peering/remote-address}</id>
+												<remote-as>{/GCSE/service-information/service-options/ip-settings/routing/bgp/peering/remote-asn}</remote-as>
+												<update-source>
+													<GigabitEthernet-subinterface>
+														<GigabitEthernet>{/GCSE/service-information/service-options/ip-settings/routing/bgp/peering/update-source}</GigabitEthernet>
+													</GigabitEthernet-subinterface>
+												</update-source>
+												<address-family>
+													<ipv4>
+														<unicast>
+															<route-policy>
+																<direction>in</direction>
+																<name>PASS</name>
+															</route-policy>
+															<route-policy>
+																<direction>out</direction>
+																<name>PASS</name>
+															</route-policy>
+														</unicast>
+													</ipv4>
+												</address-family>
+											</neighbor>
+										</vrf>
+									</bgp-no-instance>
+								</bgp>
+							<?end?>
+						</router>
+					<?end?>
+				<?end?>
+				<?if {/GCSE/transport-information/options/settings/equipment-information/nodes/node-type = 'CPE'}?>
+					<?if {/GCSE/service-information/network-options/protocol = 'vpnv4'}?>
+						<vrf xmlns="urn:ios">
+							<definition>
+								<name>{/GCSE/service-information/network-options/vpnv4/vrf}</name>
+								<rd>100:100</rd>
+								<address-family>
+									<ipv4>
+									</ipv4>
+								</address-family>
+							</definition>
+						</vrf>
+					<?end?>
 					<interface xmlns="urn:ios">
 						<GigabitEthernet>
-							<name>{/transport_information/options/settings/equipment_information/interface/id}</name>
-							<encapsulation>
-                <?if {/transport_information/options/settings/circuit_information/fttx/encapsulation = 'dot1q'}?>
-								  <dot1Q>
-								  	<vlan-id>{/transport_information/options/settings/circuit_information/fttx/svlan}</vlan-id>
-								  </dot1Q>
-                <?end?>
-							</encapsulation>
-              <?if {/service_information/network_options/protocol = 'vpnv4'}?>
-							  <vrf>
-							  	<forwarding>{/service_information/network_options/mpls/vpnv4/vrf}</forwarding>
-							  </vrf>
-              <?end?>
-							<ip>
-								<address>
-									<primary>
-										<address>{/service_information/service_options/ip_settings/ip/address}</address>
-										<mask>{/service_information/service_options/ip_settings/ip/mask}</mask>
-									</primary>
-								</address>
-							</ip>
+							<?if {/device = /GCSE/transport-information/options/settings/equipment-information/nodes/CPE/hostname}?>
+								<name>{/GCSE/transport-information/options/settings/equipment-information/nodes/CPE/service-transport/service-interface}</name>
+							<?end?>
+							<?if {/GCSE/transport-information/options/settings/circuit-information/fttx/encapsulation/encapsulation-type = 'dot1q'}?>
+								<encapsulation>
+									<dot1Q>
+										<vlan-id>{/GCSE/transport-information/options/settings/circuit-information/fttx/encapsulation/dot1q/cvlan}</vlan-id>
+									</dot1Q>
+								</encapsulation>
+							<?end?>
+							<?if {/GCSE/service-information/network-options/protocol = 'vpnv4'}?>
+								<vrf>
+									<forwarding>{/GCSE/service-information/network-options/vpnv4/vrf}</forwarding>
+								</vrf>
+							<?end?>
+							<?if {/device = /GCSE/service-information/service-options/ip-settings/ip/network/hosts/node}?>
+								<ip>
+									<address>
+										<primary>
+											<address>{/GCSE/service-information/service-options/ip-settings/ip/network/hosts/address}</address>
+											<mask>{/GCSE/service-information/service-options/ip-settings/ip/network/hosts/subnet-mask}</mask>
+										</primary>
+									</address>
+								</ip>
+							<?end?>
 						</GigabitEthernet>
 					</interface>
-				<?end?>
-				<?if {/transport_information/options/settings/equipment_information/software = 'iosxr'}?>
-          <?if {/service_information/network_options/protocol = 'vpnv4'}?>
-					  <vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
-					  	<vrf-list>
-					  		<name>{/service_information/network_options/mpls/vpnv4/vrf}</name>
-					  		<rd>{/service_information/network_options/mpls/vpnv4/route_distinguisher}</rd>
-					  		<address-family>
-					  			<ipv4>
-					  				<unicast>
-					  					<import>
-					  						<route-target>
-					  							<address-list>
-					  								<name>{/service_information/network_options/mpls/vpnv4/route_target_import}</name>
-					  							</address-list>
-					  						</route-target>
-					  					</import>
-					  					<export>
-					  						<route-target>
-					  							<address-list>
-					  								<name>{/service_information/network_options/mpls/vpnv4/route_target_export}</name>
-					  							</address-list>
-					  						</route-target>
-					  					</export>
-					  				</unicast>
-					  			</ipv4>
-					  		</address-family>
-					  	</vrf-list>
-					  </vrf>
-          <?end?>
-					<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
-						<GigabitEthernet-subinterface>
-							<GigabitEthernet>
-								<id>{/transport_information/options/settings/equipment_information/interface/id}</id>
-								<encapsulation>
-                  <?if {/transport_information/options/settings/circuit_information/fttx/encapsulation = 'dot1q'}?>
-									  <dot1q>
-									  	<vlan-id>{/transport_information/options/settings/circuit_information/fttx/svlan}</vlan-id>
-									  </dot1q>
-                  <?end?>
-								</encapsulation>
-                <?if {/service_information/network_options/protocol = 'vpnv4'}?>
-								  <vrf>{/service_information/network_options/mpls/vpnv4/vrf}</vrf>
-                <?end?>
-								<ipv4>
-									<address>
-										<ip>{/service_information/service_options/ip_settings/ip/address}</ip>
-										<mask>{/service_information/service_options/ip_settings/ip/mask}</mask>
-									</address>
-								</ipv4>
-							</GigabitEthernet>
-						</GigabitEthernet-subinterface>
-					</interface>
+					<router xmlns="urn:ios">
+						<?if {/device = /GCSE/service-information/service-options/ip-settings/routing/bgp/peering/node}?>
+							<bgp>
+								<as-no>{/GCSE/service-information/service-options/ip-settings/routing/bgp/peering/local-asn}</as-no>
+								<address-family>
+									<with-vrf>
+										<ipv4>
+											<af>unicast</af>
+											<vrf>
+												<name>{/GCSE/service-information/network-options/vpnv4/vrf}</name>
+												<redistribute>
+													<connected/>
+												</redistribute>
+												<neighbor>
+													<id>{/GCSE/service-information/service-options/ip-settings/routing/bgp/peering/remote-address}</id>
+													<remote-as>{/GCSE/service-information/service-options/ip-settings/routing/bgp/peering/remote-asn}</remote-as>
+													<activate/>
+													<update-source>
+														<GigabitEthernet>{/GCSE/service-information/service-options/ip-settings/routing/bgp/peering/update-source}</GigabitEthernet>
+													</update-source>
+												</neighbor>
+											</vrf>
+										</ipv4>
+									</with-vrf>
+								</address-family>
+							</bgp>
+						<?end?>
+					</router>
 				<?end?>
 			</config>
 		</device>
