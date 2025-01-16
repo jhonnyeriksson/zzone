@@ -32,14 +32,14 @@ module lab {
       }
       choice conditional {
         case a {
+          when "../option = one";
           leaf first {
-            when "/option = one";
             type string;
           }
         }
         case b {
+          when "../option = two";
           leaf second {
-            when "/option = two";
             type string;
           }
         }
