@@ -321,20 +321,20 @@ module GCSE {
                                             tailf:info "Hostname";
                                             type string;
                                         }
-                                        leaf local-address {
-                                            tailf:info "Remote Node";
+                                        leaf update-source {
+                                            tailf:info "Local Update Source";
                                             type string;
                                         }
                                         leaf local-asn {
-                                            tailf:info "Remote Node";
+                                            tailf:info "Local ASN";
                                             type string;
                                         }
                                         leaf remote-address {
-                                            tailf:info "Remote Node";
+                                            tailf:info "Remote Address";
                                             type string;
                                         }
                                         leaf remote-asn {
-                                            tailf:info "Remote Node";
+                                            tailf:info "Remote ASN";
                                             type string;
                                         }
                                         leaf afi {
