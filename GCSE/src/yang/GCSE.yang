@@ -270,9 +270,9 @@ module GCSE {
                             case v4 {
                                 when "../ip/address-family = 'ipv4'";
                                 list network {
-                                    key "prefix";
-                                    leaf prefix {
-                                        tailf:info "IPv4 Address";
+                                    key "pfx";
+                                    leaf pfx {
+                                        tailf:info "IPv4 Network Prefix";
                                         type string;
                                     }
                                     leaf role {
@@ -283,14 +283,18 @@ module GCSE {
                                         }
                                     }
                                     list hosts {
+                                        tailf:info "Host Table";
                                         key "node";
                                         leaf node {
+                                          tailf:info "Hostname";
                                           type string;
                                         }
                                         leaf address {
+                                          tailf:info "Address";
                                           type string;
                                         }
                                         leaf subnet-mask {
+                                          tailf:info "Subnet Mask";
                                           type string;
                                         }
                                     }
