@@ -54,34 +54,87 @@ module GCSE {
                     }
                     container equipment-information {
                         tailf:info "Equipment Information";
-                        list node {
-                            key "hostname";
-                            leaf hostname {
-                                tailf:info "Hostname";
-                                type string;
-                            }
-                            leaf vendor {
-                                tailf:info "Vendor";
-                                type string;
-                            }
-                            leaf model {
-                                tailf:info "Model";
-                                type string;
-                            }
-                            leaf software {
-                                tailf:info "Software";
-                                type string;
-                            }
-                            list service-transport {
-                                tailf:info "Node Connections";
-                                key "transport-service-id";
-                                leaf transport-service-id {
-                                    tailf:info "Transport Service ID";
-                                    type string;
+                        list nodes {
+                            key "node-type";
+                            leaf-list node-type {
+                                enumeration {
+                                    PE;
+                                    ACCESS;
+                                    CPE;
                                 }
-                                leaf service-interface {
-                                    tailf:info "Service Interface";
-                                    type string;
+                            }
+                            choice conditional {
+                                case PE {
+                                    when "../node-type = 'PE'"
+                                    container PE {
+                                        list host {
+                                            key "hostname";
+                                            leaf hostname {
+                                                tailf:info "Hostname";
+                                                type string;
+                                            }
+                                            leaf vendor {
+                                                tailf:info "Vendor";
+                                                type string;
+                                            }
+                                            leaf model {
+                                                tailf:info "Model";
+                                                type string;
+                                            }
+                                            leaf software {
+                                                tailf:info "Software";
+                                                type string;
+                                            }
+                                            list service-transport {
+                                                tailf:info "Node Connections";
+                                                key "transport-service-id";
+                                                leaf transport-service-id {
+                                                    tailf:info "Transport Service ID";
+                                                    type string;
+                                                }
+                                                leaf service-interface {
+                                                    tailf:info "Service Interface";
+                                                    type string;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                case CPE {
+                                    when "../node-type = 'CPE'"
+                                    container CPE {
+                                        list host {
+                                            key "hostname";
+                                            leaf hostname {
+                                                tailf:info "Hostname";
+                                                type string;
+                                            }
+                                            leaf vendor {
+                                                tailf:info "Vendor";
+                                                type string;
+                                            }
+                                            leaf model {
+                                                tailf:info "Model";
+                                                type string;
+                                            }
+                                            leaf software {
+                                                tailf:info "Software";
+                                                type string;
+                                            }
+                                            list service-transport {
+                                                tailf:info "Node Connections";
+                                                key "transport-service-id";
+                                                leaf transport-service-id {
+                                                    tailf:info "Transport Service ID";
+                                                    type string;
+                                                }
+                                                leaf service-interface {
+                                                    tailf:info "Service Interface";
+                                                    type string;
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
