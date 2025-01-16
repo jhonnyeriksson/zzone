@@ -115,9 +115,7 @@
 					<?end?>
 					<interface xmlns="urn:ios">
 						<GigabitEthernet>
-							<?if {/device = /GCSE/transport-information/options/settings/equipment-information/nodes/CPE/hostname}?>
-								<name>{/GCSE/transport-information/options/settings/equipment-information/nodes/CPE/service-transport/service-interface}</name>
-							<?end?>
+							<name>{/GCSE/transport-information/options/settings/equipment-information/nodes/CPE/service-transport/service-interface}</name>
 							<?if {/GCSE/transport-information/options/settings/circuit-information/fttx/encapsulation/encapsulation-type = 'dot1q'}?>
 								<encapsulation>
 									<dot1Q>
