@@ -1,219 +1,338 @@
 module GCSE {
-  namespace "http://com/example/GCSE";
-  prefix GCSE;
+    namespace "http://com/example/GCSE";
+    prefix GCSE;
 
-  import ietf-inet-types {
-    prefix inet;
-  }
-  import tailf-ncs {
-    prefix ncs;
-  }
-  import tailf-common {
-    prefix tailf;
-  }
+    import ietf-inet-types {
+        prefix inet;
+    }
+    import tailf-ncs {
+        prefix ncs;
+    }
+    import tailf-common {
+        prefix tailf;
+    }
 
-  list GCSE {
-    key id;
-    uses ncs:service-data;
-    ncs:servicepoint "GCSE";
-    leaf id {
-      tailf:info "Access Service ID";
-      type string;
-    }
-    leaf-list device {
-      type leafref {
-        path "/ncs:devices/ncs:device/ncs:name";
-      }
-    }
-    container transport_information {
-      container options {
-        container settings {
-          container equipment_information {
-            leaf software {
-              type string;
-            }
-            container interface {
-              leaf id {
-                type string;
-              }
-            }
-          }
-          container circuit_information {
-            list fttx {
-              key transport_service_id;
-              leaf transport_service_id {
-                tailf:info "Transport Service ID";
-                type string;
-              }
-              leaf encapsulation {
-                tailf:info "Encapsulation Type";
-                type enumeration {
-                  enum dot1q;
-                  enum qinq;
-                }
-              }
-              leaf cvlan {
-                tailf:info "Customer VLAN";
-                type string;
-              }
-              leaf svlan {
-                tailf:info "Service VLAN";
-                type string;
-              }
-            }
-          }
-        }
-      }
-    }
-    container service_information {
-      description "service information";
-      leaf service-product {
-        tailf:info "Service Product";
-        type enumeration  {
-          enum internet;
-          enum l3vpn;
-        }
-      }
-      container service_bandwidth {
-        leaf capacity {
-          tailf:info "Bandwidth Capacity";
-          type int8;
-        }
-        leaf unit {
-          tailf:info "Unit";
-          type string;
-        }
-      }
-      container network_options {
-        leaf asn {
-          tailf:info "Network ASN";
-          type string;
-        }
-        leaf protocol {
-          tailf:info "Network Protocol";
-          mandatory true;
-          type enumeration {
-            enum ipv4;
-            enum tldp;
-            enum vpls;
-            enum vpnv4;
-          }
-        }
-        container mpls {
-          list tldp {
-            key "id";
-            leaf id {
-              tailf:info "TLDP-ID";
-              type string;
-            }
-            leaf remote_address {
-              tailf:info "Remote Peer Address";
-              type inet:ipv4-address;
-            }
-            leaf vcid {
-              type int8;
-            }
-            leaf path_mtu {
-              type int8;
-            }
-          }
-          container vpls {
-            leaf id {
-              type string;
-            }
-            leaf bridge_domain {
-              type string;
-            }
-            leaf route_distinguisher {
-              type string;
-            }
-            leaf-list route_target_import {
-              type string;
-            } 
-            leaf-list route_target_export {
-              type string;
-            }
-          }
-          container vpnv4 {
-            leaf vrf {
-              type string;
-            }
-            leaf route_distinguisher {
-              type string;
-            }
-            leaf-list route_target_import {
-              type string;
-            }
-            leaf-list route_target_export {
-              type string;
-            }
-          }
-        }
-      }
-      container service_options {
-        leaf active {
-          type boolean;
-        }
-        leaf mode {
-          type string;
-        }
-        leaf nsid {
-          type string;
-        }
-        leaf nokia_service_type {
-          type string;
-        }
-        container ethernet_settings {
-          leaf service_mtu {
+    list GCSE {
+        key id;
+        uses ncs:service-data;
+        ncs:servicepoint "GCSE";
+        leaf id {
+            tailf:info "Access Service ID";
             type string;
-          }
-          leaf mac_table_size {
-            type string;
-          }
-          leaf mac_limit {
-            type string;
-          }
         }
-        container ip_settings {
-          list ip {
-            key address_family;
-            leaf address_family {
-              type enumeration {
-                enum ipv4;
-              }
+        leaf-list device {
+            type leafref {
+                path "/ncs:devices/ncs:device/ncs:name";
             }
-            leaf role {
-              type string;
-            }
-            leaf address {
-              type string;
-            }
-            leaf mask {
-              type string;
-            }
-          }
-          container routing {
-            leaf protocol {
-              type string;
-            }
-            list bgp {
-              key id;
-              leaf id {
-                type string;
-              }
-              leaf state {
+        }
+        container transport-information {
+            tailf:info "Transport Information";
+            leaf registration-status {
                 type boolean;
-              }
-              leaf afi {
-                type string;
-              }
-              leaf authentication_key {
-                type string;
-              }
             }
-          }
+            container options {
+                tailf:info "Transport Options";
+                leaf segment {
+                    tailf:info "Transport Network Segment";
+                    type enumeration {
+                        enum GCSE;
+                        enum GCNO;
+                        enum GCDK;
+                        enum INET;
+                    }
+                }
+                container settings {
+                    tailf:info "Transport Settings";
+                    leaf technology {
+                        type enumeration {
+                            enum P2P;
+                            enum P2MP;
+                            enum PWR/P2MP;
+                        }
+                    }
+                    container equipment-information {
+                        tailf:info "Equipment Information";
+                        list node {
+                            key "hostname";
+                            leaf hostname {
+                                tailf:info "Hostname";
+                                type string;
+                            }
+                            leaf vendor {
+                                tailf:info "Vendor";
+                                type string;
+                            }
+                            leaf model {
+                                tailf:info "Model";
+                                type string;
+                            }
+                            leaf software {
+                                tailf:info "Software";
+                                type string;
+                            }
+                            list service-transport {
+                                tailf:info "Node Connections";
+                                key "transport-service-id";
+                                leaf transport-service-id {
+                                    tailf:info "Transport Service ID";
+                                    type string;
+                                }
+                                leaf service-interface {
+                                    tailf:info "Service Interface";
+                                    type string;
+                                }
+                            }
+                        }
+                    }
+                    container circuit-information {
+                        tailf:info "Circuit Information";
+                        list fttx {
+                            tailf:info "FTTX Circuit";
+                            key transport-service-id;
+                            leaf transport-service-id {
+                                tailf:info "Transport Service ID";
+                                type string;
+                            }
+                            leaf connection-type {
+                                tailf:info "Connection Type";
+                                type enumeration {
+                                    enum uni;
+                                    enum nni;
+                                }
+                            }
+                            leaf encapsulation {
+                                tailf:info "Encapsulation Type";
+                                type enumeration {
+                                    enum null;
+                                    enum dot1q;
+                                    enum qinq;
+                                }
+                            }
+                            leaf ethertype {
+                                tailf:info "EtherType (ex. 0x8100)";
+                                type string;
+                            }
+                            leaf cvlan {
+                                tailf:info "Customer VLAN";
+                                type string;
+                            }
+                            leaf svlan {
+                                tailf:info "Service VLAN";
+                                type string;
+                            }
+                        }
+                    }
+                }
+            }
         }
-      }
+        container service-information {
+            description "service information";
+            container bandwidth {
+                leaf capacity {
+                    tailf:info "Bandwidth Capacity";
+                    type int8;
+                }
+                leaf unit {
+                    tailf:info "Unit";
+                    type string;
+                }
+            }
+            container network-options {
+                leaf asn {
+                    tailf:info "Network ASN";
+                    type string;
+                }
+                leaf protocol {
+                    tailf:info "Network Protocol";
+                    mandatory true;
+                    type enumeration {
+                        enum ip;
+                        enum tldp;
+                        enum vpls;
+                        enum vpnv4;
+                    }
+                }
+                choice conditional {
+                    case tldp {
+                        when "service-information/network-options/protocol = 'tldp'";
+                        container tldp {
+                            list peer {
+                                key "id";
+                                leaf id {
+                                    tailf:info "TLDP-ID";
+                                    type string;
+                                }
+                                leaf remote_address {
+                                    tailf:info "Remote Peer Address";
+                                    type inet:ipv4-address;
+                                }
+                                leaf vcid {
+                                    tailf:info "TLDP VCID";
+                                    type int8;
+                                }
+                                leaf path_mtu {
+                                    tailf:info "Path MTU";
+                                    type int8;
+                                }
+                            }
+                        }
+                    }
+                    case vpls {
+                        when "service-information/network-options/protocol = 'vpls'";
+                        container vpls {
+                            leaf bridge-domain {
+                                tailf:info "Bridge Domain Name";
+                                type string;
+                            }
+                            leaf route-distinguisher {
+                                tailf:info "Route Distinguisher";
+                                type string;
+                            }
+                            leaf-list route-target-import {
+                                tailf:info "Route Target Import Community";
+                                type string;
+                            } 
+                            leaf-list route-target-export {
+                                tailf:info "Route Target Import Community";
+                                type string;
+                            }
+                        }
+                    }
+                    case vpnv4 {
+                        when "service-information/network-options/protocol = 'vpnv4'";
+                        container vpnv4 {
+                            leaf vrf {
+                                tailf:info "VRF Name";
+                                type string;
+                            }
+                            leaf route-distinguisher {
+                                tailf:info "Route Distinguisher";
+                                type string;
+                            }
+                            leaf-list route-target-import {
+                                tailf:info "Route Target Import Community";
+                                type string;
+                            }
+                            leaf-list route-target-export {
+                                tailf:info "Route Target Import Community";
+                                type string;
+                            }
+                        }
+                    }
+                }
+            }
+            container service-options {
+                leaf active {
+                    tailf:info "Service State";
+                    type boolean;
+                }
+                leaf mode {
+                    tailf:info "Service Mode";
+                    type enumeration {
+                        enum routing;
+                        enum bridging;
+                    }
+                }
+                leaf nsid {
+                    tailf:info "Nokia Service ID";
+                    type string;
+                }
+                leaf nokia-service-type {
+                    tailf:info "Nokia Service Type";
+                    type string;
+                }
+                container ethernet-settings {
+                    leaf service-mtu {
+                        tailf:info "Service MTU";
+                        type string;
+                    }
+                    leaf mac-table-size {
+                        tailf:info "MAC Table Size";
+                        type string;
+                    }
+                    leaf mac-limit {
+                        tailf:info "MAC Table Limit";
+                        type string;
+                    }
+                }
+                container ip-settings {
+                    tailf:info "IP Settings";
+                    list ip {
+                        key address-family;
+                        leaf address-family {
+                            tailf:info "IP Version";
+                            type enumeration {
+                                enum ipv4;
+                                enum ipv6;
+                            }
+                        }
+                        choice version {
+                            case v4 {
+                                when "service-information/service-options/ip/address-family = 'ipv4'";
+                                leaf role {
+                                    tailf:info "Primary/Secondary";
+                                    type string;
+                                }
+                                leaf address {
+                                    tailf:info "IPv4 Address";
+                                    type string;
+                                }
+                                leaf mask {
+                                    tailf:info "IPv4 Subnet Mask";
+                                    type string;
+                                }
+                            }
+                            case v6 {
+                                when "service-information/service-options/ip/address-family = 'ipv6'";
+                                leaf role {
+                                    tailf:info "Primary/Secondary";
+                                    type string;
+                                }
+                                leaf network-prefix {
+                                    tailf:info "IPv6 Network Prefix";
+                                    type string;
+                                }
+                                leaf link-local-prefix {
+                                    tailf:info "IPv6 Link Local Prefix";
+                                    type string;
+                                }
+                            }
+                        }
+                    }
+                    container routing {
+                        leaf protocol {
+
+                            type enumeration {
+                                enum bgp;
+                                enum static;
+                            }
+                        }
+                        container bgp {
+                            list peering {
+                                key "node";
+                                leaf node {
+                                    type enumeration {
+                                        enum PE;
+                                        enum CPE;
+                                    }
+                                }
+                                leaf peer {
+                                    type string;
+                                }
+                                leaf state {
+                                    type boolean;
+                                }
+                                leaf afi {
+                                    type string;
+                                }
+                                leaf authentication_key {
+                                    type string;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 }
