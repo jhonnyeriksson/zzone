@@ -57,7 +57,7 @@ module GCSE {
                         list nodes {
                             key "node-type";
                             leaf-list node-type {
-                                enumeration {
+                                type enumeration {
                                     enum PE;
                                     enum CPE;
                                 }
