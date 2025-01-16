@@ -12,53 +12,15 @@ module lab {
     prefix tailf;
   }
   list lab {
-    key id;
+    key hostname;
     uses ncs:service-data;
     ncs:servicepoint "lab";
-    leaf id {
+    leaf hostname {
       type string;
     }
     leaf-list device {
       type leafref {
         path "/ncs:devices/ncs:device/ncs:name";
-      }
-    }
-    container root-list {
-      leaf pick-option {
-        type enumeration {
-          enum one;
-          enum two;
-        }
-      }
-      choice conditional {
-        case a {
-          container first {
-            when "../pick-option = 'one'";
-            list options {
-              key "id";
-              leaf id {
-                type string;
-              }
-              leaf gold {
-                type string;
-              }
-            }
-          }
-        }
-        case b {
-          container second {
-            when "../pick-option = 'two'";
-            list options {
-              key "id";
-              leaf id {
-                type string;
-              }
-              leaf silver {
-                type string;
-              }
-            }
-          }
-        }
       }
     }
   }
