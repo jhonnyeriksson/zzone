@@ -305,32 +305,61 @@ module GCSE {
                     }
                     container routing {
                         leaf protocol {
-
+                            tailf:info "Routing Protocol";
                             type enumeration {
                                 enum bgp;
                                 enum static;
                             }
                         }
-                        container bgp {
-                            list peering {
-                                key "node";
-                                leaf node {
-                                    type enumeration {
-                                        enum PE;
-                                        enum CPE;
+                        choice routing-protocol {
+                            case dymaic {
+                                when "../routing/protocol = 'bgp'";
+                                container bgp {
+                                    list peering {
+                                        key "node";
+                                        leaf node {
+                                            tailf:info "Hostname";
+                                            type string;
+                                        }
+                                        leaf peer {
+                                            tailf:info "Remote Node";
+                                            type string;
+                                        }
+                                        leaf state {
+                                            tailf:info "Enabled";
+                                            type boolean;
+                                        }
+                                        leaf afi {
+                                            tailf:info "AFI";
+                                            type enumeration {
+                                                enum ipv4;
+                                            }
+                                        }
                                     }
                                 }
-                                leaf peer {
-                                    type string;
-                                }
-                                leaf state {
-                                    type boolean;
-                                }
-                                leaf afi {
-                                    type string;
-                                }
-                                leaf authentication_key {
-                                    type string;
+                            }
+                            case manual {
+                                when "../routing/protocol = 'static'";
+                                container static {
+                                    list entry {
+                                        key "node";
+                                        leaf node {
+                                            tailf:info "Hostname";
+                                            type string;
+                                        }
+                                        leaf address {
+                                            tailf:info "Network";
+                                            type string;
+                                        }
+                                        leaf subnet-mask {
+                                            tailf:info "Subnet-Mask";
+                                            type string;
+                                        }
+                                        leaf next-hop {
+                                            tailf:info "Next-Hop";
+                                            type string;
+                                        }
+                                    }
                                 }
                             }
                         }
