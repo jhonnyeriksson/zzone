@@ -144,25 +144,35 @@ module GCSE {
                                     enum nni;
                                 }
                             }
-                            leaf encapsulation {
-                                tailf:info "Encapsulation Type";
-                                type enumeration {
-                                    enum null;
-                                    enum dot1q;
-                                    enum qinq;
+                            list encapsulation {
+                                key "encapsulation-type";
+                                leaf encapsulation-type {
+                                    type enumeration {
+                                        enum null;
+                                        enum dot1q;
+                                        enum qinq;
+                                    }
                                 }
-                            }
-                            leaf ethertype {
-                                tailf:info "EtherType (ex. 0x8100)";
-                                type string;
-                            }
-                            leaf cvlan {
-                                tailf:info "Customer VLAN";
-                                type string;
-                            }
-                            leaf svlan {
-                                tailf:info "Service VLAN";
-                                type string;
+                                choice conditional {
+                                    case null {
+                                        when "../encapsulation-type = 'null'"
+                                    }
+                                    case dot1q {
+                                        when "../encapsulation-type = 'dot1q'"
+                                        leaf cvlan {
+                                            type string;
+                                        }
+                                    }
+                                    case qinq {
+                                        when "../encapsulation-type = 'qinq'"
+                                        leaf cvlan {
+                                            type string;
+                                        }
+                                        leaf svlan {
+                                            type string;
+                                        }
+                                    }
+                                } 
                             }
                         }
                     }
