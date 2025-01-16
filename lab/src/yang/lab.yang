@@ -23,8 +23,8 @@ module lab {
         path "/ncs:devices/ncs:device/ncs:name";
       }
     }
-    container root {
-      leaf option {
+    container root-list {
+      leaf pick-option {
         type enumeration {
           enum one;
           enum two;
@@ -33,7 +33,7 @@ module lab {
       choice conditional {
         case a {
           container first {
-            when "../option = 'one'";
+            when "../pick-option = 'one'";
             list options {
               key "id";
               leaf id {
@@ -47,7 +47,7 @@ module lab {
         }
         case b {
           container second {
-            when "../option = 'two'";
+            when "../pick-option = 'two'";
             list options {
               key "id";
               leaf id {
