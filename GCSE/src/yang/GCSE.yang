@@ -65,7 +65,7 @@ module GCSE {
                             }
                             choice conditional {
                                 case PE {
-                                    when "../node-type = 'PE'"
+                                    when "../node-type = 'PE'";
                                     container PE {
                                         list host {
                                             key "hostname";
@@ -101,7 +101,7 @@ module GCSE {
                                     }
                                 }
                                 case CPE {
-                                    when "../node-type = 'CPE'"
+                                    when "../node-type = 'CPE'";
                                     container CPE {
                                         list host {
                                             key "hostname";
