@@ -399,6 +399,14 @@ module GCSE {
                                                 enum ipv4;
                                             }
                                         }
+                                        leaf route-policy-in {
+                                            tailf:info "Route Policy In";
+                                            type string;
+                                        }
+                                        leaf route-policy-out {
+                                            tailf:info "Route Policy Out";
+                                            type string;
+                                        }
                                     }
                                 }
                             }
