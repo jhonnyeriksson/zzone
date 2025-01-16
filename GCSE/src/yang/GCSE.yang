@@ -321,13 +321,21 @@ module GCSE {
                                             tailf:info "Hostname";
                                             type string;
                                         }
-                                        leaf peer {
+                                        leaf local-address {
                                             tailf:info "Remote Node";
                                             type string;
                                         }
-                                        leaf state {
-                                            tailf:info "Enabled";
-                                            type boolean;
+                                        leaf local-asn {
+                                            tailf:info "Remote Node";
+                                            type string;
+                                        }
+                                        leaf remote-address {
+                                            tailf:info "Remote Node";
+                                            type string;
+                                        }
+                                        leaf remote-asn {
+                                            tailf:info "Remote Node";
+                                            type string;
                                         }
                                         leaf afi {
                                             tailf:info "AFI";
