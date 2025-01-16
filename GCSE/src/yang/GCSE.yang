@@ -269,32 +269,36 @@ module GCSE {
                         choice version {
                             case v4 {
                                 when "../ip/address-family = 'ipv4'";
-                                leaf primary {
-                                    tailf:info "Primary/Secondary";
-                                    type string;
-                                }
-                                leaf address {
-                                    tailf:info "IPv4 Address";
-                                    type string;
-                                }
-                                leaf mask {
-                                    tailf:info "IPv4 Subnet Mask";
-                                    type string;
+                                container ipv4 {
+                                    leaf role {
+                                        tailf:info "Primary/Secondary";
+                                        type string;
+                                    }
+                                    leaf address {
+                                        tailf:info "IPv4 Address";
+                                        type string;
+                                    }
+                                    leaf mask {
+                                        tailf:info "IPv4 Subnet Mask";
+                                        type string;
+                                    }
                                 }
                             }
                             case v6 {
                                 when "../ip/address-family = 'ipv6'";
-                                leaf primary {
-                                    tailf:info "Primary/Secondary";
-                                    type string;
-                                }
-                                leaf network-prefix {
-                                    tailf:info "IPv6 Network Prefix";
-                                    type string;
-                                }
-                                leaf link-local-prefix {
-                                    tailf:info "IPv6 Link Local Prefix";
-                                    type string;
+                                container ipv6 {
+                                    leaf role {
+                                        tailf:info "Primary/Secondary";
+                                        type string;
+                                    }
+                                    leaf network-prefix {
+                                        tailf:info "IPv6 Network Prefix";
+                                        type string;
+                                    }
+                                    leaf link-local-prefix {
+                                        tailf:info "IPv6 Link Local Prefix";
+                                        type string;
+                                    }
                                 }
                             }
                         }
