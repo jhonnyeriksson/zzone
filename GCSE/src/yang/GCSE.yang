@@ -57,7 +57,10 @@ module GCSE {
                         list nodes {
                             key "node-type";
                             leaf node-type {
-                                type string;
+                                type enumeration {
+                                    enum PE;
+                                    enum CPE;
+                                }
                             }
                             container PE {
                                 when "../node-type = 'PE'";
