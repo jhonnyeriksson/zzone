@@ -12,16 +12,22 @@ module lab {
     prefix tailf;
   }
   list lab {
-    key hostname;
+    key id;
     uses ncs:service-data;
     ncs:servicepoint "lab";
-    leaf hostname {
+    leaf id {
       type string;
     }
     leaf-list device {
       type leafref {
         path "/ncs:devices/ncs:device/ncs:name";
       }
+    }
+    leaf hostname_old {
+      type string;
+    }
+    leaf hostname_new {
+      type string;
     }
   }
 }
