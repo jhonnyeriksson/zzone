@@ -56,13 +56,9 @@ module GCSE {
                         tailf:info "Equipment Information";
                         list nodes {
                             key "node-type";
-                            leaf-list node-type {
-                                enumeration {
-                                    PE;
-                                    ACCESS;
-                                    CPE;
-                                }
-                            }
+                            leaf-list node-type [
+                                PE ACCESS CPE
+                            ]
                             choice conditional {
                                 case PE {
                                     when "../node-type = 'PE'";
