@@ -38,7 +38,11 @@
 					<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
 						<GigabitEthernet-subinterface>
 							<GigabitEthernet>
-								<id>{/transport-information/options/settings/equipment-information/PE/interface}</id>
+                <?foreach {/transport-information/options/settings/equipment-information/PE}?>
+                  <?if {$device = hostname}?>
+								    <id>{interface}</id>
+                  <?end?>
+                <?end?>
 								<encapsulation>
 									<dot1q>
 										<vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/cvlan)}</vlan-id>
