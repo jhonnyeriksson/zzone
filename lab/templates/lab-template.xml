@@ -3,10 +3,10 @@
   <devices xmlns="http://tail-f.com/ns/ncs">
     <?foreach {/devices}?>
       <device>
-        <name>{device}</name>
+        <name>{.}</name>
         <config>
           <?foreach {/hostnames}?>
-            <?if {device = node}?>
+            <?if {. = node}?>
             <hostname xmlns="urn:ios">{hostname_new}</hostname>
             <?end?>
           <?end?>
