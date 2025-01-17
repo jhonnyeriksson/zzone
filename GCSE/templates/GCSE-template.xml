@@ -51,8 +51,8 @@
 												<?foreach {/service-information/service-options/ip-settings/ip/network/hosts}?>
 													<?if {/device = /service-information/service-options/ip-settings/ip/network/hosts/node}?>
 														<address>
-															<ip>{/service-information/service-options/ip-settings/ip/network/hosts/address}</ip>
-															<mask>{/service-information/service-options/ip-settings/ip/network/hosts/subnet-mask}</mask>
+															<ip>{address}</ip>
+															<mask>{subnet-mask}</mask>
 														</address>
 													<?end?>
 												<?end?>
@@ -143,8 +143,8 @@
 											<ip>
 												<address>
 													<primary>
-														<address>{/service-information/service-options/ip-settings/ip/network/hosts/address}</address>
-														<mask>{/service-information/service-options/ip-settings/ip/network/hosts/subnet-mask}</mask>
+														<address>{address}</address>
+														<mask>{subnet-mask}</mask>
 													</primary>
 												</address>
 											</ip>
