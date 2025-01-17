@@ -6,7 +6,7 @@
       <device>
         <name>{$device}</name>
         <config>
-				  <?if {/service-information/network-options/protocol = 'vpnv4'}?>
+				  <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
 				  	<vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
 				  		<vrf-list>
 				  			<name>{/service-information/network-options/vpnv4/vrf}</name>
