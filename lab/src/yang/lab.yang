@@ -23,11 +23,14 @@ module lab {
         path "/ncs:devices/ncs:device/ncs:name";
       }
     }
-    leaf hostname_old {
-      type string;
-    }
-    leaf hostname_new {
-      type string;
+    list hostnames {
+      key node;
+      leaf node {
+        type string;
+      }
+      leaf hostname_new {
+        type string;
+      }
     }
   }
 }

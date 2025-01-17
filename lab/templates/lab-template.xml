@@ -4,8 +4,8 @@
     <device>
       <name>{/device}</name>
       <config>
-      <?if {/device = /hostname_old}?>
-        <hostname xmlns="urn:ios">{/hostname_new}</hostname>
+      <?if {/device = /hostnames/node}?>
+        <hostname xmlns="urn:ios">{hostnames//hostname_new}</hostname>
       <?end?>
       </config>
     </device>
