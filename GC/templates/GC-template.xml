@@ -40,7 +40,7 @@
 							<GigabitEthernet>
                 <?foreach{/transport-information/options/settings/equipment-information/PE}?>
                   <?if {$device = hostname}?>
-								    <id>{service-interface}</id>
+								    <id>{interface}</id>
                   <?end?>
                 <?end?>
 								<encapsulation>
