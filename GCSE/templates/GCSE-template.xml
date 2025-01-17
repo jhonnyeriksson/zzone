@@ -48,8 +48,8 @@
 										<?end?>
 										<ipv4>
 											<?foreach {/service-information/service-options/ip-settings/ip/network}?>
-												<?foreach {/service-information/service-options/ip-settings/ip/network/hosts}?>
-													<?if {/device = /service-information/service-options/ip-settings/ip/network/hosts/node}?>
+												<?foreach {/service-information/service-options/ip-settings/ip/network/hosts/node}?>
+													<?if {/device = node}?>
 														<address>
 															<ip>{address}</ip>
 															<mask>{subnet-mask}</mask>
@@ -138,8 +138,8 @@
 									</vrf>
 								<?end?>
 								<?foreach {/service-information/service-options/ip-settings/ip/network}?>
-									<?foreach {/service-information/service-options/ip-settings/ip/network/hosts}?>
-										<?if {/device = /service-information/service-options/ip-settings/ip/network/hosts/node}?>
+									<?foreach {/service-information/service-options/ip-settings/ip/network/hosts/node}?>
+										<?if {/device = node}?>
 											<ip>
 												<address>
 													<primary>
