@@ -68,7 +68,7 @@
 											<bgp-no-instance>
 												<id>{local-asn}</id>
 												<vrf>
-													<name>{/service-information/network-options/vpnv4/vrf}</name>
+													<name>SERVICE-A</name>
 													<address-family>
 														<ipv4>
 															<unicast/>
