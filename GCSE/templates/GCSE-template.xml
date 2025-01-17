@@ -48,10 +48,10 @@
 										<?end?>
 										<ipv4>
 											<?foreach {/service-information/service-options/ip-settings/ip/network}?>
-												<?if {/device = /service-information/service-options/ip-settings/ip/network/hosts/node}?>
+												<?if {/device = /hosts/node}?>
 													<address>
-														<ip>{address}</ip>
-														<mask>{subnet-mask}</mask>
+														<ip>{/hosts/address}</ip>
+														<mask>{/hosts/subnet-mask}</mask>
 													</address>
 												<?end?>
 											<?end?>
@@ -136,12 +136,12 @@
 									</vrf>
 								<?end?>
 								<?foreach {/service-information/service-options/ip-settings/ip/network}?>
-									<?if {/device = /service-information/service-options/ip-settings/ip/network/hosts/node}?>
+									<?if {/device = /hosts/node}?>
 										<ip>
 											<address>
 												<primary>
-													<address>{/service-information/service-options/ip-settings/ip/network/hosts/node/address}</address>
-													<mask>{/service-information/service-options/ip-settings/ip/network/hosts/node/subnet-mask}</mask>
+													<address>{/hosts/address}</address>
+													<mask>{/hosts/subnet-mask}</mask>
 												</primary>
 											</address>
 										</ip>
