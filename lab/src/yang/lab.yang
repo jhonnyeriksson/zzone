@@ -18,18 +18,12 @@ module lab {
     leaf id {
       type string;
     }
-    leaf-list devices {
+    leaf-list target-device {
       min-elements 1;
       type string;
     }
-    list hostnames {
-      key node;
-      leaf node {
-        type string;
-      }
-      leaf hostname_new {
-        type string;
-      }
+    leaf hostname_new {
+      type string;
     }
   }
 }
