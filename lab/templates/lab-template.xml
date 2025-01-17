@@ -5,7 +5,7 @@
       <device>
         <name>{.}</name>
         <config>
-          <?if {. = /hostname_new}?>
+          <?if {. = /hostnames/node}?>
           <hostname xmlns="urn:ios">YAY!</hostname>
           <?end?>
         </config>
