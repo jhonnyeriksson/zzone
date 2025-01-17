@@ -209,40 +209,47 @@ module GCSE {
                                 when "../routing/protocol = 'bgp'";
                                 container bgp {
                                     list peering {
-                                        key "node";
-                                        leaf node {
-                                            tailf:info "Hostname";
+                                        key "network";
+                                        leaf network {
+                                            tailf:info "Network";
                                             type string;
                                         }
-                                        leaf update-source {
-                                            tailf:info "Local Update Source";
-                                            type string;
-                                        }
-                                        leaf local-asn {
-                                            tailf:info "Local ASN";
-                                            type string;
-                                        }
-                                        leaf remote-address {
-                                            tailf:info "Remote Address";
-                                            type string;
-                                        }
-                                        leaf remote-asn {
-                                            tailf:info "Remote ASN";
-                                            type string;
-                                        }
-                                        leaf afi {
-                                            tailf:info "AFI";
-                                            type enumeration {
-                                                enum ipv4;
+                                        list peers {
+                                            key "node";
+                                            leaf node {
+                                                tailf:info "Hostname";
+                                                type string;
                                             }
-                                        }
-                                        leaf route-policy-in {
-                                            tailf:info "Route Policy In";
-                                            type string;
-                                        }
-                                        leaf route-policy-out {
-                                            tailf:info "Route Policy Out";
-                                            type string;
+                                            leaf update-source {
+                                                tailf:info "Local Update Source";
+                                                type string;
+                                            }
+                                            leaf local-asn {
+                                                tailf:info "Local ASN";
+                                                type string;
+                                            }
+                                            leaf remote-address {
+                                                tailf:info "Remote Address";
+                                                type string;
+                                            }
+                                            leaf remote-asn {
+                                                tailf:info "Remote ASN";
+                                                type string;
+                                            }
+                                            leaf afi {
+                                                tailf:info "AFI";
+                                                type enumeration {
+                                                    enum ipv4;
+                                                }
+                                            }
+                                            leaf route-policy-in {
+                                                tailf:info "Route Policy In";
+                                                type string;
+                                            }
+                                            leaf route-policy-out {
+                                                tailf:info "Route Policy Out";
+                                                type string;
+                                            }
                                         }
                                     }
                                 }
