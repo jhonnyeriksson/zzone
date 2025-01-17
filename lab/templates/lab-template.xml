@@ -4,8 +4,10 @@
     <device>
       <name>{/device}</name>
       <config>
-      <?foreach {/device = hostnames/node}?>
+      <?foreach {/hostnames}?>
+        <?if . = node?>
         <hostname xmlns="urn:ios">{hostname_new}</hostname>
+        <?end?>
       <?end?>
       </config>
     </device>
