@@ -60,10 +60,10 @@
 								</GigabitEthernet>
 							</GigabitEthernet-subinterface>
 						</interface>
-						<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
-							<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
-								<?if {/device = node}?>
-									<router xmlns="http://tail-f.com/ned/cisco-ios-xr">
+						<router xmlns="http://tail-f.com/ned/cisco-ios-xr">
+							<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
+								<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
+									<?if {/device = node}?>
 										<bgp>
 											<bgp-no-instance>
 												<id>{local-asn}</id>
@@ -100,10 +100,10 @@
 												</vrf>
 											</bgp-no-instance>
 										</bgp>
-									</router>
+									<?end?>
 								<?end?>
 							<?end?>
-						<?end?>
+						</router>
 					<?end?>
 				<?end?>
 				<?if {/transport-information/options/settings/equipment-information/node-type = 'CPE'}?>
@@ -146,10 +146,10 @@
 							<?end?>
 						</GigabitEthernet>
 					</interface>
-					<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
-						<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
-							<?if {/device = node}?>
-								<router xmlns="urn:ios">
+					<router xmlns="urn:ios">
+						<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
+							<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
+								<?if {/device = node}?>
 									<bgp>
 										<as-no>{local-asn}</as-no>
 										<address-family>
@@ -174,10 +174,10 @@
 											</with-vrf>
 										</address-family>
 									</bgp>
-								</router>
+								<?end?>
 							<?end?>
 						<?end?>
-					<?end?>
+					</router>
 				<?end?>
 			</config>
 		</device>
