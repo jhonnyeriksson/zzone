@@ -6,12 +6,12 @@
 				<interface xmlns="urn:ios">
 					<Loopback>
 						<name>{/loopback/id}</name>
-						<description>{/loopback/description}</description>
+						<description>{/description}</description>
 						<ip>
 							<address>
 								<primary>
-									<address>{/loopback/ip}</address>
-									<mask>{/loopback/mask}</mask>
+									<address>{/ip}</address>
+									<mask>{/mask}</mask>
 								</primary>
 							</address>
 						</ip>
@@ -20,11 +20,11 @@
 				<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
 					<Loopback>
 						<id>{/loopback/id}</id>
-						<description>{/loopback/description}</description>
+						<description>{/description}</description>
 						<ipv4>
 							<address>
-								<ip>{/loopback/ip}</ip>
-								<mask>{/loopback/mask}</mask>
+								<ip>{/ip}</ip>
+								<mask>{/mask}</mask>
 							</address>
 						</ipv4>
 					</Loopback>
