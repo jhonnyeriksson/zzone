@@ -89,7 +89,7 @@ module GC {
         leaf asn {
           type string;
         }
-        leaf protocol {
+        leaf network-protocol {
           type enumeration {
             enum ipv4;
             enum ipv6;
@@ -100,18 +100,20 @@ module GC {
         }
         choice conditional {
           case vpnv4 {
-            when "../protocol = 'vpnv4'";
-            leaf vrf {
-              type string;
-            }
-            leaf rd {
-              type string;
-            }
-            leaf route-target-import {
-              type string;
-            }
-            leaf route-target-export {
-              type string;
+            container vpnv4 {
+              when "../network-protocol = 'vpnv4'";
+              leaf vrf {
+                type string;
+              }
+              leaf rd {
+                type string;
+              }
+              leaf route-target-import {
+                type string;
+              }
+              leaf route-target-export {
+                type string;
+              }
             }
           }
         }
