@@ -7,6 +7,7 @@
         <config>
           <?if {. = /hostname_new}?>
           <hostname xmlns="urn:ios">YAY!</hostname>
+          <?end?>
         </config>
       </device>
     <?end?>
