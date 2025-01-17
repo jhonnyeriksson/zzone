@@ -8,27 +8,206 @@ module GC {
   import tailf-ncs {
     prefix ncs;
   }
-
+  import tailf-common {
+    prefix tailf;
+  }
   list GC {
-    key name;
-
+    key id;
     uses ncs:service-data;
     ncs:servicepoint "GC";
-
-    leaf name {
+    leaf id {
+      tailf:info "Access Service ID";
       type string;
     }
-
-    // may replace this with other ways of refering to the devices.
     leaf-list device {
+      tailf:info "Devices";
       type leafref {
         path "/ncs:devices/ncs:device/ncs:name";
       }
     }
-
-    // replace with your own stuff here
-    leaf dummy {
-      type inet:ipv4-address;
+    container transport-information {
+      container options {
+        container settings {
+          container equipment-information {
+            container PE {
+              leaf hostname {
+                  type string;
+              }
+              leaf vendor {
+                  type string;
+              }
+              leaf model {
+                  type string;
+              }
+              leaf software {
+                  type string;
+              }
+              leaf interface {
+                  type string;
+              }
+            }
+            container CPE {
+              leaf hostname {
+                  tailf:info "Hostname";
+                  type string;
+              }
+              leaf vendor {
+                  tailf:info "Vendor";
+                  type string;
+              }
+              leaf model {
+                  tailf:info "Model";
+                  type string;
+              }
+              leaf software {
+                  tailf:info "Software";
+                  type string;
+              }
+              leaf interface {
+                  type string;
+              }
+            }
+          }
+          container circuit-information {
+            tailf:info "Circuit Information";
+            container fttx {
+              leaf encapsulation {
+                  type enumeration {
+                      enum dot1q;
+                  }
+              }
+              leaf cvlan {
+                  type string;
+              }
+            }
+          }
+        }
+      }
+    }
+    container service-information {
+      container network-options {
+        leaf asn {
+          type string;
+        }
+        leaf protocol {
+          type enumeration {
+            enum ipv4;
+            enum ipv6;
+            enum tldp;
+            enum vpls;
+            enum vprn;
+          }
+        }
+        choice conditional {
+          case vpnv4 {
+            when "../network-options/protocol = 'vpnv4'";
+            leaf vrf {
+              type string;
+            }
+            leaf rd {
+              type string;
+            }
+            leaf route-target-import {
+              type string;
+            }
+            leaf route-target-export {
+              type string;
+            }
+          }
+        }
+      }
+      container service-options {
+        container ip-settings {
+          container ip {
+            leaf address-family {
+              type enumeration {
+                enum ipv4;
+              }
+            }
+            choice version {
+              case ipv4 {
+                container ipv4 {
+                  when "../ip/address-family = 'ipv4'";
+                  leaf network {
+                    type string;
+                  }
+                  list hosts {
+                    key "node";
+                    leaf node {
+                      type string;
+                    }
+                    leaf address {
+                      type string;
+                    }
+                    leaf subnet-mask {
+                      type string;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          container routing {
+            leaf protocol {
+              type enumeration {
+                enum static;
+                enum bgp;
+              }
+            }
+            choice routing-protocol {
+              case static {
+                container static {
+                  when "../routing/protocol = 'static'";
+                  list entry {
+                    key "node";
+                    leaf node {
+                      type string;
+                    }
+                    leaf network {
+                      type string;
+                    }
+                    leaf subnet-mask {
+                      type string;
+                    }
+                    leaf next-hop {
+                      type string;
+                    }
+                  }
+                }
+              }
+              case dynamic {
+                container bgp {
+                  when "../routing/protocol = 'bgp'";
+                  list peer {
+                    key "node";
+                    leaf node {
+                      type string;
+                    }
+                    leaf local-asn {
+                      type string;
+                    }
+                    leaf update-source {
+                      type string;
+                    }
+                    leaf remote-address {
+                      type string;
+                    }
+                    leaf remote-asn {
+                      type string;
+                    }
+                    leaf route-policy-in {
+                      type string;
+                    }
+                    leaf route-policy-out {
+                      type string;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
