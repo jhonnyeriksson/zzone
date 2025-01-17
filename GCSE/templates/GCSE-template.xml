@@ -4,6 +4,34 @@
 			<name>{/device}</name>
 			<config>
 				<?if {/transport-information/options/settings/equipment-information/node-type = 'PE'}?>
+					<?if {/service-information/network-options/protocol = 'vpnv4'}?>
+						<vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
+							<vrf-list>
+								<name>{/service-information/network-options/vpnv4/vrf}</name>
+								<rd>{/service-information/network-options/vpnv4/route-distinguisher}</rd>
+								<address-family>
+									<ipv4>
+										<unicast>
+											<import>
+												<route-target>
+													<address-list>
+														<name>{/service-information/network-options/vpnv4/route-target-import}</name>
+													</address-list>
+												</route-target>
+											</import>
+											<export>
+												<route-target>
+													<address-list>
+														<name>{/service-information/network-options/vpnv4/route-target-export}</name>
+													</address-list>
+												</route-target>
+											</export>
+										</unicast>
+									</ipv4>
+								</address-family>
+							</vrf-list>
+						</vrf>
+					<?end?>
 					<?if {/device = /transport-information/options/settings/equipment-information/PE/hostname}?>
 						<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
 							<GigabitEthernet-subinterface>
