@@ -196,9 +196,9 @@ module GCSE {
                             }
                         }
                     }
-                    container routing {
+                    list routing {
+                        key protocol;
                         leaf protocol {
-                            tailf:info "Routing Protocol";
                             type enumeration {
                                 enum bgp;
                                 enum static;
@@ -207,54 +207,52 @@ module GCSE {
                         choice routing-protocol {
                             case dymaic {
                                 when "../routing/protocol = 'bgp'";
-                                container bgp {
-                                    list peering {
-                                        key "network";
-                                        leaf network {
-                                            tailf:info "Network";
+                                list network {
+                                    key pfx;
+                                    leaf pfx {
+                                        tailf:info "IPv4 Network Prefix";
+                                        type string;
+                                    }
+                                    list peers {
+                                        key "node";
+                                        leaf node {
+                                            tailf:info "Hostname";
                                             type string;
                                         }
-                                        list peers {
-                                            key "node";
-                                            leaf node {
-                                                tailf:info "Hostname";
-                                                type string;
+                                        leaf update-source {
+                                            tailf:info "Local Update Source";
+                                            type string;
+                                        }
+                                        leaf local-asn {
+                                            tailf:info "Local ASN";
+                                            type string;
+                                        }
+                                        leaf remote-address {
+                                            tailf:info "Remote Address";
+                                            type string;
+                                        }
+                                        leaf remote-asn {
+                                            tailf:info "Remote ASN";
+                                            type string;
+                                        }
+                                        leaf afi {
+                                            tailf:info "AFI";
+                                            type enumeration {
+                                                enum ipv4;
                                             }
-                                            leaf update-source {
-                                                tailf:info "Local Update Source";
-                                                type string;
-                                            }
-                                            leaf local-asn {
-                                                tailf:info "Local ASN";
-                                                type string;
-                                            }
-                                            leaf remote-address {
-                                                tailf:info "Remote Address";
-                                                type string;
-                                            }
-                                            leaf remote-asn {
-                                                tailf:info "Remote ASN";
-                                                type string;
-                                            }
-                                            leaf afi {
-                                                tailf:info "AFI";
-                                                type enumeration {
-                                                    enum ipv4;
-                                                }
-                                            }
-                                            leaf route-policy-in {
-                                                tailf:info "Route Policy In";
-                                                type string;
-                                            }
-                                            leaf route-policy-out {
-                                                tailf:info "Route Policy Out";
-                                                type string;
-                                            }
+                                        }
+                                        leaf route-policy-in {
+                                            tailf:info "Route Policy In";
+                                            type string;
+                                        }
+                                        leaf route-policy-out {
+                                            tailf:info "Route Policy Out";
+                                            type string;
                                         }
                                     }
                                 }
                             }
-                            case manual {
+                            case static {
                                 when "../routing/protocol = 'static'";
                                 container static {
                                     list entry {
