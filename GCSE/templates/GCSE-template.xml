@@ -16,7 +16,7 @@
 									</encapsulation>
 									<ipv4>
 										<address>
-											<?for {/device;/GCSE/service-information/service-options/ip-settings/ip/network/hosts/node}?>
+											<?if {/device = /GCSE/service-information/service-options/ip-settings/ip/network/hosts/node}?>
 												<ip>{/GCSE/service-information/service-options/ip-settings/ip/network/hosts/address}</ip>
 												<mask>{/GCSE/service-information/service-options/ip-settings/ip/network/hosts/subnet-mask}</mask>
 											<?end?>
