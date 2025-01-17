@@ -1,7 +1,7 @@
 <config-template xmlns="http://tail-f.com/ns/config/1.0"
                  servicepoint="lab">
   <devices xmlns="http://tail-f.com/ns/ncs">
-    <?foreach {/target-device}?>
+    <?foreach {/devices}?>
     <?set devname = {.}?>
       <device>
         <name>{$devname}</name>
