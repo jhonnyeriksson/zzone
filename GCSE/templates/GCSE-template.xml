@@ -48,13 +48,11 @@
 										<?end?>
 										<ipv4>
 											<?foreach {/service-information/service-options/ip-settings/ip/network}?>
-												<?foreach {/service-information/service-options/ip-settings/ip/network/hosts/node}?>
-													<?if {/device = 'XRv1'}?>
-														<address>
-															<ip>{address}</ip>
-															<mask>{subnet-mask}</mask>
-														</address>
-													<?end?>
+												<?if {/device = /service-information/service-options/ip-settings/ip/network/hosts/node}?>
+													<address>
+														<ip>{address}</ip>
+														<mask>{subnet-mask}</mask>
+													</address>
 												<?end?>
 											<?end?>
 										</ipv4>
@@ -138,17 +136,15 @@
 									</vrf>
 								<?end?>
 								<?foreach {/service-information/service-options/ip-settings/ip/network}?>
-									<?foreach {/service-information/service-options/ip-settings/ip/network/hosts/node}?>
-										<?if {/device = 'CSR1'}?>
-											<ip>
-												<address>
-													<primary>
-														<address>{address}</address>
-														<mask>{subnet-mask}</mask>
-													</primary>
-												</address>
-											</ip>
-										<?end?>
+									<?if {/device = /service-information/service-options/ip-settings/ip/network/hosts/node}?>
+										<ip>
+											<address>
+												<primary>
+													<address>{address}</address>
+													<mask>{subnet-mask}</mask>
+												</primary>
+											</address>
+										</ip>
 									<?end?>
 								<?end?>
 							</GigabitEthernet>
