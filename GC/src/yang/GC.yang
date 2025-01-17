@@ -154,8 +154,8 @@ module GC {
                 enum bgp;
               }
             }
-            choice routing-protocol {
-              case static {
+            choice rp {
+              case stat {
                 container static {
                   when "../protocol = 'static'";
                   list entry {
@@ -175,7 +175,7 @@ module GC {
                   }
                 }
               }
-              case dynamic {
+              case dyn {
                 container bgp {
                   when "../protocol = 'bgp'";
                   list peer {
