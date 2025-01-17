@@ -107,5 +107,6 @@
         <?end?>
       </config>
     </device>
+  <?end?>
   </devices>
 </config-template>
