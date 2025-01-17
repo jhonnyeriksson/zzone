@@ -22,8 +22,14 @@ module lab {
       min-elements 1;
       type string;
     }
-    leaf hostname_new {
-      type string;
+    list hostnames {
+      key node;
+      leaf node {
+        type string;
+      }
+      leaf hostname_new {
+        type string;
+      }
     }
   }
 }
