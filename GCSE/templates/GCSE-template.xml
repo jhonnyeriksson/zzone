@@ -106,6 +106,79 @@
 						<?end?>
 					<?end?>
 				<?end?>
+				<?if {/transport-information/options/settings/equipment-information/node-type = 'CPE'}?>
+					<?if {/service-information/network-options/protocol = 'vpnv4'}?>
+						<vrf xmlns="urn:ios">
+							<definition>
+								<name>{/service-information/network-options/vpnv4/vrf}</name>
+								<rd>100:100</rd>
+								<address-family>
+								</address-family>
+							</definition>
+						</vrf>
+					<?end?>
+					<interface xmlns="urn:ios">
+						<GigabitEthernet>
+							<name>{/transport-information/options/settings/equipment-information/CPE/interface}</name>
+							<encapsulation>
+								<dot1Q>
+									<vlan-id>{/transport-information/options/settings/circuit-information/fttx/cvlan}</vlan-id>
+								</dot1Q>
+							</encapsulation>
+							<?if {/service-information/network-options/protocol = 'vpnv4'}?>
+								<vrf>
+									<forwarding>SERVICE-A</forwarding>
+								</vrf>
+							<?end?>
+							<?foreach {/service-information/service-options/ip-settings/ip/network}?>
+								<?foreach {hosts}?>
+									<?if {/device = node}?>
+										<ip>
+											<address>
+												<primary>
+													<address>{address}</address>
+													<mask>{subnet-mask}</mask>
+												</primary>
+											</address>
+										</ip>
+									<?end?>
+								<?end?>
+							<?end?>
+						</GigabitEthernet>
+					</interface>
+					<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
+						<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
+							<?if {/device = node}?>
+								<router xmlns="urn:ios">
+									<bgp>
+										<as-no>{local-asn}</as-no>
+										<address-family>
+											<with-vrf>
+												<ipv4>
+													<af>unicast</af>
+													<vrf>
+														<name>{/service-information/network-options/vpnv4/vrf}</name>
+														<redistribute>
+															<connected/>
+														</redistribute>
+														<neighbor>
+															<id>{/service-information/service-options/ip-settings/routing/bgp/peering/remote-address}</id>
+															<remote-as>{remote-asn}</remote-as>
+															<activate/>
+															<update-source>
+																<GigabitEthernet>{update-source}</GigabitEthernet>
+															</update-source>
+														</neighbor>
+													</vrf>
+												</ipv4>
+											</with-vrf>
+										</address-family>
+									</bgp>
+								</router>
+							<?end?>
+						<?end?>
+					<?end?>
+				<?end?>
 			</config>
 		</device>
 	</devices>
