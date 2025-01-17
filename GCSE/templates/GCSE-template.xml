@@ -15,16 +15,16 @@
 										</dot1q>
 									</encapsulation>
 									<ipv4>
-										<address>
-											<?foreach {/service-information/service-options/ip-settings/ip/network}?>
-												<?foreach {/hosts}?>
-													<?if {/device = /node}?>
-														<ip>{/address}</ip>
-														<mask>{/subnet-mask}</mask>
-													<?end?>
+										<?foreach {/service-information/service-options/ip-settings/ip/network}?>
+											<?foreach {/hosts}?>
+												<?if {/device = node}?>
+													<address>
+														<ip>{address}</ip>
+														<mask>{subnet-mask}</mask>
+													</address>
 												<?end?>
 											<?end?>
-										</address>
+										<?end?>
 									</ipv4>
 								</GigabitEthernet>
 							</GigabitEthernet-subinterface>
