@@ -42,6 +42,9 @@
 											<vlan-id>{/transport-information/options/settings/circuit-information/fttx/cvlan}</vlan-id>
 										</dot1q>
 									</encapsulation>
+									<?if {/service-information/network-options/protocol = 'vpnv4'}?>
+										<vrf>{/service-information/network-options/vpnv4/vrf}</vrf>
+									<?end?>
 									<ipv4>
 										<?foreach {/service-information/service-options/ip-settings/ip/network}?>
 											<?foreach {hosts}?>
@@ -57,6 +60,50 @@
 								</GigabitEthernet>
 							</GigabitEthernet-subinterface>
 						</interface>
+						<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
+							<?foreach {/service-information/service-options/ip-settings/routing/protocol/bgp/peering}?>
+								<?if {/device = node}?>
+									<router xmlns="http://tail-f.com/ned/cisco-ios-xr">
+										<bgp>
+											<bgp-no-instance>
+												<id>{local-asn}</id>
+												<vrf>
+													<name>{/service-information/network-options/vpnv4/vrf}</name>
+													<address-family>
+														<ipv4>
+															<unicast/>
+														</ipv4>
+													</address-family>
+													<neighbor>
+														<id>{/remote-address}</id>
+														<remote-as>{remote-asn}</remote-as>
+														<update-source>
+															<GigabitEthernet-subinterface>
+																<GigabitEthernet>{update-source}</GigabitEthernet>
+															</GigabitEthernet-subinterface>
+														</update-source>
+														<address-family>
+															<ipv4>
+																<unicast>
+																	<route-policy>
+																		<direction>in</direction>
+																		<name>{route-policy-in}</name>
+																	</route-policy>
+																	<route-policy>
+																		<direction>out</direction>
+																		<name>{route-policy-out}</name>
+																	</route-policy>
+																</unicast>
+															</ipv4>
+														</address-family>
+													</neighbor>
+												</vrf>
+											</bgp-no-instance>
+										</bgp>
+									</router>
+								<?end?>
+							<?end?>
+						<?end?>
 					<?end?>
 				<?end?>
 			</config>
