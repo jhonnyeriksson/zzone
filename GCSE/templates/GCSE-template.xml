@@ -154,31 +154,33 @@
 						<router xmlns="urn:ios">
 							<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
 								<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
-									<?if {/device = node}?>
-										<bgp>
-											<as-no>{local-asn}</as-no>
-											<address-family>
-												<with-vrf>
-													<ipv4>
-														<af>unicast</af>
-														<vrf>
-															<name>SERVICE-A</name>
-															<redistribute>
-																<connected/>
-															</redistribute>
-															<neighbor>
-																<id>{remote-address}</id>
-																<remote-as>{remote-asn}</remote-as>
-																<activate/>
-																<update-source>
-																	<GigabitEthernet>{update-source}</GigabitEthernet>
-																</update-source>
-															</neighbor>
-														</vrf>
-													</ipv4>
-												</with-vrf>
-											</address-family>
-										</bgp>
+									<?foreach {peers}?>
+										<?if {/device = node}?>
+											<bgp>
+												<as-no>{local-asn}</as-no>
+												<address-family>
+													<with-vrf>
+														<ipv4>
+															<af>unicast</af>
+															<vrf>
+																<name>SERVICE-A</name>
+																<redistribute>
+																	<connected/>
+																</redistribute>
+																<neighbor>
+																	<id>{remote-address}</id>
+																	<remote-as>{remote-asn}</remote-as>
+																	<activate/>
+																	<update-source>
+																		<GigabitEthernet>{update-source}</GigabitEthernet>
+																	</update-source>
+																</neighbor>
+															</vrf>
+														</ipv4>
+													</with-vrf>
+												</address-family>
+											</bgp>
+										<?end?>
 									<?end?>
 								<?end?>
 							<?end?>
