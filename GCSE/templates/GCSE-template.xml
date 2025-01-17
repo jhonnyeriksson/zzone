@@ -110,8 +110,8 @@
 						<?end?>
 					<?end?>
 				<?end?>
-				<?if {/transport-information/options/settings/equipment-information/node-type = 'CPE'}?>
-					<?if {/device = /transport-information/options/settings/equipment-information/CPE/hostname}?>
+				<?if {/transport-information/options/settings/equipment-information/node-type = 'CE'}?>
+					<?if {/device = /transport-information/options/settings/equipment-information/CE/hostname}?>
 						<?if {/service-information/network-options/protocol = 'vpnv4'}?>
 							<vrf xmlns="urn:ios">
 								<definition>
@@ -124,7 +124,7 @@
 						<?end?>
 						<interface xmlns="urn:ios">
 							<GigabitEthernet>
-								<name>{/transport-information/options/settings/equipment-information/CPE/interface}</name>
+								<name>{/transport-information/options/settings/equipment-information/CE/interface}</name>
 								<encapsulation>
 									<dot1Q>
 										<vlan-id>{/transport-information/options/settings/circuit-information/fttx/cvlan}</vlan-id>

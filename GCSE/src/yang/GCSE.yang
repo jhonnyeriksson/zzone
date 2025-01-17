@@ -59,8 +59,8 @@ module GCSE {
                                 type string;
                             }
                         }
-                        container CPE {
-                            when "../node-type = 'CPE'";
+                        container CE {
+                            when "../node-type = 'CE'";
                             leaf hostname {
                                 tailf:info "Hostname";
                                 type string;
