@@ -75,7 +75,7 @@
 														</ipv4>
 													</address-family>
 													<neighbor>
-														<id>{/service-information/service-options/ip-settings/routing/bgp/peering/node/remote-address}</id>
+														<id>{/service-information/service-options/ip-settings/routing/bgp/peering/remote-address}</id>
 														<remote-as>{remote-asn}</remote-as>
 														<update-source>
 															<GigabitEthernet-subinterface>
