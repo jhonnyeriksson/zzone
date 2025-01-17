@@ -75,7 +75,7 @@
 														</ipv4>
 													</address-family>
 													<neighbor>
-														<id>{/remote-address}</id>
+														<id>{remote-address}</id>
 														<remote-as>{remote-asn}</remote-as>
 														<update-source>
 															<GigabitEthernet-subinterface>
