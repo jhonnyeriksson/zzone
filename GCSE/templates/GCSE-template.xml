@@ -16,10 +16,12 @@
 									</encapsulation>
 									<ipv4>
 										<address>
-											<?foreach {/service-information/service-options/ip-settings/ip/network/hosts}?>
-												<?if {/device = /service-information/service-options/ip-settings/ip/network/hosts/node}?>
-													<ip>{/service-information/service-options/ip-settings/ip/network/hosts/address}</ip>
-													<mask>{/service-information/service-options/ip-settings/ip/network/hosts/subnet-mask}</mask>
+											<?foreach {/service-information/service-options/ip-settings/ip/network/}?>
+												<?foreach {/hosts}?>
+													<?if {/device = /node}?>
+														<ip>{/service-information/service-options/ip-settings/ip/network/hosts/address}</ip>
+														<mask>{/service-information/service-options/ip-settings/ip/network/hosts/subnet-mask}</mask>
+													<?end?>
 												<?end?>
 											<?end?>
 										</address>
