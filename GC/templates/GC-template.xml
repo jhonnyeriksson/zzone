@@ -6,105 +6,103 @@
     <device>
       <name>{$device}</name>
       <config>
-        <?if {$device = /transport-information/options/settings/equipment-information/PE/hostname}?>
-				  <vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
-            <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
-				  	  <vrf-list>
-				  	  	<name>{/service-information/network-options/vpnv4/vrf}</name>
-				  	  	<rd>{/service-information/network-options/vpnv4/rd}</rd>
-				  	  	<address-family>
-				  	  		<ipv4>
-				  	  			<unicast>
-				  	  				<import>
-				  	  					<route-target>
-				  	  						<address-list>
-				  	  							<name>{/service-information/network-options/vpnv4/route-target-import}</name>
-				  	  						</address-list>
-				  	  					</route-target>
-				  	  				</import>
-				  	  				<export>
-				  	  					<route-target>
-				  	  						<address-list>
-				  	  							<name>{/service-information/network-options/vpnv4/route-target-export}</name>
-				  	  						</address-list>
-				  	  					</route-target>
-				  	  				</export>
-				  	  			</unicast>
-				  	  		</ipv4>
-				  	  	</address-family>
-				  	  </vrf-list>
-            <?end?>
-				  </vrf>
-					<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
-						<GigabitEthernet-subinterface>
-							<GigabitEthernet>
-								<id>{/transport-information/options/settings/equipment-information/PE/interface}</id>
-								<encapsulation>
-									<dot1q>
-										<vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/cvlan)}</vlan-id>
-									</dot1q>
-								</encapsulation>
-								<?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
-									<vrf>{string(/service-information/network-options/vpnv4/vrf)}</vrf>
-								<?end?>
-								<ipv4>
-								  <address>
-                    <?foreach{/service-information/service-options/ip-settings/ip/ipv4/hosts}?>
-                      <?if {$device = node}?>
-								  	    <ip>{address}</ip>
-								  	    <mask>{subnet-mask}</mask>
-                      <?end?>
+				<vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
+          <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
+					  <vrf-list>
+					  	<name>{/service-information/network-options/vpnv4/vrf}</name>
+					  	<rd>{/service-information/network-options/vpnv4/rd}</rd>
+					  	<address-family>
+					  		<ipv4>
+					  			<unicast>
+					  				<import>
+					  					<route-target>
+					  						<address-list>
+					  							<name>{/service-information/network-options/vpnv4/route-target-import}</name>
+					  						</address-list>
+					  					</route-target>
+					  				</import>
+					  				<export>
+					  					<route-target>
+					  						<address-list>
+					  							<name>{/service-information/network-options/vpnv4/route-target-export}</name>
+					  						</address-list>
+					  					</route-target>
+					  				</export>
+					  			</unicast>
+					  		</ipv4>
+					  	</address-family>
+					  </vrf-list>
+          <?end?>
+				</vrf>
+				<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+					<GigabitEthernet-subinterface>
+						<GigabitEthernet>
+							<id>{/transport-information/options/settings/equipment-information/PE/interface}</id>
+							<encapsulation>
+								<dot1q>
+									<vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/cvlan)}</vlan-id>
+								</dot1q>
+							</encapsulation>
+							<?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
+								<vrf>{string(/service-information/network-options/vpnv4/vrf)}</vrf>
+							<?end?>
+							<ipv4>
+							  <address>
+                  <?foreach{/service-information/service-options/ip-settings/ip/ipv4/hosts}?>
+                    <?if {$device = node}?>
+							  	    <ip>{address}</ip>
+							  	    <mask>{subnet-mask}</mask>
                     <?end?>
-								  </address>
-								</ipv4>
-							</GigabitEthernet>
-						</GigabitEthernet-subinterface>
-					</interface>
-					<router xmlns="http://tail-f.com/ned/cisco-ios-xr">
-            <?if {service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
-              <?foreach{/service-information/service-options/ip-settings/routing/bgp/peer}?>
-                <?if {$device = node}?>
-						      <bgp>
-						      	<bgp-no-instance>
-						      		<id>{local-asn}</id>
-						      		<vrf>
-						      			<name>{string(/service-information/network-options/vpnv4/vrf)}</name>
-						      			<address-family>
-						      				<ipv4>
-						      					<unicast/>
-						      				</ipv4>
-						      			</address-family>
-						      			<neighbor>
-						      				<id>{remote-address}</id>
-						      				<remote-as>{remote-asn}</remote-as>
-						      				<update-source>
-						      					<GigabitEthernet-subinterface>
-						      						<GigabitEthernet>{/update-source}</GigabitEthernet>
-						      					</GigabitEthernet-subinterface>
-						      				</update-source>
-						      				<address-family>
-						      					<ipv4>
-						      						<unicast>
-						      							<route-policy>
-						      								<direction>in</direction>
-						      								<name>{route-policy-in}</name>
-						      							</route-policy>
-						      							<route-policy>
-						      								<direction>out</direction>
-						      								<name>{route-policy-out}</name>
-						      							</route-policy>
-						      						</unicast>
-						      					</ipv4>
-						      				</address-family>
-						      			</neighbor>
-						      		</vrf>
-						      	</bgp-no-instance>
-						      </bgp>
-                <?end?>
+                  <?end?>
+							  </address>
+							</ipv4>
+						</GigabitEthernet>
+					</GigabitEthernet-subinterface>
+				</interface>
+				<router xmlns="http://tail-f.com/ned/cisco-ios-xr">
+          <?if {service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
+            <?foreach{/service-information/service-options/ip-settings/routing/bgp/peer}?>
+              <?if {$device = node}?>
+					      <bgp>
+					      	<bgp-no-instance>
+					      		<id>{local-asn}</id>
+					      		<vrf>
+					      			<name>{string(/service-information/network-options/vpnv4/vrf)}</name>
+					      			<address-family>
+					      				<ipv4>
+					      					<unicast/>
+					      				</ipv4>
+					      			</address-family>
+					      			<neighbor>
+					      				<id>{remote-address}</id>
+					      				<remote-as>{remote-asn}</remote-as>
+					      				<update-source>
+					      					<GigabitEthernet-subinterface>
+					      						<GigabitEthernet>{/update-source}</GigabitEthernet>
+					      					</GigabitEthernet-subinterface>
+					      				</update-source>
+					      				<address-family>
+					      					<ipv4>
+					      						<unicast>
+					      							<route-policy>
+					      								<direction>in</direction>
+					      								<name>{route-policy-in}</name>
+					      							</route-policy>
+					      							<route-policy>
+					      								<direction>out</direction>
+					      								<name>{route-policy-out}</name>
+					      							</route-policy>
+					      						</unicast>
+					      					</ipv4>
+					      				</address-family>
+					      			</neighbor>
+					      		</vrf>
+					      	</bgp-no-instance>
+					      </bgp>
               <?end?>
             <?end?>
-					</router>
-        <?end?>
+          <?end?>
+				</router>
       </config>
     </device>
   <?end?>
