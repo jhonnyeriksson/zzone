@@ -100,7 +100,7 @@ module GC {
         }
         choice conditional {
           case vpnv4 {
-            when "service-information/network-options/protocol = 'vpnv4'";
+            when "./service-information/network-options/protocol = 'vpnv4'";
             leaf vrf {
               type string;
             }
@@ -127,7 +127,7 @@ module GC {
             choice version {
               case ipv4 {
                 container ipv4 {
-                  when "service-information/service-options/ip-settings/ip/address-family = 'ipv4'";
+                  when "./service-information/service-options/ip-settings/ip/address-family = 'ipv4'";
                   leaf network {
                     type string;
                   }
@@ -157,7 +157,7 @@ module GC {
             choice routing-protocol {
               case static {
                 container static {
-                  when "service-information/service-options/ip-settings/routing/protocol = 'static'";
+                  when "./service-information/service-options/ip-settings/routing/protocol = 'static'";
                   list entry {
                     key "node";
                     leaf node {
@@ -177,7 +177,7 @@ module GC {
               }
               case dynamic {
                 container bgp {
-                  when "service-information/service-options/ip-settings/routing/protocol = 'bgp'";
+                  when "./service-information/service-options/ip-settings/routing/protocol = 'bgp'";
                   list peer {
                     key "node";
                     leaf node {
