@@ -18,9 +18,12 @@ module lab {
     leaf id {
       type string;
     }
-    leaf-list device {
-      type leafref {
+    list devices {
+      key "device";
+      leaf device {
+        type leafref {
         path "/ncs:devices/ncs:device/ncs:name";
+        }
       }
     }
     list hostnames {
