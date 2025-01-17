@@ -68,14 +68,14 @@
 											<bgp-no-instance>
 												<id>{local-asn}</id>
 												<vrf>
-													<name>SERVICE-A</name>
+													<name>{/service-information/network-options/vpnv4/vrf}</name>
 													<address-family>
 														<ipv4>
 															<unicast/>
 														</ipv4>
 													</address-family>
 													<neighbor>
-														<id>{remote-address}</id>
+														<id>{/service-information/service-options/ip-settings/routing/bgp/peering/node/remote-address}</id>
 														<remote-as>{remote-asn}</remote-as>
 														<update-source>
 															<GigabitEthernet-subinterface>
