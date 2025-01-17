@@ -5,7 +5,7 @@
       <device>
         <name>{.}</name>
         <config>
-          <hostname xmlns="urn:ios">{hostnames/hostname_new}</hostname>
+          <hostname xmlns="urn:ios">{/hostname_new}</hostname>
         </config>
       </device>
     <?end?>
