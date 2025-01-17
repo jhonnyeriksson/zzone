@@ -28,10 +28,6 @@ module GCSE {
         }
         container transport-information {
             tailf:info "Transport Information";
-            leaf registration-status {
-                tailf:info "Enable/Disable";
-                type boolean;
-            }
             container options {
                 tailf:info "Transport Options";
                 container settings {
