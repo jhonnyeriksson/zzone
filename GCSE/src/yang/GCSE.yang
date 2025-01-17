@@ -54,77 +54,51 @@ module GCSE {
                     }
                     container equipment-information {
                         tailf:info "Equipment Information";
-                        list nodes {
-                            key "node-type";
-                            leaf node-type {
-                                type enumeration {
-                                    enum PE;
-                                    enum CPE;
-                                }
+                        leaf-list node-type {
+                            type string;
+                        }
+                        container PE {
+                            when "../node-type = 'PE'";
+                            leaf hostname {
+                                tailf:info "Hostname";
+                                type string;
                             }
-                            list PE {
-                                when "../node-type = 'PE'";
-                                key "hostname";
-                                leaf hostname {
-                                    tailf:info "Hostname";
-                                    type string;
-                                }
-                                leaf vendor {
-                                    tailf:info "Vendor";
-                                    type string;
-                                }
-                                leaf model {
-                                    tailf:info "Model";
-                                    type string;
-                                }
-                                leaf software {
-                                    tailf:info "Software";
-                                    type string;
-                                }
-                                list service-transport {
-                                    tailf:info "Node Connections";
-                                    key "transport-service-id";
-                                    leaf transport-service-id {
-                                        tailf:info "Transport Service ID";
-                                        type string;
-                                    }
-                                    leaf service-interface {
-                                        tailf:info "Service Interface";
-                                        type string;
-                                    }
-                                }
+                            leaf vendor {
+                                tailf:info "Vendor";
+                                type string;
                             }
-                            list CPE {
-                                when "../node-type = 'CPE'";
-                                key "hostname";
-                                leaf hostname {
-                                    tailf:info "Hostname";
-                                    type string;
-                                }
-                                leaf vendor {
-                                    tailf:info "Vendor";
-                                    type string;
-                                }
-                                leaf model {
-                                    tailf:info "Model";
-                                    type string;
-                                }
-                                leaf software {
-                                    tailf:info "Software";
-                                    type string;
-                                }
-                                list service-transport {
-                                    tailf:info "Node Connections";
-                                    key "transport-service-id";
-                                    leaf transport-service-id {
-                                        tailf:info "Transport Service ID";
-                                        type string;
-                                    }
-                                    leaf service-interface {
-                                        tailf:info "Service Interface";
-                                        type string;
-                                    }
-                                }
+                            leaf model {
+                                tailf:info "Model";
+                                type string;
+                            }
+                            leaf software {
+                                tailf:info "Software";
+                                type string;
+                            }
+                            leaf interface {
+                                type string;
+                            }
+                        }
+                        container CPE {
+                            when "../node-type = 'CPE'";
+                            leaf hostname {
+                                tailf:info "Hostname";
+                                type string;
+                            }
+                            leaf vendor {
+                                tailf:info "Vendor";
+                                type string;
+                            }
+                            leaf model {
+                                tailf:info "Model";
+                                type string;
+                            }
+                            leaf software {
+                                tailf:info "Software";
+                                type string;
+                            }
+                            leaf interface {
+                                type string;
                             }
                         }
                     }
