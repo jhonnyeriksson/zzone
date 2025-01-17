@@ -48,11 +48,11 @@
 										<?end?>
 										<ipv4>
 											<?foreach {/service-information/service-options/ip-settings/ip/network}?>
-												<?foreach {hosts}?>
-													<?if {/device = node}?>
+												<?foreach {/service-information/service-options/ip-settings/ip/network/hosts}?>
+													<?if {/device = /service-information/service-options/ip-settings/ip/network/hosts/node}?>
 														<address>
-															<ip>{address}</ip>
-															<mask>{subnet-mask}</mask>
+															<ip>{/service-information/service-options/ip-settings/ip/network/hosts/address}</ip>
+															<mask>{/service-information/service-options/ip-settings/ip/network/hosts/subnet-mask}</mask>
 														</address>
 													<?end?>
 												<?end?>
@@ -62,13 +62,13 @@
 								</GigabitEthernet-subinterface>
 							</interface>
 							<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
-								<?foreach {/service-information/service-options/ip-settings/protocol/network}?>
-									<?foreach {peers}?>
-										<?if {/device = node}?>
+								<?foreach {/service-information/service-options/ip-settings/routing/network}?>
+									<?foreach {/service-information/service-options/ip-settings/routing/network/peers}?>
+										<?if {/device = /service-information/service-options/ip-settings/routing/network/peers/node}?>
 											<router xmlns="http://tail-f.com/ned/cisco-ios-xr">
 												<bgp>
 													<bgp-no-instance>
-														<id>{local-asn}</id>
+														<id>{/service-information/service-options/ip-settings/routing/network/peers/local-asn}</id>
 														<vrf>
 															<name>SERVICE-A</name>
 															<address-family>
@@ -77,11 +77,11 @@
 																</ipv4>
 															</address-family>
 															<neighbor>
-																<id>{remote-address}</id>
+																<id>{/service-information/service-options/ip-settings/routing/network/peers/remote-address}</id>
 																<remote-as>{remote-asn}</remote-as>
 																<update-source>
 																	<GigabitEthernet-subinterface>
-																		<GigabitEthernet>{update-source}</GigabitEthernet>
+																		<GigabitEthernet>{/service-information/service-options/ip-settings/routing/network/peers/update-source}</GigabitEthernet>
 																	</GigabitEthernet-subinterface>
 																</update-source>
 																<address-family>
@@ -89,11 +89,11 @@
 																		<unicast>
 																			<route-policy>
 																				<direction>in</direction>
-																				<name>{route-policy-in}</name>
+																				<name>{/service-information/service-options/ip-settings/routing/network/peers/route-policy-in}</name>
 																			</route-policy>
 																			<route-policy>
 																				<direction>out</direction>
-																				<name>{route-policy-out}</name>
+																				<name>{/service-information/service-options/ip-settings/routing/network/peers/route-policy-out}</name>
 																			</route-policy>
 																		</unicast>
 																	</ipv4>
@@ -138,13 +138,13 @@
 									</vrf>
 								<?end?>
 								<?foreach {/service-information/service-options/ip-settings/ip/network}?>
-									<?foreach {hosts}?>
-										<?if {/device = node}?>
+									<?foreach {/service-information/service-options/ip-settings/ip/network/hosts}?>
+										<?if {/device = /service-information/service-options/ip-settings/ip/network/hosts/node}?>
 											<ip>
 												<address>
 													<primary>
-														<address>{address}</address>
-														<mask>{subnet-mask}</mask>
+														<address>{/service-information/service-options/ip-settings/ip/network/hosts/address}</address>
+														<mask>{/service-information/service-options/ip-settings/ip/network/hosts/subnet-mask}</mask>
 													</primary>
 												</address>
 											</ip>
@@ -154,12 +154,12 @@
 							</GigabitEthernet>
 						</interface>
 						<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
-							<?foreach {/service-information/service-options/ip-settings/protocol/network}?>
-								<?foreach {peers}?>
-									<?if {/device = node}?>
+							<?foreach {/service-information/service-options/ip-settings/routing/network}?>
+								<?foreach {/service-information/service-options/ip-settings/routing/network/peers}?>
+									<?if {/device = /service-information/service-options/ip-settings/routing/network/peers/node}?>
 										<router xmlns="urn:ios">
 											<bgp>
-												<as-no>{local-asn}</as-no>
+												<as-no>{/service-information/service-options/ip-settings/routing/network/peers/local-asn}</as-no>
 												<address-family>
 													<with-vrf>
 														<ipv4>
@@ -170,11 +170,11 @@
 																	<connected/>
 																</redistribute>
 																<neighbor>
-																	<id>{remote-address}</id>
-																	<remote-as>{remote-asn}</remote-as>
+																	<id>{/service-information/service-options/ip-settings/routing/network/peers/remote-address}</id>
+																	<remote-as>{/service-information/service-options/ip-settings/routing/network/peers/remote-asn}</remote-as>
 																	<activate/>
 																	<update-source>
-																		<GigabitEthernet>{update-source}</GigabitEthernet>
+																		<GigabitEthernet>{/service-information/service-options/ip-settings/routing/network/peers/update-source}</GigabitEthernet>
 																	</update-source>
 																</neighbor>
 															</vrf>
