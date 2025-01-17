@@ -140,8 +140,8 @@
 										<ip>
 											<address>
 												<primary>
-													<address>{address}</address>
-													<mask>{subnet-mask}</mask>
+													<address>{/service-information/service-options/ip-settings/ip/network/hosts/node/address}</address>
+													<mask>{/service-information/service-options/ip-settings/ip/network/hosts/node/subnet-mask}</mask>
 												</primary>
 											</address>
 										</ip>
