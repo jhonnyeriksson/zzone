@@ -3,6 +3,32 @@
 		<device>
 			<name>{/device}</name>
 			<config>
+				<?if {/GCSE/transport-information/options/settings/equipment-information/node-type = 'PE'}?>
+					<?if {/device = /GCSE/transport-information/options/settings/equipment-information/PE/hostname}?>
+						<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+							<GigabitEthernet-subinterface>
+								<GigabitEthernet>
+									<id>{/GCSE/transport-information/options/settings/equipment-information/PE/interface}</id>
+									<encapsulation>
+										<dot1q>
+											<vlan-id>{/GCSE/transport-information/options/settings/circuit-information/fttx/cvlan}</vlan-id>
+										</dot1q>
+									</encapsulation>
+									<ipv4>
+										<address>
+											<?foreach {/GCSE/service-information/service-options/ip-settings/ip/network/hosts}?>
+												<?if {/device = /GCSE/service-information/service-options/ip-settings/ip/network/hosts/node}?>
+													<ip>{/GCSE/service-information/service-options/ip-settings/ip/network/hosts/address}</ip>
+													<mask>{/GCSE/service-information/service-options/ip-settings/ip/network/hosts/subnet-mask}</mask>
+												<?end?>
+											<?end?>
+										</address>
+									</ipv4>
+								</GigabitEthernet>
+							</GigabitEthernet-subinterface>
+						</interface>
+					<?end?>
+				<?end?>
 			</config>
 		</device>
 	</devices>
