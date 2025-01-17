@@ -6,7 +6,7 @@
       <name>{.}</name>
       <config>
       <?foreach {/hostnames}?>
-        <?if . = node?>
+        <?if {. = node}?>
         <hostname xmlns="urn:ios">{hostname_new}</hostname>
         <?end?>
       <?end?>
