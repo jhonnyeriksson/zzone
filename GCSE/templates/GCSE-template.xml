@@ -16,7 +16,7 @@
 									</encapsulation>
 									<ipv4>
 										<address>
-											<?foreach {/service-information/service-options/ip-settings/ip/network/}?>
+											<?foreach {/service-information/service-options/ip-settings/ip/network}?>
 												<?foreach {/hosts}?>
 													<?if {/device = /node}?>
 														<ip>{/service-information/service-options/ip-settings/ip/network/hosts/address}</ip>
