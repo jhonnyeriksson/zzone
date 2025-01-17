@@ -2,12 +2,12 @@
                  servicepoint="lab">
   <devices xmlns="http://tail-f.com/ns/ncs">
     <?foreach {/devices}?>
-    <?set devname = {.}?>
+    <?set device = {.}?>
       <device>
-        <name>{$devname}</name>
+        <name>{$device}</name>
         <config>
           <?foreach{/hostnames}?>
-            <?if {$devname = node}?>
+            <?if {$device = node}?>
               <hostname xmlns="urn:ios">{hostname_new}</hostname>
             <?end?>
           <?end?>
