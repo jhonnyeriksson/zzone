@@ -29,7 +29,8 @@ module GC {
       container options {
         container settings {
           container equipment-information {
-            container PE {
+            list PE {
+              key "hostname";
               leaf hostname {
                   type string;
               }
@@ -46,7 +47,8 @@ module GC {
                   type string;
               }
             }
-            container CPE {
+            list CPE {
+              key "hostname";
               leaf hostname {
                   tailf:info "Hostname";
                   type string;
