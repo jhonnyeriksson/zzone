@@ -47,13 +47,11 @@
 											<vrf>{/service-information/network-options/vpnv4/vrf}</vrf>
 										<?end?>
 										<ipv4>
-											<?foreach {/service-information/service-options/ip-settings/ip/network}?>
-												<?if {/device = /hosts/node}?>
-													<address>
-														<ip>{/hosts/address}</ip>
-														<mask>{/hosts/subnet-mask}</mask>
-													</address>
-												<?end?>
+											<?if {/device = /service-information/service-options/ip-settings/ip/network/hosts/node}?>
+												<address>
+													<ip>{address}</ip>
+													<mask>{subnet-mask}</mask>
+												</address>
 											<?end?>
 										</ipv4>
 									</GigabitEthernet>
