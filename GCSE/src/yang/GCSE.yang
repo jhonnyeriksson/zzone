@@ -34,24 +34,8 @@ module GCSE {
             }
             container options {
                 tailf:info "Transport Options";
-                leaf segment {
-                    tailf:info "Transport Network Segment";
-                    type enumeration {
-                        enum GCSE;
-                        enum GCNO;
-                        enum GCDK;
-                        enum INET;
-                    }
-                }
                 container settings {
                     tailf:info "Transport Settings";
-                    leaf technology {
-                        type enumeration {
-                            enum P2P;
-                            enum P2MP;
-                            enum PWR/P2MP;
-                        }
-                    }
                     container equipment-information {
                         tailf:info "Equipment Information";
                         leaf-list node-type {
@@ -104,53 +88,14 @@ module GCSE {
                     }
                     container circuit-information {
                         tailf:info "Circuit Information";
-                        list fttx {
-                            tailf:info "FTTX Circuit";
-                            key transport-service-id;
-                            leaf transport-service-id {
-                                tailf:info "Transport Service ID";
-                                type string;
-                            }
-                            leaf connection-type {
-                                tailf:info "Connection Type";
+                        container fttx {
+                            leaf encapsulation {
                                 type enumeration {
-                                    enum uni;
-                                    enum nni;
+                                    enum dot1q;
                                 }
                             }
-                            list encapsulation {
-                                key "encapsulation-type";
-                                leaf encapsulation-type {
-                                    type enumeration {
-                                        enum null;
-                                        enum dot1q;
-                                        enum qinq;
-                                    }
-                                }
-                                choice conditional {
-                                    case null {
-                                        when "../encapsulation/encapsulation-type = 'null'";
-                                    }
-                                    case dot1q {
-                                        when "../encapsulation/encapsulation-type = 'dot1q'";
-                                        container dot1q {
-                                            leaf cvlan {
-                                                type string;
-                                            }
-                                        }
-                                    }
-                                    case qinq {
-                                        when "../encapsulation/encapsulation-type = 'qinq'";
-                                        container qinq {
-                                            leaf cvlan {
-                                                type string;
-                                            }
-                                            leaf svlan {
-                                                type string;
-                                            }
-                                        }
-                                    }
-                                } 
+                            leaf cvlan {
+                                type string;
                             }
                         }
                     }
@@ -184,51 +129,6 @@ module GCSE {
                     }
                 }
                 choice conditional {
-                    case tldp {
-                        when "../network-options/protocol = 'tldp'";
-                        container tldp {
-                            list peer {
-                                key "id";
-                                leaf id {
-                                    tailf:info "TLDP-ID";
-                                    type string;
-                                }
-                                leaf remote_address {
-                                    tailf:info "Remote Peer Address";
-                                    type inet:ipv4-address;
-                                }
-                                leaf vcid {
-                                    tailf:info "TLDP VCID";
-                                    type int8;
-                                }
-                                leaf path_mtu {
-                                    tailf:info "Path MTU";
-                                    type int8;
-                                }
-                            }
-                        }
-                    }
-                    case vpls {
-                        when "../network-options/protocol = 'vpls'";
-                        container vpls {
-                            leaf bridge-domain {
-                                tailf:info "Bridge Domain Name";
-                                type string;
-                            }
-                            leaf route-distinguisher {
-                                tailf:info "Route Distinguisher";
-                                type string;
-                            }
-                            leaf-list route-target-import {
-                                tailf:info "Route Target Import Community";
-                                type string;
-                            } 
-                            leaf-list route-target-export {
-                                tailf:info "Route Target Import Community";
-                                type string;
-                            }
-                        }
-                    }
                     case vpnv4 {
                         when "../network-options/protocol = 'vpnv4'";
                         container vpnv4 {
@@ -253,39 +153,6 @@ module GCSE {
                 }
             }
             container service-options {
-                leaf active {
-                    tailf:info "Service State";
-                    type boolean;
-                }
-                leaf mode {
-                    tailf:info "Service Mode";
-                    type enumeration {
-                        enum routing;
-                        enum bridging;
-                    }
-                }
-                leaf nsid {
-                    tailf:info "Nokia Service ID";
-                    type string;
-                }
-                leaf nokia-service-type {
-                    tailf:info "Nokia Service Type";
-                    type string;
-                }
-                container ethernet-settings {
-                    leaf service-mtu {
-                        tailf:info "Service MTU";
-                        type string;
-                    }
-                    leaf mac-table-size {
-                        tailf:info "MAC Table Size";
-                        type string;
-                    }
-                    leaf mac-limit {
-                        tailf:info "MAC Table Limit";
-                        type string;
-                    }
-                }
                 container ip-settings {
                     tailf:info "IP Settings";
                     list ip {
