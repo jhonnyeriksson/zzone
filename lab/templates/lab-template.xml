@@ -8,7 +8,7 @@
         <config>
           <?foreach{/hostnames}?>
             <?if {$devname = node}?>
-              <hostname xmlns="urn:ios">YAY</hostname>
+              <hostname xmlns="urn:ios">{hostname_new}</hostname>
             <?end?>
           <?end?>
         </config>
