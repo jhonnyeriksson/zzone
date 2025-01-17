@@ -61,11 +61,11 @@
 									</GigabitEthernet>
 								</GigabitEthernet-subinterface>
 							</interface>
-							<router xmlns="http://tail-f.com/ned/cisco-ios-xr">
-								<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
-									<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
-										<?foreach {peers}?>
-											<?if {/device = node}?>
+							<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
+								<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
+									<?foreach {peers}?>
+										<?if {/device = node}?>
+											<router xmlns="http://tail-f.com/ned/cisco-ios-xr">
 												<bgp>
 													<bgp-no-instance>
 														<id>{local-asn}</id>
@@ -102,11 +102,11 @@
 														</vrf>
 													</bgp-no-instance>
 												</bgp>
-											<?end?>
+											</router>
 										<?end?>
 									<?end?>
 								<?end?>
-							</router>
+							<?end?>
 						<?end?>
 					<?end?>
 				<?end?>
@@ -151,11 +151,11 @@
 								<?end?>
 							</GigabitEthernet>
 						</interface>
-						<router xmlns="urn:ios">
-							<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
-								<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
-									<?foreach {peers}?>
-										<?if {/device = node}?>
+						<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
+							<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
+								<?foreach {peers}?>
+									<?if {/device = node}?>
+										<router xmlns="urn:ios">
 											<bgp>
 												<as-no>{local-asn}</as-no>
 												<address-family>
@@ -180,11 +180,11 @@
 													</with-vrf>
 												</address-family>
 											</bgp>
-										<?end?>
+										</router>
 									<?end?>
 								<?end?>
 							<?end?>
-						</router>
+						<?end?>
 					<?end?>	
 				<?end?>
 			</config>
