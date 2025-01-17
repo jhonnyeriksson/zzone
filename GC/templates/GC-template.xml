@@ -10,7 +10,7 @@
 				  <vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
             <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
 				  	  <vrf-list>
-				  	  	<name>{string(/service-information/network-options/vpnv4/vrf)}</name>
+				  	  	<name>{/service-information/network-options/vpnv4/vrf}</name>
 				  	  	<rd>{/service-information/network-options/vpnv4/rd}</rd>
 				  	  	<address-family>
 				  	  		<ipv4>
