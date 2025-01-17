@@ -3,39 +3,39 @@
   <devices xmlns="http://tail-f.com/ns/ncs">
     <?foreach {/devices}?>
       <?set device = {.}?>
-      <device>
-        <name>{$device}</name>
-        <config>
-				  <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
-				  	<vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
-				  		<vrf-list>
-				  			<name>{/service-information/network-options/vpnv4/vrf}</name>
-				  			<rd>{/service-information/network-options/vpnv4/rd}</rd>
-				  			<address-family>
-				  				<ipv4>
-				  					<unicast>
-				  						<import>
-				  							<route-target>
-				  								<address-list>
-				  									<name>{/service-information/network-options/vpnv4/route-target-import}</name>
-				  								</address-list>
-				  							</route-target>
-				  						</import>
-				  						<export>
-				  							<route-target>
-				  								<address-list>
-				  									<name>{/service-information/network-options/vpnv4/route-target-export}</name>
-				  								</address-list>
-				  							</route-target>
-				  						</export>
-				  					</unicast>
-				  				</ipv4>
-				  			</address-family>
-				  		</vrf-list>
-				  	</vrf>
-				  <?end?>
-        </config>
-      </device>
     <?end?>
+    <device>
+      <name>{$device}</name>
+      <config>
+			  <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
+			  	<vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
+			  		<vrf-list>
+			  			<name>{/service-information/network-options/vpnv4/vrf}</name>
+			  			<rd>{/service-information/network-options/vpnv4/rd}</rd>
+			  			<address-family>
+			  				<ipv4>
+			  					<unicast>
+			  						<import>
+			  							<route-target>
+			  								<address-list>
+			  									<name>{/service-information/network-options/vpnv4/route-target-import}</name>
+			  								</address-list>
+			  							</route-target>
+			  						</import>
+			  						<export>
+			  							<route-target>
+			  								<address-list>
+			  									<name>{/service-information/network-options/vpnv4/route-target-export}</name>
+			  								</address-list>
+			  							</route-target>
+			  						</export>
+			  					</unicast>
+			  				</ipv4>
+			  			</address-family>
+			  		</vrf-list>
+			  	</vrf>
+			  <?end?>
+      </config>
+    </device>
   </devices>
 </config-template>
