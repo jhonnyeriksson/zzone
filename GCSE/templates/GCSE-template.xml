@@ -61,7 +61,7 @@
 							</GigabitEthernet-subinterface>
 						</interface>
 						<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
-							<?foreach {/service-information/service-options/ip-settings/routing/protocol/bgp/peering}?>
+							<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
 								<?if {/device = node}?>
 									<router xmlns="http://tail-f.com/ned/cisco-ios-xr">
 										<bgp>
