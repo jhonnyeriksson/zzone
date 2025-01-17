@@ -148,16 +148,16 @@ module GC {
             }
           }
           container routing {
-            leaf protocol {
+            leaf routing-protocol {
               type enumeration {
                 enum static;
                 enum bgp;
               }
             }
-            choice rp {
-              case stat {
+            choice protocol {
+              case manual {
                 container static {
-                  when "../protocol = 'static'";
+                  when "../routing-protocol = 'static'";
                   list entry {
                     key "node";
                     leaf node {
@@ -175,9 +175,9 @@ module GC {
                   }
                 }
               }
-              case dyn {
+              case dynamic {
                 container bgp {
-                  when "../protocol = 'bgp'";
+                  when "../routing-protocol = 'bgp'";
                   list peer {
                     key "node";
                     leaf node {
