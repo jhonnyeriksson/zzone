@@ -1,17 +1,17 @@
 <config-template xmlns="http://tail-f.com/ns/config/1.0"
                  servicepoint="lab">
   <devices xmlns="http://tail-f.com/ns/ncs">
-  <?foreach {/devices}?>
-    <device>
-      <name>{.}</name>
-      <config>
-      <?foreach {/hostnames}?>
-        <?if {. = node}?>
-        <hostname xmlns="urn:ios">{hostname_new}</hostname>
+    <?foreach {/devices}?>
+      <device>
+        <name>{.}</name>
+        <config>
+        <?foreach {/hostnames}?>
+          <?if {. = node}?>
+            <hostname xmlns="urn:ios">{hostname_new}</hostname>
+          <?end?>
         <?end?>
-      <?end?>
-      </config>
-    </device>
+        </config>
+      </device>
+    <?end?>
   </devices>
-  <?end?>
 </config-template>
