@@ -17,9 +17,11 @@
 									<ipv4>
 										<address>
 											<?foreach {/service-information/service-options/ip-settings/ip/network}?>
-												<?if {/device = /hosts}?>
-													<ip>{/address}</ip>
-													<mask>{/subnet-mask}</mask>
+												<?foreach {/hosts}?>
+													<?if {/device = /node}?>
+														<ip>{/address}</ip>
+														<mask>{/subnet-mask}</mask>
+													<?end?>
 												<?end?>
 											<?end?>
 										</address>
