@@ -63,7 +63,7 @@
 						<router xmlns="http://tail-f.com/ned/cisco-ios-xr">
 							<?if {/service-information/service-options/ip-settings/routing/protocol = 'bgp'}?>
 								<?foreach {/service-information/service-options/ip-settings/routing/bgp/peering}?>
-									<?foreach {network}?>
+									<?foreach {peers}?>
 										<?if {/device = node}?>
 											<bgp>
 												<bgp-no-instance>
