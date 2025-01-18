@@ -6,32 +6,36 @@
       <device>
         <name>{$device}</name>
         <config>
-		  	  <vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
-		  	  	<vrf-list>
-		  	  		<name>{/service-information/network-options/vpnv4/vrf}</name>
-		  	  		<rd>{/service-information/network-options/vpnv4/rd}</rd>
-		  	  		<address-family>
-		  	  			<ipv4>
-		  	  				<unicast>
-		  	  					<import>
-		  	  						<route-target>
-		  	  							<address-list>
-		  	  								<name>{/service-information/network-options/vpnv4/route-target-import}</name>
-		  	  							</address-list>
-		  	  						</route-target>
-		  	  					</import>
-		  	  					<export>
-		  	  						<route-target>
-		  	  							<address-list>
-		  	  								<name>{/service-information/network-options/vpnv4/route-target-export}</name>
-		  	  							</address-list>
-		  	  						</route-target>
-		  	  					</export>
-		  	  				</unicast>
-		  	  			</ipv4>
-		  	  		</address-family>
-		  	  	</vrf-list>
-		  	  </vrf>
+          <?if {$device = /transport-information/options/settings/equipment-information/PE/hostname}?>
+						<vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
+              <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
+							  <vrf-list>
+							  	<name>{string(/service-information/network-options/vpnv4/vrf)}</name>
+							  	<rd>{string(/service-information/network-options/vpnv4/rd)}</rd>
+							  	<address-family>
+							  		<ipv4>
+							  			<unicast>
+							  				<import>
+							  					<route-target>
+							  						<address-list>
+							  							<name>{string(/service-information/network-options/vpnv4/route-target-import)}</name>
+							  						</address-list>
+							  					</route-target>
+							  				</import>
+							  				<export>
+							  					<route-target>
+							  						<address-list>
+							  							<name>{string(/service-information/network-options/vpnv4/route-target-export)}</name>
+							  						</address-list>
+							  					</route-target>
+							  				</export>
+							  			</unicast>
+							  		</ipv4>
+							  	</address-family>
+							  </vrf-list>
+              <?end?>
+						</vrf>
+          <?end?>
         </config>
       </device>
     <?end?>
