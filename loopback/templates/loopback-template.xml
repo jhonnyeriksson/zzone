@@ -1,35 +1,38 @@
 <config-template xmlns="http://tail-f.com/ns/config/1.0" servicepoint="loopback">
-	<devices xmlns="http://tail-f.com/ns/ncs">
-		<device>
-			<name>{/device}</name>
-			<config>
-				<interface xmlns="urn:ios">
-					<Loopback>
-						<name>{/id}</name>
-						<description>{/loopback/description}</description>
-						<ip>
-							<address>
-								<primary>
-									<address>{/loopback/ip}</address>
-									<mask>{/loopback/mask}</mask>
-								</primary>
-							</address>
-						</ip>
-					</Loopback>
-				</interface>
-				<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
-					<Loopback>
-						<id>{/id}</id>
-						<description>{/loopback/description}</description>
-						<ipv4>
-							<address>
-								<ip>{/loopback/ip}</ip>
-								<mask>{/loopback/mask}</mask>
-							</address>
-						</ipv4>
-					</Loopback>
-				</interface>
-			</config>
-		</device>
-	</devices>
+    <devices xmlns="http://tail-f.com/ns/ncs">
+        <device>
+            <name>{/device}</name>
+            <config>
+                <interface xmlns="urn:ios">
+                    <Loopback>
+                        <name>{/id}</name>
+                        <description>{/loopback/description}</description>
+                        <vrf>
+                            <forwarding>{/loopback/vrf}</forwarding>
+                        </vrf>
+                        <ip>
+                            <address>
+                                <primary>
+                                    <address>{/loopback/ip}</address>
+                                    <mask>{/loopback/mask}</mask>
+                                </primary>
+                            </address>
+                        </ip>
+                    </Loopback>
+                </interface>
+                <interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+                    <Loopback>
+                        <id>{/id}</id>
+                        <description>{/loopback/description}</description>
+                        <ipv4>
+                            <address>
+                                <ip>{/loopback/ip}</ip>
+                                <mask>{/loopback/mask}</mask>
+                            </address>
+                        </ipv4>
+                    </Loopback>
+                </interface>
+            </config>
+        </device>
+    </devices>
 </config-template>

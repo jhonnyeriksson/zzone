@@ -36,6 +36,10 @@ module loopback {
         tailf:info "description_string";
         type string;
       }
+      leaf vrf {
+        tailf:info "vrf";
+        type string;
+      }
       leaf ip {
         tailf:info "ip address";
         type inet:ipv4-address;
