@@ -143,9 +143,9 @@
                         </GigabitEthernet>
                     </interface>
                     <router xmlns="urn:ios">
-                        <bgp>
-                            <?foreach {/service-information/service-options/ip-settings/routing/bgp/peer}?>
-                                <?if {$device = node}?>
+                        <?foreach {/service-information/service-options/ip-settings/routing/bgp/peer}?>
+                            <?if {$device = node}?>
+                                <bgp>
                                     <as-no>{local-asn}</as-no>
                                     <address-family>
                                         <with-vrf>
@@ -168,9 +168,10 @@
                                             </ipv4>
                                         </with-vrf>
                                     </address-family>
-                                <?end?>
+
+                                </bgp>
                             <?end?>
-                        </bgp>
+                        <?end?>
                     </router>
                 </config>
             </device>
