@@ -84,14 +84,18 @@
                                     <forwarding>{string(/service-information/network-options/vpnv4/vrf)}</forwarding>
                                 </vrf>
                             <?end?>
-                            <ip>
-                                <address>
-                                    <primary>
-                                        <address>{}</address>
-                                        <mask>{}</mask>
-                                    </primary>
-                                </address>
-                            </ip>
+                            <?foreach {/service-information/service-options/ip-settings/ip/ipv4/hosts}?>
+                                <?if {$device = node}?>
+                                    <ip>
+                                        <address>
+                                            <primary>
+                                                <address>{address}</address>
+                                                <mask>{subnet-mask}</mask>
+                                            </primary>
+                                        </address>
+                                    </ip>
+                                <?end?>
+                            <?end?>
                         </GigabitEthernet>
                     </interface>
                 </config>
