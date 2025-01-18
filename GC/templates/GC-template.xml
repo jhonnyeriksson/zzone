@@ -59,6 +59,50 @@
                             </GigabitEthernet>
                         </GigabitEthernet-subinterface>
                     </interface>
+                    <router xmlns="http://tail-f.com/ned/cisco-ios-xr">
+                        <bgp>
+                            <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
+                                <?foreach {/service-information/service-options/ip-settings/routing/bgp/peer}?>
+                                    <?if {$device = node}?>
+                                        <bgp-no-instance>
+                                            <id>{local-asn}</id>
+                                            <vrf>
+                                                <name>{string(/service-information/network-options/vpnv4/vrf)}</name>
+                                                <address-family>
+                                                    <ipv4>
+                                                        <unicast/>
+                                                    </ipv4>
+                                                </address-family>
+                                                <neighbor>
+                                                    <id>{remote-address}</id>
+                                                    <remote-as>{remote-asn}</remote-as>
+                                                    <update-source>
+                                                        <GigabitEthernet-subinterface>
+                                                            <GigabitEthernet>{update-source}</GigabitEthernet>
+                                                        </GigabitEthernet-subinterface>
+                                                    </update-source>
+                                                    <address-family>
+                                                        <ipv4>
+                                                            <unicast>
+                                                                <route-policy>
+                                                                    <direction>in</direction>
+                                                                    <name>{route-policy-in}</name>
+                                                                </route-policy>
+                                                                <route-policy>
+                                                                    <direction>out</direction>
+                                                                    <name>{route-policy-out}</name>
+                                                                </route-policy>
+                                                            </unicast>
+                                                        </ipv4>
+                                                    </address-family>
+                                                </neighbor>
+                                            </vrf>
+                                        </bgp-no-instance>
+                                    <?end?>
+                                <?end?>
+                            <?end?>
+                        </bgp>
+                    </router>
                     <vrf xmlns="urn:ios">
                         <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
                             <definition>
