@@ -1,68 +1,70 @@
 <config-template xmlns="http://tail-f.com/ns/config/1.0"
                  servicepoint="GC">
-  <devices xmlns="http://tail-f.com/ns/ncs">
-    <?foreach {/devices}?>
-      <?set device = {.}?>
-      <device>
-        <name>{$device}</name>
-        <config>
-          <?if {$device = /transport-information/options/settings/equipment-information/PE/hostname}?>
-						<vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
-              <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
-							  <vrf-list>
-							  	<name>{string(/service-information/network-options/vpnv4/vrf)}</name>
-							  	<rd>{string(/service-information/network-options/vpnv4/rd)}</rd>
-							  	<address-family>
-							  		<ipv4>
-							  			<unicast>
-							  				<import>
-							  					<route-target>
-							  						<address-list>
-							  							<name>{string(/service-information/network-options/vpnv4/route-target-import)}</name>
-							  						</address-list>
-							  					</route-target>
-							  				</import>
-							  				<export>
-							  					<route-target>
-							  						<address-list>
-							  							<name>{string(/service-information/network-options/vpnv4/route-target-export)}</name>
-							  						</address-list>
-							  					</route-target>
-							  				</export>
-							  			</unicast>
-							  		</ipv4>
-							  	</address-family>
-							  </vrf-list>
-              <?end?>
-						</vrf>
-						<interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
-							<GigabitEthernet-subinterface>
-								<GigabitEthernet>
-									<id>{/transport-information/options/settings/equipment-information/PE/interface}</id>
-									<encapsulation>
-										<dot1q>
-											<vlan-id>{/transport-information/options/settings/circuit-information/fttx/cvlan}</vlan-id>
-										</dot1q>
-									</encapsulation>
-									<?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
-										<vrf>{string(/service-information/network-options/vpnv4/vrf)}</vrf>
-									<?end?>
-                  <?foreach {/service-information/service-options/ip-settings/ip/ipv4/hosts}?>
-                    <?if {$device = node}?>
-									    <ipv4>
-									    	<address>
-									    		<ip>{address}</ip>
-									    		<mask>{subnet-mask}</mask>
-									    	</address>
-									    </ipv4>
-                    <?end?>
-                  <?end?>
-								</GigabitEthernet>
-							</GigabitEthernet-subinterface>
-						</interface>
-          <?end?>
-        </config>
-      </device>
-    <?end?>
-  </devices>
+    <devices xmlns="http://tail-f.com/ns/ncs">
+        <?foreach {/devices}?>
+            <?set device = {.}?>
+            <device>
+                <name>{$device}</name>
+                <config>
+                    <vrf xmlns="http://tail-f.com/ned/cisco-ios-xr">
+                        <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
+                            <vrf-list>
+                                <name>{string(/service-information/network-options/vpnv4/vrf)}</name>
+                                <rd>{string(/service-information/network-options/vpnv4/rd)}</rd>
+                                <address-family>
+                                    <ipv4>
+                                        <unicast>
+                                            <import>
+                                                <route-target>
+                                                    <address-list>
+                                                        <name>{string(/service-information/network-options/vpnv4/route-target-import)}</name>
+                                                    </address-list>
+                                                </route-target>
+                                            </import>
+                                            <export>
+                                                <route-target>
+                                                    <address-list>
+                                                        <name>{string(/service-information/network-options/vpnv4/route-target-export)}</name>
+                                                    </address-list>
+                                                </route-target>
+                                            </export>
+                                        </unicast>
+                                    </ipv4>
+                                </address-family>
+                            </vrf-list>
+                        <?end?>
+                    </vrf>
+                    <interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+                        <GigabitEthernet-subinterface>
+                            <GigabitEthernet>
+                                <?foreach {/transport-information/options/settings/equipment-information/PE}?>
+                                    <?if {$device = hostname}?>
+                                        <id>{interface}</id>
+                                    <?end?>
+                                <?end?>
+                                <encapsulation>
+                                    <dot1q>
+                                        <vlan-id>{/transport-information/options/settings/circuit-information/fttx/cvlan}</vlan-id>
+                                    </dot1q>
+                                </encapsulation>
+                                <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
+                                    <vrf>{string(/service-information/network-options/vpnv4/vrf)}</vrf>
+                                <?end?>
+                                <?foreach {/service-information/service-options/ip-settings/ip/ipv4/hosts}?>
+                                    <?if {$device = node}?>
+                                        <ipv4>
+                                            <address>
+                                                <ip>{address}</ip>
+                                                <mask>{subnet-mask}</mask>
+                                            </address>
+                                        </ipv4>
+                                    <?end?>
+                                  <?end?>
+                            </GigabitEthernet>
+                        </GigabitEthernet-subinterface>
+                    </interface>
+                </config>
+            </device>
+        <?end?>
+    </devices>
 </config-template>
