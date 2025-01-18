@@ -37,8 +37,8 @@
                     <interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
                         <GigabitEthernet-subinterface>
                             <GigabitEthernet>
-                                <?foreach {/transport-information/options/settings/equipment-information/PE}?>
-                                    <?if {$device = hostname}?>
+                                <?foreach {/transport-information/options/settings/equipment-information/}?>
+                                    <?if {$device = node}?>
                                         <id>{interface}</id>
                                     <?end?>
                                 <?end?>
