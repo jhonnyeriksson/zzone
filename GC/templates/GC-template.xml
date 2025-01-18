@@ -69,7 +69,7 @@
                                     </ipv4>
                                 </address-family>
                             </definition>
-                        <?endif?>
+                        <?end?>
                     </vrf>
                 </config>
             </device>
