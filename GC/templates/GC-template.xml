@@ -71,6 +71,29 @@
                             </definition>
                         <?end?>
                     </vrf>
+                    <interface xmlns="urn:ios">
+                        <GigabitEthernet>
+                            <name>{/transport-information/options/settings/equipment-information/CPE/interface}</name>
+                            <encapsulation>
+                                <dot1Q>
+                                    <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/cvlan)}</vlan-id>
+                                </dot1Q>
+                            </encapsulation>
+                            <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
+                                <vrf>
+                                    <forwarding>{string(/service-information/network-options/vpnv4/vrf)}</forwarding>
+                                </vrf>
+                            <?end?>
+                            <ip>
+                                <address>
+                                    <primary>
+                                        <address>{}</address>
+                                        <mask>{}</mask>
+                                    </primary>
+                                </address>
+                            </ip>
+                        </GigabitEthernet>
+                    </interface>
                 </config>
             </device>
         <?end?>
