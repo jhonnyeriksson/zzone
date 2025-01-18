@@ -59,6 +59,18 @@
                             </GigabitEthernet>
                         </GigabitEthernet-subinterface>
                     </interface>
+                    <vrf xmlns="urn:ios">
+                        <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
+                            <definition>
+                                <name>{/service-information/network-options/vpnv4/vrf}</name>
+                                <rd>100:100</rd>
+                                <address-family>
+                                    <ipv4>
+                                    </ipv4>
+                                </address-family>
+                            </definition>
+                        <?endif?>
+                    </vrf>
                 </config>
             </device>
         <?end?>
