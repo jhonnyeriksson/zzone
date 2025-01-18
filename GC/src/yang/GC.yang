@@ -19,7 +19,7 @@ module GC {
       tailf:info "Access Service ID";
       type string;
     }
-    leaf-list device {
+    leaf-list devices {
       type leafref {
         path "/ncs:devices/ncs:device/ncs:name";
       }
