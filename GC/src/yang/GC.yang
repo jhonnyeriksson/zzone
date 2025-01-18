@@ -33,6 +33,9 @@ module GC {
               leaf node {
                   type string;
               }
+              leaf loopback {
+                  type string;
+              }
               leaf vendor {
                   type string;
               }
@@ -49,6 +52,9 @@ module GC {
             list CPE {
               key "node";
               leaf node {
+                  type string;
+              }
+              leaf loopback {
                   type string;
               }
               leaf vendor {

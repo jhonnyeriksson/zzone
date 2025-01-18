@@ -147,6 +147,9 @@
                             <?if {$device = node}?>
                                 <bgp>
                                     <as-no>{local-asn}</as-no>
+                                    <bgp>
+                                      <router-id>{string(/transport-information/options/settings/equipment-information/CPE/loopback)}</router-id>
+                                    </bgp>
                                     <address-family>
                                         <with-vrf>
                                             <ipv4>
