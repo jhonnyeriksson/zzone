@@ -168,7 +168,6 @@
                                             </ipv4>
                                         </with-vrf>
                                     </address-family>
-
                                 </bgp>
                             <?end?>
                         <?end?>
