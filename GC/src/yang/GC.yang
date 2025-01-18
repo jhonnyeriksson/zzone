@@ -29,8 +29,26 @@ module GC {
         container settings {
           container equipment-information {
             list PE {
-              key "hostname";
-              leaf hostname {
+              key "node";
+              leaf node {
+                  type string;
+              }
+              leaf vendor {
+                  type string;
+              }
+              leaf model {
+                  type string;
+              }
+              leaf software {
+                  type string;
+              }
+              leaf interface {
+                  type string;
+              }
+            }
+            list CPE {
+              key "node";
+              leaf node {
                   type string;
               }
               leaf vendor {
