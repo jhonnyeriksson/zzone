@@ -142,7 +142,7 @@
                             <?end?>
                             <?if {/service-information/addon/qos/active = 'true'}?>
                                 <service-policy>
-                                    <output>{string(/service-information/addon/qos/profile)}</output>
+                                    <output>1000MBPS-BAS-UPLINK</output>
                                 </service-policy>
                             <?end?>
                         </GigabitEthernet>
