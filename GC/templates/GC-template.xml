@@ -120,36 +120,38 @@
                         <?end?>
                     </vrf>
                     <interface xmlns="urn:ios">
-                        <GigabitEthernet>
-                            <name>{/transport-information/options/settings/equipment-information/CPE/interface}</name>
-                            <encapsulation>
-                                <dot1Q>
-                                    <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</vlan-id>
-                                </dot1Q>
-                            </encapsulation>
-                            <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
-                                <vrf>
-                                    <forwarding>{string(/service-information/network-options/vpnv4/vrf)}</forwarding>
-                                </vrf>
-                            <?end?>
-                            <?foreach {/service-information/service-options/ip-settings/ip/ipv4/hosts}?>
-                                <?if {$device = node}?>
-                                    <ip>
-                                        <address>
-                                            <primary>
-                                                <address>{address}</address>
-                                                <mask>{subnet-mask}</mask>
-                                            </primary>
-                                        </address>
-                                    </ip>
+                        <?for {/transport-information/options/settings/equipment-information/CPE/service-interface}?>
+                            <GigabitEthernet>
+                                <name>{string(/transport-information/options/settings/equipment-information/CPE/service-interface/interface)}</name>
+                                <encapsulation>
+                                    <dot1Q>
+                                        <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</vlan-id>
+                                    </dot1Q>
+                                </encapsulation>
+                                <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
+                                    <vrf>
+                                        <forwarding>{string(/service-information/network-options/vpnv4/vrf)}</forwarding>
+                                    </vrf>
                                 <?end?>
-                            <?end?>
-                            <?if {/service-information/addon/qos/active = 'true'}?>
-                                <service-policy>
-                                    <output>1000MBPS-BAS-UPLINK</output>
-                                </service-policy>
-                            <?end?>
-                        </GigabitEthernet>
+                                <?foreach {/service-information/service-options/ip-settings/ip/ipv4/hosts}?>
+                                    <?if {$device = node}?>
+                                        <ip>
+                                            <address>
+                                                <primary>
+                                                    <address>{address}</address>
+                                                    <mask>{subnet-mask}</mask>
+                                                </primary>
+                                            </address>
+                                        </ip>
+                                    <?end?>
+                                <?end?>
+                                <?if {/service-information/addon/qos/active = 'true'}?>
+                                    <service-policy>
+                                        <output>1000MBPS-BAS-UPLINK</output>
+                                    </service-policy>
+                                <?end?>
+                            </GigabitEthernet>
+                        <?end?>
                     </interface>
                     <router xmlns="urn:ios">
                         <?foreach {/service-information/service-options/ip-settings/routing/bgp/peer}?>
