@@ -1,168 +1,167 @@
-<config-template xmlns="http://tail-f.com/ns/config/1.0" servicepoint="QOS">
-    <devices xmlns="http://tail-f.com/ns/ncs">
-        <name>{/device}</name>
-        <config>
-            <class-map xmlns="urn:ios">
-                <name>BUSINESS</name>
-                <prematch>match-any</prematch>
-                <match>
-                    <cos>2</cos>
-                    <cos>3</cos>
-                    <cos>6</cos>
-                    <cos>7</cos>
-                    <ip>
-                        <dscp>cs2</dscp>
-                        <dscp>cs3</dscp>
-                        <dscp>cs6</dscp>
-                        <dscp>cs7</dscp>
-                        <dscp>af21</dscp>
-                        <dscp>af22</dscp>
-                        <dscp>af23</dscp>
-                        <dscp>af31</dscp>
-                        <dscp>af32</dscp>
-                        <dscp>af33</dscp>
-                        <dscp>17</dscp>
-                        <dscp>19</dscp>
-                        <dscp>21</dscp>
-                        <dscp>23</dscp>
-                        <dscp>25</dscp>
-                        <dscp>27</dscp>
-                        <dscp>29</dscp>
-                        <dscp>31</dscp>
-                        <dscp>49</dscp>
-                        <dscp>50</dscp>
-                        <dscp>51</dscp>
-                        <dscp>52</dscp>
-                        <dscp>53</dscp>
-                        <dscp>54</dscp>
-                        <dscp>55</dscp>
-                        <dscp>57</dscp>
-                        <dscp>58</dscp>
-                        <dscp>59</dscp>
-                        <dscp>60</dscp>
-                        <dscp>61</dscp>
-                        <dscp>62</dscp>
-                        <dscp>63</dscp>
-                    </ip>
-                </match>
-            </class-map>
-            <class-map xmlns="urn:ios">
-                <name>VIDEO</name>
-                <prematch>match-any</prematch>
-                <match>
-                    <cos>4</cos>
-                    <ip>
-                        <dscp>cs4</dscp>
-                        <dscp>af41</dscp>
-                        <dscp>af42</dscp>
-                        <dscp>af43</dscp>
-                        <dscp>33</dscp>
-                        <dscp>35</dscp>
-                        <dscp>37</dscp>
-                        <dscp>39</dscp>
-                    </ip>
-                </match>
-            </class-map>
-            <class-map xmlns="urn:ios">
-                <name>VOICE</name>
-                <prematch>match-any</prematch>
-                <match>
-                    <cos>5</cos>
-                    <ip>
-                        <dscp>ef</dscp>
-                        <dscp>cs5</dscp>
-                        <dscp>41</dscp>
-                        <dscp>42</dscp>
-                        <dscp>43</dscp>
-                        <dscp>44</dscp>
-                        <dscp>45</dscp>
-                        <dscp>47</dscp>
-                    </ip>
-                </match>
-            </class-map>
-            <policy-map xmlns="urn:ios">
-                <name>1000MBPS-BAS-CUSTOMER</name>
-                <class-default>
-                    <class>
-                        <name>class-default</name>
-                        <shape>
-                            <average>
-                                <bit-rate>1000000000</bit-rate>
-                            </average>
-                        </shape>
-                        <service-policy>CUSTOMER-BAS-QUEUE</service-policy>
-                    </class>
-                </class-default>
-            </policy-map>
-            <policy-map xmlns="urn:ios">
-                <name>1000MBPS-BAS-UPLINK</name>
-                <class-default>
-                    <class>
-                        <name>class-default</name>
-                        <shape>
-                            <average>
-                                <bit-rate>1000000000</bit-rate>
-                            </average>
-                        </shape>
-                        <service-policy>UPLINK-BAS-QUEUE</service-policy>
-                    </class>
-                </class-default>
-            </policy-map>
-            <policy-map xmlns="urn:ios">
-                <name>CUSTOMER-BAS-QUEUE</name>
+<config-template xmlns="http://tail-f.com/ns/config/1.0"
+                 servicepoint="QOS">
+  <devices xmlns="http://tail-f.com/ns/ncs">
+    <device>
+      <!--
+          Select the devices from some data structure in the service
+          model. In this skeleton the devices are specified in a leaf-list.
+          Select all devices in that leaf-list:
+      -->
+      <name>{/device}</name>
+      <config>
+        <class-map xmlns="urn:ios">
+            <name>BUSINESS</name>
+            <prematch>match-any</prematch>
+            <match>
+                <cos>2</cos>
+                <cos>3</cos>
+                <cos>6</cos>
+                <cos>7</cos>
+                <ip>
+                    <dscp>cs2</dscp>
+                    <dscp>cs3</dscp>
+                    <dscp>cs6</dscp>
+                    <dscp>cs7</dscp>
+                    <dscp>af21</dscp>
+                    <dscp>af22</dscp>
+                    <dscp>af23</dscp>
+                    <dscp>af31</dscp>
+                    <dscp>af32</dscp>
+                    <dscp>af33</dscp>
+                    <dscp>17</dscp>
+                    <dscp>19</dscp>
+                    <dscp>21</dscp>
+                    <dscp>23</dscp>
+                    <dscp>25</dscp>
+                    <dscp>27</dscp>
+                    <dscp>29</dscp>
+                    <dscp>31</dscp>
+                    <dscp>49</dscp>
+                    <dscp>50</dscp>
+                    <dscp>51</dscp>
+                    <dscp>52</dscp>
+                    <dscp>53</dscp>
+                    <dscp>54</dscp>
+                    <dscp>55</dscp>
+                    <dscp>57</dscp>
+                    <dscp>58</dscp>
+                    <dscp>59</dscp>
+                    <dscp>60</dscp>
+                    <dscp>61</dscp>
+                    <dscp>62</dscp>
+                    <dscp>63</dscp>
+                </ip>
+            </match>
+        </class-map>
+        <class-map xmlns="urn:ios">
+            <name>VIDEO</name>
+            <prematch>match-any</prematch>
+            <match>
+                <cos>4</cos>
+                <ip>
+                    <dscp>cs4</dscp>
+                    <dscp>af41</dscp>
+                    <dscp>af42</dscp>
+                    <dscp>af43</dscp>
+                    <dscp>33</dscp>
+                    <dscp>35</dscp>
+                    <dscp>37</dscp>
+                    <dscp>39</dscp>
+                </ip>
+            </match>
+        </class-map>
+        <class-map xmlns="urn:ios">
+            <name>VOICE</name>
+            <prematch>match-any</prematch>
+            <match>
+                <cos>5</cos>
+                <ip>
+                    <dscp>ef</dscp>
+                    <dscp>cs5</dscp>
+                    <dscp>41</dscp>
+                    <dscp>42</dscp>
+                    <dscp>43</dscp>
+                    <dscp>44</dscp>
+                    <dscp>45</dscp>
+                    <dscp>47</dscp>
+                </ip>
+            </match>
+        </class-map>
+        <policy-map xmlns="urn:ios">
+            <name>1000MBPS-BAS-CUSTOMER</name>
+            <class-default>
                 <class>
-                    <name>VOICE</name>
-                    <priority>
-                        <level>1</level>
-                        <percent>90</percent>
-                    </priority>
+                    <name>class-default</name>
+                    <shape>
+                        <average>
+                            <bit-rate>1000000000</bit-rate>
+                        </average>
+                    </shape>
+                    <service-policy>CUSTOMER-BAS-QUEUE</service-policy>
                 </class>
-                <class-default>
-                    <class>
-                        <name>class-default</name>
-                        <bandwidth>
-                            <percent>10</percent>
-                        </bandwidth>
-                    </class>
-                </class-default>
-            </policy-map>
-            <policy-map xmlns="urn:ios">
-                <name>UPLINK-BAS-QUEUE</name>
+            </class-default>
+        </policy-map>
+        <policy-map xmlns="urn:ios">
+            <name>1000MBPS-BAS-UPLINK</name>
+            <class-default>
                 <class>
-                    <name>VOICE</name>
-                    <priority>
-                        <level>1</level>
-                        <percent>90</percent>
-                    </priority>
+                    <name>class-default</name>
+                    <shape>
+                        <average>
+                            <bit-rate>1000000000</bit-rate>
+                        </average>
+                    </shape>
+                    <service-policy>UPLINK-BAS-QUEUE</service-policy>
+                </class>
+            </class-default>
+        </policy-map>
+        <policy-map xmlns="urn:ios">
+            <name>CUSTOMER-BAS-QUEUE</name>
+            <class>
+                <name>VOICE</name>
+                <priority>
+                    <level>1</level>
+                    <percent>90</percent>
+                </priority>
+            </class>
+            <class-default>
+                <class>
+                    <name>class-default</name>
+                    <bandwidth>
+                        <percent>10</percent>
+                    </bandwidth>
+                </class>
+            </class-default>
+        </policy-map>
+        <policy-map xmlns="urn:ios">
+            <name>UPLINK-BAS-QUEUE</name>
+            <class>
+                <name>VOICE</name>
+                <priority>
+                    <level>1</level>
+                    <percent>90</percent>
+                </priority>
+                <set>
+                    <cos>
+                        <val>5</val>
+                    </cos>
+                </set>
+            </class>
+            <class-default>
+                <class>
+                    <name>class-default</name>
+                    <bandwidth>
+                        <percent>10</percent>
+                    </bandwidth>
                     <set>
                         <cos>
-                            <val>5</val>
+                            <val>1</val>
                         </cos>
                     </set>
                 </class>
-                <class-default>
-                    <class>
-                        <name>class-default</name>
-                        <bandwidth>
-                            <percent>10</percent>
-                        </bandwidth>
-                        <set>
-                            <cos>
-                                <val>1</val>
-                            </cos>
-                        </set>
-                    </class>
-                </class-default>
-            </policy-map>
-            <interface xmlns="urn:ios">
-                <GigabitEthernet>
-                    <name>1.10</name>
-                    <service-policy>
-                        <output>1000MBPS-BAS-UPLINK</output>
-                    </service-policy>
-                </GigabitEthernet>
-            </interface>
-        </config>
+            </class-default>
+        </policy-map>
+      </config>
     </device>
-</devices>
+  </devices>
 </config-template>
