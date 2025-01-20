@@ -102,8 +102,14 @@ module GC {
                       enum dot1q;
                   }
               }
-              leaf cvlan {
+              container vlan {
+                when "../encapsulation = 'dot1q'";
+                leaf cvlan-name {
                   type string;
+                }
+                leaf cvlan-id {
+                  type string;
+                }
               }
             }
           }
