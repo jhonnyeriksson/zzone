@@ -87,6 +87,18 @@ module GC {
       }
     }
     container service-information {
+      container addon {
+        container qos {
+          leaf active {
+            type boolean;
+          }
+          leaf profile {
+            enumeration {
+              enum basic;
+            }
+          }
+        }
+      }
       container network-options {
         leaf asn {
           type string;
