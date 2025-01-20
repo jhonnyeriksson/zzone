@@ -8,27 +8,20 @@ module QOS {
   import tailf-ncs {
     prefix ncs;
   }
-
   list QOS {
-    key name;
-
+    key profile;
     uses ncs:service-data;
     ncs:servicepoint "QOS";
-
-    leaf name {
-      type string;
+    leaf profile {
+      type enumeration {
+        enum basic;
+        enum advanced;
+      }
     }
-
-    // may replace this with other ways of refering to the devices.
     leaf-list device {
       type leafref {
         path "/ncs:devices/ncs:device/ncs:name";
       }
-    }
-
-    // replace with your own stuff here
-    leaf dummy {
-      type inet:ipv4-address;
     }
   }
 }

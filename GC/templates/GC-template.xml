@@ -140,6 +140,11 @@
                                     </ip>
                                 <?end?>
                             <?end?>
+                            <?if {/service-information/addon/qos/active = 'true'}?>
+                                <service-policy>
+                                    <output>{string(/service-information/addon/qos/profile)}</output>
+                                </service-policy>
+                            <?end?>
                         </GigabitEthernet>
                     </interface>
                     <router xmlns="urn:ios">
