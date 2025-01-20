@@ -45,8 +45,17 @@ module GC {
               leaf software {
                   type string;
               }
-              leaf interface {
+              list service-interface {
+                key "interface";
+                leaf interface {
                   type string;
+                }
+                leaf mode {
+                  type enumeration {
+                    enum tagged;
+                    enum untagged;
+                  }
+                }
               }
             }
             list ACCESS {
@@ -90,8 +99,17 @@ module GC {
               leaf software {
                   type string;
               }
-              leaf interface {
+              list service-interface {
+                key "interface";
+                leaf interface {
                   type string;
+                }
+                leaf mode {
+                  type enumeration {
+                    enum tagged;
+                    enum untagged;
+                  }
+                }
               }
             }
           }
@@ -104,10 +122,10 @@ module GC {
               }
               container vlan {
                 when "../encapsulation = 'dot1q'";
-                leaf cvlan-name {
+                leaf cvlan-id {
                   type string;
                 }
-                leaf cvlan-id {
+                leaf cvlan-name {
                   type string;
                 }
               }
