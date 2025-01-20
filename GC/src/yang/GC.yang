@@ -49,6 +49,30 @@ module GC {
                   type string;
               }
             }
+            list ACCESS {
+              key "node";
+              leaf node {
+                type string;
+              }
+              leaf vendor {
+                type string;
+              }
+              leaf model {
+                type string;
+              }
+              list service-interface {
+                key "interface";
+                leaf interface {
+                  type string;
+                }
+                leaf mode {
+                  type enumeration {
+                    enum tagged;
+                    enum untagged;
+                  }
+                }
+              }
+            }
             list CPE {
               key "node";
               leaf node {
