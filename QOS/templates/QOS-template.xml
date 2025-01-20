@@ -25,31 +25,6 @@
                     <dscp>af21</dscp>
                     <dscp>af22</dscp>
                     <dscp>af23</dscp>
-                    <dscp>af31</dscp>
-                    <dscp>af32</dscp>
-                    <dscp>af33</dscp>
-                    <dscp>17</dscp>
-                    <dscp>19</dscp>
-                    <dscp>21</dscp>
-                    <dscp>23</dscp>
-                    <dscp>25</dscp>
-                    <dscp>27</dscp>
-                    <dscp>29</dscp>
-                    <dscp>31</dscp>
-                    <dscp>49</dscp>
-                    <dscp>50</dscp>
-                    <dscp>51</dscp>
-                    <dscp>52</dscp>
-                    <dscp>53</dscp>
-                    <dscp>54</dscp>
-                    <dscp>55</dscp>
-                    <dscp>57</dscp>
-                    <dscp>58</dscp>
-                    <dscp>59</dscp>
-                    <dscp>60</dscp>
-                    <dscp>61</dscp>
-                    <dscp>62</dscp>
-                    <dscp>63</dscp>
                 </ip>
             </match>
         </class-map>
