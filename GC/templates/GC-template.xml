@@ -40,7 +40,7 @@
                                 <id>{/transport-information/options/settings/equipment-information/PE/interface}</id>
                                 <encapsulation>
                                     <dot1q>
-                                        <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/cvlan)}</vlan-id>
+                                        <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</vlan-id>
                                     </dot1q>
                                 </encapsulation>
                                 <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
@@ -120,7 +120,7 @@
                             <name>{/transport-information/options/settings/equipment-information/CPE/interface}</name>
                             <encapsulation>
                                 <dot1Q>
-                                    <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/cvlan)}</vlan-id>
+                                    <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</vlan-id>
                                 </dot1Q>
                             </encapsulation>
                             <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
@@ -182,23 +182,28 @@
                     </router>
                     <create xmlns="http://tail-f.com/ned/extreme-xos">
                         <vlan>
-                            <id>VLAN55</id>
+                            <id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-name)}</id>
                         </vlan>
                     </create>
                     <configure xmlns="http://tail-f.com/ned/extreme-xos">
                         <vlan>
-                            <id>VLAN55</id>
-                            <add>
-                                <ports>
-                                    <id>1</id>
-                                    <untagged/>
-                                </ports>
-                                <ports>
-                                    <id>2</id>
-                                    <tagged/>
-                                </ports>
-                            </add>
-                            <tag>55</tag>
+                            <id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-name)}</id>
+                            <?foreach {/transport-information/options/settings/equipment-information/ACCESS/service-interface}?>
+                                <add>
+                                    <?if {mode = 'untagged'}?>
+                                        <ports>
+                                            <id>{interface}</id>
+                                            <untagged/>
+                                        </ports>
+                                    <?elif {mode = 'tagged'}?>
+                                        <ports>
+                                            <id>{interface}</id>
+                                            <tagged/>
+                                        </ports>
+                                    <?end?>
+                                </add>
+                            <?end?>
+                            <tag>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</tag>
                         </vlan>
                     </configure>    
                 </config>
