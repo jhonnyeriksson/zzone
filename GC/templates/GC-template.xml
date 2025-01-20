@@ -180,6 +180,27 @@
                             <?end?>
                         <?end?>
                     </router>
+                    <create xmlns="http://tail-f.com/ned/extreme-xos">
+                        <vlan>
+                            <id>VLAN55</id>
+                        </vlan>
+                    </create>
+                    <configure xmlns="http://tail-f.com/ned/extreme-xos">
+                        <vlan>
+                            <id>VLAN55</id>
+                            <add>
+                                <ports>
+                                    <id>1</id>
+                                    <untagged/>
+                                </ports>
+                                <ports>
+                                    <id>2</id>
+                                    <tagged/>
+                                </ports>
+                            </add>
+                            <tag>55</tag>
+                        </vlan>
+                    </configure>    
                 </config>
             </device>
         <?end?>
