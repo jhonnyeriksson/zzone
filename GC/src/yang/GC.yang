@@ -93,7 +93,7 @@ module GC {
             type boolean;
           }
           leaf profile {
-            enumeration {
+            type enumeration {
               enum basic;
             }
           }
