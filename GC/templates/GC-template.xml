@@ -247,7 +247,7 @@
                     <?if {$device = /transport-information/options/settings/equipment-information/ACCESS/node}?>    
                         <create xmlns="http://tail-f.com/ned/extreme-xos">
                             <vlan>
-                                <id>{'VLAN' + string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</id>
+                                <id>{VLAN}{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</id>
                             </vlan>
                         </create>
                         <configure xmlns="http://tail-f.com/ned/extreme-xos">
