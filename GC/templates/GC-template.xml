@@ -68,70 +68,69 @@
                         </interface>
                         <router xmlns="http://tail-f.com/ned/cisco-ios-xr">
                             <bgp>
-                                
-                                    <?foreach {/service-information/service-options/ip-settings/routing/bgp/peer}?>
-                                        <?if {$device = node}?>
-                                            <bgp-no-instance>
-                                                <id>{local-asn}</id>
-                                                <?if {/service-information/network-options/network-protocol = 'ipv4'}?>
-                                                    <neighbor>
-                                                      <id>10.10.10.10</id>
-                                                      <remote-as>100</remote-as>
-                                                      <update-source>
-                                                        <GigabitEthernet>0/0/0/2</GigabitEthernet>
-                                                      </update-source>
-                                                      <address-family>
-                                                        <ipv4>
+                                <?foreach {/service-information/service-options/ip-settings/routing/bgp/peer}?>
+                                    <?if {$device = node}?>
+                                        <bgp-no-instance>
+                                            <id>{local-asn}</id>
+                                            <?if {/service-information/network-options/network-protocol = 'ipv4'}?>
+                                                <neighbor>
+                                                    <id>{remote-address}</id>
+                                                    <remote-as>{remote-asn}</remote-as>
+                                                    <update-source>
+                                                      <GigabitEthernet>{update-source}</GigabitEthernet>
+                                                    </update-source>
+                                                    <address-family>
+                                                      <ipv4>
                                                           <unicast>
-                                                            <route-policy>
-                                                              <direction>in</direction>
-                                                              <name>PASS</name>
-                                                            </route-policy>
-                                                            <route-policy>
-                                                              <direction>out</direction>
-                                                              <name>PASS</name>
-                                                            </route-policy>
+                                                              <route-policy>
+                                                                  <direction>in</direction>
+                                                                  <name>{route-policy-in}</name>
+                                                              </route-policy>
+                                                              <route-policy>
+                                                                  <direction>out</direction>
+                                                                  <name>{route-policy-out}</name>
+                                                              </route-policy>
                                                           </unicast>
+                                                      </ipv4>
+                                                    </address-family>
+                                                </neighbor>
+                                            <?end?>
+                                            <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
+                                                <vrf>
+                                                    <name>{string(/service-information/network-options/vpnv4/vrf)}</name>
+                                                    <address-family>
+                                                        <ipv4>
+                                                            <unicast/>
                                                         </ipv4>
-                                                      </address-family>
-                                                    </neighbor>
-                                                <?end?>
-                                                <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
-                                                    <vrf>
-                                                        <name>{string(/service-information/network-options/vpnv4/vrf)}</name>
+                                                    </address-family>
+                                                    <neighbor>
+                                                        <id>{remote-address}</id>
+                                                        <remote-as>{remote-asn}</remote-as>
+                                                        <update-source>
+                                                            <GigabitEthernet-subinterface>
+                                                                <GigabitEthernet>{update-source}</GigabitEthernet>
+                                                            </GigabitEthernet-subinterface>
+                                                        </update-source>
                                                         <address-family>
                                                             <ipv4>
-                                                                <unicast/>
+                                                                <unicast>
+                                                                    <route-policy>
+                                                                        <direction>in</direction>
+                                                                        <name>{route-policy-in}</name>
+                                                                    </route-policy>
+                                                                    <route-policy>
+                                                                        <direction>out</direction>
+                                                                        <name>{route-policy-out}</name>
+                                                                    </route-policy>
+                                                                </unicast>
                                                             </ipv4>
                                                         </address-family>
-                                                        <neighbor>
-                                                            <id>{remote-address}</id>
-                                                            <remote-as>{remote-asn}</remote-as>
-                                                            <update-source>
-                                                                <GigabitEthernet-subinterface>
-                                                                    <GigabitEthernet>{update-source}</GigabitEthernet>
-                                                                </GigabitEthernet-subinterface>
-                                                            </update-source>
-                                                            <address-family>
-                                                                <ipv4>
-                                                                    <unicast>
-                                                                        <route-policy>
-                                                                            <direction>in</direction>
-                                                                            <name>{route-policy-in}</name>
-                                                                        </route-policy>
-                                                                        <route-policy>
-                                                                            <direction>out</direction>
-                                                                            <name>{route-policy-out}</name>
-                                                                        </route-policy>
-                                                                    </unicast>
-                                                                </ipv4>
-                                                            </address-family>
-                                                        </neighbor>
-                                                    </vrf>
-                                                <?end?>
-                                            </bgp-no-instance>
-                                        <?end?>
+                                                    </neighbor>
+                                                </vrf>
+                                            <?end?>
+                                        </bgp-no-instance>
                                     <?end?>
+                                <?end?>
                             </bgp>
                         </router>
                     <?end?>
