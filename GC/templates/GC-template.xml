@@ -40,12 +40,14 @@
                                 <GigabitEthernet-subinterface>
                                     <GigabitEthernet>
                                         <id>{string(/transport-information/options/settings/equipment-information/PE/service-interface/interface)}</id>
-                                        <?if {/transport-information/options/settings/circuit-information/fttx/encapsulation = 'tagged'}?>
-                                            <encapsulation>
-                                                <dot1q>
-                                                    <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</vlan-id>
-                                                </dot1q>
-                                            </encapsulation>
+                                        <?if {/transport-information/options/settings/circuit-information/fttx/encapsulation = 'dot1q'}?>
+                                            <?if {/transport-information/options/settings/equipment-information/CPE/service-interface/mode = 'tagged'}?>
+                                                <encapsulation>
+                                                    <dot1q>
+                                                        <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</vlan-id>
+                                                    </dot1q>
+                                                </encapsulation>
+                                            <?end?>
                                         <?end?>
                                         <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
                                             <vrf>{string(/service-information/network-options/vpnv4/vrf)}</vrf>
@@ -126,11 +128,15 @@
                             <?foreach {/transport-information/options/settings/equipment-information/CPE/service-interface}?>
                                 <GigabitEthernet>
                                     <name>{string(/transport-information/options/settings/equipment-information/CPE/service-interface/interface)}</name>
-                                    <encapsulation>
-                                        <dot1Q>
-                                            <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</vlan-id>
-                                        </dot1Q>
-                                    </encapsulation>
+                                    <?if {/transport-information/options/settings/circuit-information/fttx/encapsulation = 'dot1q'}?>
+                                        <?if {/transport-information/options/settings/equipment-information/CPE/service-interface/mode = 'tagged'}?>
+                                            <encapsulation>
+                                                <dot1Q>
+                                                    <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</vlan-id>
+                                                </dot1Q>
+                                            </encapsulation>
+                                        <?end?>
+                                    <?end?>
                                     <?if {/service-information/network-options/network-protocol = 'vpnv4'}?>
                                         <vrf>
                                             <forwarding>{string(/service-information/network-options/vpnv4/vrf)}</forwarding>
