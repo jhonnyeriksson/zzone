@@ -41,7 +41,7 @@
                                     <GigabitEthernet>
                                         <id>{string(/transport-information/options/settings/equipment-information/PE/service-interface/interface)}</id>
                                         <?if {/transport-information/options/settings/circuit-information/fttx/encapsulation = 'dot1q'}?>
-                                            <?if {/transport-information/options/settings/equipment-information/CPE/service-interface/mode = 'tagged'}?>
+                                            <?if {/transport-information/options/settings/equipment-information/PE/service-interface/mode = 'tagged'}?>
                                                 <encapsulation>
                                                     <dot1q>
                                                         <vlan-id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</vlan-id>
