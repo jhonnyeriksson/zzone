@@ -252,7 +252,7 @@
                         </create>
                         <configure xmlns="http://tail-f.com/ned/extreme-xos">
                             <vlan>
-                                <id>{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-name)}</id>
+                                <id>VLAN{string(/transport-information/options/settings/circuit-information/fttx/vlan/cvlan-id)}</id>
                                 <?foreach {/transport-information/options/settings/equipment-information/ACCESS/service-interface}?>
                                     <add>
                                         <?if {mode = 'untagged'}?>
