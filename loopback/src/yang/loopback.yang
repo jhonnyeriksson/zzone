@@ -1,0 +1,53 @@
+module loopback {
+  namespace "http://com/example/loopback";
+  prefix loopback;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import tailf-ncs {
+    prefix ncs;
+  }
+  import tailf-common {
+    prefix tailf;
+  }
+
+  list loopback {
+    key id;
+
+    uses ncs:service-data;
+    ncs:servicepoint "loopback";
+
+    leaf id {
+      tailf:info "loopback ID";
+      type string;
+    }
+
+    // may replace this with other ways of refering to the devices.
+    leaf-list device {
+      type leafref {
+        path "/ncs:devices/ncs:device/ncs:name";
+      }
+    }
+
+    // replace with your own stuff here
+    container loopback {
+      leaf description {
+        tailf:info "description_string";
+        type string;
+      }
+      leaf vrf {
+        tailf:info "vrf";
+        type string;
+      }
+      leaf ip {
+        tailf:info "ip address";
+        type inet:ipv4-address;
+      }
+      leaf mask {
+        tailf:info "subnet mask";
+        type string;
+      }
+    }
+  }
+}

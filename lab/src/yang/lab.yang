@@ -1,0 +1,36 @@
+module lab {
+  namespace "http://com/example/lab";
+  prefix lab;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import tailf-ncs {
+    prefix ncs;
+  }
+  import tailf-common {
+    prefix tailf;
+  }
+  list lab {
+    key id;
+    uses ncs:service-data;
+    ncs:servicepoint "lab";
+    leaf id {
+      type string;
+    }
+    leaf-list devices {
+      type leafref {
+        path "/ncs:devices/ncs:device/ncs:name";
+      }
+    }
+    list hostnames {
+      key node;
+      leaf node {
+        type string;
+      }
+      leaf hostname_new {
+        type string;
+      }
+    }
+  }
+}

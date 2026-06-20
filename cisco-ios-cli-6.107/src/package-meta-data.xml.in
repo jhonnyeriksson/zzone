@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<ncs-package xmlns="http://tail-f.com/ns/ncs-packages">
+  <name>cisco-ios</name>
+  <package-version>6.107.2</package-version>
+  <description>NED package for the Cisco IOS</description>
+  <ncs-min-version>4.4.5</ncs-min-version>
+  <ncs-min-version>4.5.1.1</ncs-min-version>
+  <ncs-min-version>4.6.3</ncs-min-version>
+  <ncs-min-version>4.7.3.1</ncs-min-version>
+  <component>
+    <name>cisco-ios</name>
+    <ned>
+      <cli>
+        <ned-id xmlns:ios-id="urn:ios-id">ios-id:cisco-ios</ned-id>
+        <java-class-name>com.tailf.packages.ned.ios.IOSNedCli</java-class-name>
+      </cli>
+      <device>
+        <vendor>Cisco</vendor>
+        <product-family>Cisco 800 Series Routers</product-family>
+        <product-family>Cisco 1900 Series Routers</product-family>
+        <product-family>Cisco 2900 Series Routers</product-family>
+        <product-family>Cisco 3900 Series Routers</product-family>
+        <product-family>Cisco 7200 Series Routers</product-family>
+        <product-family>Cisco 7600 Series Routers</product-family>
+        <product-family>Cisco ME 3400 Series</product-family>
+        <product-family>Cisco ME 3600 Series</product-family>
+        <product-family>Cisco ME 3750 Series</product-family>
+        <product-family>Cisco Catalyst 2900 Series Switches</product-family>
+        <product-family>Cisco Catalyst 3500 Series Switches</product-family>
+        <product-family>Cisco Catalyst 3600 Series Switches</product-family>
+        <product-family>Cisco Catalyst 3700 Series Switches</product-family>
+        <product-family>Cisco Catalyst 3800 Series Switches</product-family>
+        <product-family>Cisco Catalyst 4500 Series Switches</product-family>
+        <product-family>Cisco Catalyst 6500 Series Switches</product-family>
+        <product-family>Cisco Catalyst 8300 Series Edge Platforms</product-family>
+        <product-family>Cisco Catalyst 8500 Series Edge Platforms</product-family>
+        <product-family>Cisco Catalyst 9000 Series Switches</product-family>
+        <product-family>Cisco NCS 4200 Series</product-family>
+        <product-family>Cisco cBR Series</product-family>
+        <product-family>Cisco 1000 Series Integrated Services Routers (ISR)</product-family>
+        <product-family>Cisco 4000 Series Integrated Services Routers (ISR)</product-family>
+        <product-family>Cisco ASR 900 Series Aggregation Services Routers</product-family>
+        <product-family>Cisco ASR 1000 Series Aggregation Services Routers</product-family>
+        <product-family>Cisco CSR 1000V Cloud Services Router</product-family>
+        <operating-system>IOS</operating-system>
+        <operating-system>IOS-XE</operating-system>
+      </device>
+      <option>
+        <name>entitlement-tag</name>
+        <value>regid.2015-10.com.cisco.cisco-ios-NED,1.0_d9eca34d-1f6a-4595-ad74-9c0c57e03c27</value>
+      </option>
+      <!--<option>
+        <name>requires-transaction-states</name>
+      </option>-->
+      <option>
+        <name>show-tag</name>
+        <value>interface</value>
+      </option>
+    </ned>
+  </component>
+  <component>
+    <name>IOSDp</name>
+    <callback>
+      <java-class-name>com.tailf.packages.ned.ios.IOSDp</java-class-name>
+    </callback>
+  </component>
+</ncs-package>

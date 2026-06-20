@@ -1,0 +1,27 @@
+module QOS {
+  namespace "http://com/example/QOS";
+  prefix QOS;
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+  import tailf-ncs {
+    prefix ncs;
+  }
+  list QOS {
+    key profile;
+    uses ncs:service-data;
+    ncs:servicepoint "QOS";
+    leaf profile {
+      type enumeration {
+        enum basic;
+        enum advanced;
+      }
+    }
+    leaf-list device {
+      type leafref {
+        path "/ncs:devices/ncs:device/ncs:name";
+      }
+    }
+  }
+}
