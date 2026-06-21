@@ -3,23 +3,17 @@
     <device>
       <name>{$HOSTNAME}</name>
       <config>
-        <data>
-            <interface-configurations xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-ifmgr-cfg">
-             <interface-configuration>
-              <active>act</active>
-              <interface-name>Loopback99</interface-name>
-              <interface-virtual></interface-virtual>
-              <ipv4-network xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-ipv4-io-cfg">
-               <addresses>
-                <primary>
-                 <address>{$LOOPBACK}</address>
-                 <netmask>255.255.255.0</netmask>
-                </primary>
-               </addresses>
-              </ipv4-network>
-             </interface-configuration>
-            </interface-configurations>
-        </data>
+        <interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+          <Loopback>
+            <id>99</id>
+            <ipv4>
+              <address>
+                <ip>{$LOOPBACK}</ip>
+                <mask>255.255.255.255</mask>
+              </address>
+            </ipv4>
+          </Loopback>
+        </interface>
       </config>
     </device>
   </devices>
