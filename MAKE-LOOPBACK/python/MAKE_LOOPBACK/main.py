@@ -19,7 +19,6 @@ class ServiceCallbacks(Service):
         LOOPBACK_MAP = {
             "XRv1": "10.0.0.1",
             "XRv2": "10.0.0.2",
-            "XRv3": "10.0.0.3",
         }
 
         hostname = service.hostname
@@ -29,7 +28,7 @@ class ServiceCallbacks(Service):
 
         loopback_ip = LOOPBACK_MAP[hostname]
 
-        loopback_id = 1
+        loopback_id = 55
         loopback_name = "Loopback{}".format(loopback_id)
 
         device = root.devices.device[hostname]
