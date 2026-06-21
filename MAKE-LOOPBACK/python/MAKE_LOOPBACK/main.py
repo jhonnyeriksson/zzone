@@ -1,5 +1,6 @@
 # -*- mode: python; python-indent: 4 -*-
 import ncs
+import ncs.template
 from ncs.application import Service
 
 
@@ -12,9 +13,34 @@ class ServiceCallbacks(Service):
     # must always exist.
     @Service.create
     def cb_create(self, tctx, root, service, proplist):
-        self.log.info('Service create(service=', service._path, ')')
 
+        self.log.info(f"MAKE-LOOPBACK service for {service.hostname}")
 
+        # Static mapping (your requirement)
+        LOOPBACK_MAP = {
+            "XRv1": "10.0.0.1",
+            "XRv2": "10.0.0.2",
+        }
+
+        hostname = service.hostname
+
+        if hostname not in LOOPBACK_MAP:
+            raise Exception(f"No loopback defined for hostname {hostname}")
+
+        loopback = LOOPBACK_MAP[hostname]
+
+        self.log.info(f"Mapping {hostname} -> {loopback}")
+
+        # Variables sent to template
+        vars = ncs.template.Variables()
+        vars.add("HOSTNAME", hostname)
+        vars.add("LOOPBACK", loopback)
+
+        # MUST match your template name file
+        template = ncs.template.Template(service)
+        template.apply("MAKE-LOOPBACK-template", vars)
+
+        return proplist
     # The pre_modification() and post_modification() callbacks are optional,
     # and are invoked outside FASTMAP. pre_modification() is invoked before
     # create, update, or delete of the service, as indicated by the enum
@@ -31,6 +57,9 @@ class ServiceCallbacks(Service):
     # @Service.post_modification
     # def cb_post_modification(self, tctx, op, kp, root, proplist):
     #     self.log.info('Service postmod(service=', kp, ')')
+
+
+
 
 
 # ---------------------------------------------
