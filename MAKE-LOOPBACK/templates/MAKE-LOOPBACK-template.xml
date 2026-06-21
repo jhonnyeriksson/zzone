@@ -5,10 +5,10 @@
       <config>
         <interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
           <Loopback>
-            <id>99</id>
+            <id>{$LOOPBACK_ID}</id>
             <ipv4>
               <address>
-                <ip>{$LOOPBACK}</ip>
+                <ip>{$LOOPBACK_IP}</ip>
                 <mask>255.255.255.255</mask>
               </address>
             </ipv4>

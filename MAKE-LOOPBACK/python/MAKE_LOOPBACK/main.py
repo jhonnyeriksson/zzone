@@ -14,9 +14,8 @@ class ServiceCallbacks(Service):
     @Service.create
     def cb_create(self, tctx, root, service, proplist):
 
-        self.log.info(f"MAKE-LOOPBACK service for {service.hostname}")
+        self.log.info(f"MAKE-LOOPBACK for {service.hostname}")
 
-        # Static mapping (your requirement)
         LOOPBACK_MAP = {
             "XRv1": "10.0.0.1",
             "XRv2": "10.0.0.2",
@@ -25,23 +24,43 @@ class ServiceCallbacks(Service):
         hostname = service.hostname
 
         if hostname not in LOOPBACK_MAP:
-            raise Exception(f"No loopback defined for hostname {hostname}")
+            raise Exception(f"No loopback defined for {hostname}")
 
-        loopback = LOOPBACK_MAP[hostname]
+        loopback_ip = LOOPBACK_MAP[hostname]
 
-        self.log.info(f"Mapping {hostname} -> {loopback}")
+        loopback_id = 55
+        loopback_name = f"Loopback{loopback_id}"
 
-        # Variables sent to template
+        device = root.devices.device[hostname]
+
+        # -----------------------------
+        # CHECK IF LOOPBACK EXISTS
+        # -----------------------------
+        exists = False
+
+        try:
+            if device.config.interface_configurations.interface_configuration.exists(loopback_name):
+                exists = True
+        except Exception:
+            exists = False
+
+        if exists:
+            self.log.info(f"{loopback_name} already exists on {hostname} → reusing")
+        else:
+            self.log.info(f"{loopback_name} does NOT exist → will create")
+
+        # -----------------------------
+        # TEMPLATE VARIABLES
+        # -----------------------------
         vars = ncs.template.Variables()
         vars.add("HOSTNAME", hostname)
-        vars.add("LOOPBACK", loopback)
+        vars.add("LOOPBACK_ID", loopback_id)
+        vars.add("LOOPBACK_IP", loopback_ip)
 
-        # MUST match your template name file
         template = ncs.template.Template(service)
         template.apply("MAKE-LOOPBACK-template", vars)
 
-        return proplist
-    # The pre_modification() and post_modification() callbacks are optional,
+        return proplist() and post_modification() callbacks are optional,
     # and are invoked outside FASTMAP. pre_modification() is invoked before
     # create, update, or delete of the service, as indicated by the enum
     # ncs_service_operation op parameter. Conversely
