@@ -14,44 +14,41 @@ class ServiceCallbacks(Service):
     @Service.create
     def cb_create(self, tctx, root, service, proplist):
 
-        self.log.info(f"MAKE-LOOPBACK for {service.hostname}")
+        self.log.info("MAKE-LOOPBACK for {}".format(service.hostname))
 
         LOOPBACK_MAP = {
             "XRv1": "10.0.0.1",
             "XRv2": "10.0.0.2",
+            "XRv3": "10.0.0.3",
         }
 
         hostname = service.hostname
 
         if hostname not in LOOPBACK_MAP:
-            raise Exception(f"No loopback defined for {hostname}")
+            raise Exception("No loopback defined for {}".format(hostname))
 
         loopback_ip = LOOPBACK_MAP[hostname]
 
-        loopback_id = 55
-        loopback_name = f"Loopback{loopback_id}"
+        loopback_id = 1
+        loopback_name = "Loopback{}".format(loopback_id)
 
         device = root.devices.device[hostname]
 
-        # -----------------------------
-        # CHECK IF LOOPBACK EXISTS
-        # -----------------------------
         exists = False
 
         try:
-            if device.config.interface_configurations.interface_configuration.exists(loopback_name):
-                exists = True
-        except Exception:
+            for intf in device.config.interface_configurations.interface_configuration:
+                if intf.interface_name == loopback_name:
+                    exists = True
+                    break
+        except:
             exists = False
 
         if exists:
-            self.log.info(f"{loopback_name} already exists on {hostname} → reusing")
+            self.log.info("{} already exists".format(loopback_name))
         else:
-            self.log.info(f"{loopback_name} does NOT exist → will create")
+            self.log.info("{} will be created".format(loopback_name))
 
-        # -----------------------------
-        # TEMPLATE VARIABLES
-        # -----------------------------
         vars = ncs.template.Variables()
         vars.add("HOSTNAME", hostname)
         vars.add("LOOPBACK_ID", loopback_id)
@@ -60,7 +57,8 @@ class ServiceCallbacks(Service):
         template = ncs.template.Template(service)
         template.apply("MAKE-LOOPBACK-template", vars)
 
-        return proplist() and post_modification() callbacks are optional,
+        return proplist
+
     # and are invoked outside FASTMAP. pre_modification() is invoked before
     # create, update, or delete of the service, as indicated by the enum
     # ncs_service_operation op parameter. Conversely
