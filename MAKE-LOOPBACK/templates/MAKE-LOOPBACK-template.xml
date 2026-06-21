@@ -1,0 +1,22 @@
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+  <devices xmlns="http://tail-f.com/ns/ncs">
+    <device>
+      <name>{$HOSTNAME}</name>
+      <config>
+        <interfaces xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-um-interface-cfg">
+         <interface>
+          <interface-name>loopback 92</interface-name>
+          <ipv4>
+           <addresses xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-um-if-ip-address-cfg">
+            <address>
+             <address>{$LOOPBACK}</address>
+             <netmask>255.255.255.0</netmask>
+            </address>
+           </addresses>
+          </ipv4>
+         </interface>
+        </interfaces>
+      </config>
+    </device>
+  </devices>
+</config-template>
