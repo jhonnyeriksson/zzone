@@ -1,0 +1,243 @@
+EXTENDING THE NED LIVE STATUS CAPABILITY USING CUSTOM TEXTFSM PARSER TEMPLATES
+==============================================================================
+
+1. Introduction
+----------------
+   This instruction shows how the live status API in this NED can easily be
+   extended with custom templates for reading additional operational data
+   from a device.
+
+   The TextFSM template format has been selected for this feature. The reason
+   for this is that TextFSM is a de facto standard among network engineers
+   and fairly easy to use.
+
+2. Getting started
+------------------
+   The TextFSM parser is a tool developed by Google and solely written in
+   Python. This tool together with a a complete Python environment must be
+   installed on the host running NSO.
+
+   1. Install Python 2.7 or later:
+
+      Debian/Linux example:
+      # sudo apt-get install python
+
+   2. Install the PIP Python package manager
+
+      Debian/Linux example:
+      # sudo apt-get install pip
+
+   3. Install required Python packages
+
+      # pip install getopt
+      # pip install textfsm
+      # pip install minidom
+      # pip install dicttoxml
+
+   4. Verify the installation
+
+      # cd <NED package>/utils/textfsm/
+      # python textfsm2xml.py --help
+
+3. Write a template
+----------------------
+   There are several HOWTOs on writing TextFSM templates available on the internet.
+
+   Here are some recommended resources:
+   
+      The TextFSM homepage: https://github.com/google/textfsm/wiki
+
+      Parsing CLI output with TextFSM: https://codingnetworker.com/2015/08/parse-cli-outputs-textfsm/
+
+      OZNetNerd HOWTOs: http://www.oznetnerd.com/writing-your-own-api-part-2/
+                        http://www.oznetnerd.com/writing-your-own-api-part-3/
+                        
+   There are also a number of ready made templates available to download:
+   
+      Examples from Google: https://github.com/google/textfsm/tree/master/examples
+      NTC Ansible templates: https://github.com/networktocode/ntc-templates/tree/master/templates
+
+   Follow the steps below when writing your TextFSM template:
+
+   1. Fetch a CLI dump from the device containing the raw data to be parsed.
+      This dump shall be as extensive as possible. For example data that shall be parsed as
+      lists shall contain at least two entries. Save the dump to a file.
+
+   2. Find out the path to the TextFSM python module installed on the host
+
+      # pip show textfsm
+        Name: textfsm
+        Version: 0.4.1
+        Summary: Python module for parsing semi-structured text into python tables.
+        Home-page: https://github.com/google/textfsm
+        Author: Google
+        Author-email: textfsm-dev@googlegroups.com
+        License: Apache License, Version 2.0
+        Location: /usr/local/lib/python2.7/site-packages  <-- THIS IS THE PATH
+        Requires: 
+        Required-by: 
+
+   3. Create a draft template file. It must have the extension ".textfsm". For example "foo.textfsm".
+
+   4  Add some parser rules to the template.
+
+   5. Verify that the rules work as expected using the TextFSM tool standalone (installed with pip above)
+
+      # <path to textfsm>/textfsm <the template file> <the CLI dump file>
+
+   6. Iterate steps 4 and 5 until the parser template is fully functional
+
+   7. Verify that the parser template can be used to generate a proper XML dump
+
+      # cd <NED package>/utils/textfsm
+      # python textfsm2xml.py --template=<the template file> --file=<the CLI dump file>
+
+   8. Store the parser template in the NED package
+
+      # cp <the template file> <NED package>/utils/textfsm/templates
+
+
+   Example using the Cisco Version parser template bundled with the TextFSM examples:
+
+      # python /usr/local/lib/python2.7/site-packages/textfsm.py cisco_version_template.textfsm cisco_version_example
+      
+      FSM Template:
+      Value Model (\S+) 
+      Value Memory (\S+)
+      Value ConfigRegister (0x\S+)
+      Value Uptime (.*)
+      Value Version (.*?)
+      Value ReloadReason (.*)
+      Value ReloadTime (.*)
+      Value ImageFile ([^"]+)
+
+      Start
+        ^Cisco IOS Software.*Version ${Version},
+        ^.*uptime is ${Uptime}
+        ^System returned to ROM by ${ReloadReason}
+        ^System restarted at ${ReloadTime}
+        ^System image file is "${ImageFile}"
+        ^cisco ${Model} .* with ${Memory} bytes of memory
+        ^Configuration register is ${ConfigRegister}
+
+    FSM Table:
+    ['Model', 'Memory', 'ConfigRegister', 'Uptime', 'Version', 'ReloadReason', 'ReloadTime', 'ImageFile']
+    ['WS-C4948-10GE', '262144K', '0x2102', '3 days, 13 hours, 53 minutes', '12.2(31)SGA1', 'reload', '05:09:09 PDT Wed Apr 2 2008', 'bootflash:cat4500-entservicesk9-mz.122-31.SGA1.bin']
+
+
+    # cd <NED package>/utils/textfsm
+    # python textfsm2xml.py --template=cisco_version_template.textfsm --file=cisco_version_example 
+    <?xml version="1.0" ?>
+    <top>
+       <item>
+          <uptime>3 days, 13 hours, 53 minutes</uptime>
+          <config-register>0x2102</config-register>
+          <reload-time>05:09:09 PDT Wed Apr 2 2008</reload-time>
+          <reload-reason>reload</reload-reason>
+          <version>12.2(31)SGA1</version>
+          <memory>262144K</memory>
+          <image-file>bootflash:cat4500-entservicesk9-mz.122-31.SGA1.bin</image-file>
+          <model>WS-C4948-10GE</model>
+      </item>
+   </top>
+   
+   
+4. Generate a YANG model
+------------------------
+  When the parser template is finished it is necessary to instrument the NED's live status YANG model
+  with a matching schema snippet.
+
+  There is a tool named XML2Yang and bundled with the NED that can be used to make this process significantly easier.
+  It takes a XML dump and tries to build a matching YANG model out of it. Since this tool is using a best effort 
+  approach the provided XML dump must contain enough information for the tool to make the correct assumptions:
+
+  - All possible nodes must be available in the XML 
+  - XML nodes representing lists must at least contain two entries
+  - It assumes the first leaf node in the first entry of a list represents the key element. 
+    If this assumption is not correct the generated YANG model needs to be corrected manually.
+   
+  When using the XML2Yang tool the following parameters are mandatory to provide:  
+    - xml : Path to a file containing the XML dump
+    - file : The file name of the parser template without path
+    - command : The CLI command to be executed on the network device to make it display the corresponding CLI dump
+
+  The following parameter is optional:
+    - top : Name of the top node to be used in the YANG model. If not specified, the top name will be "item" 
+
+  Example using the XML dump from the previous example:
+   
+   # cd <NED package>/utils/textfsm
+   # python textfsm2xml.py --template=cisco_version_template.textfsm --file=cisco_version_example > cisco_version.xml
+
+   In this example we choose to use "version" as the top name. 
+   instead.
+
+   # ../xml2yang/xml2yang.py --xml=cisco_version.xml --file=cisco_version_template.textfsm --command="show version" --top=version
+
+   container version {
+     tailf:meta-data "ned-livestats:parser-info" {
+       tailf:meta-value "{'show':'show version','template':'cisco_version_template.textfsm'}";
+     }
+     config false;
+     leaf uptime {
+       type string;
+     }
+     leaf config-register {
+       type string;
+     }
+     leaf reload-time {
+       type string;
+     }
+     leaf reload-reason {
+       type string;
+     }
+     leaf version {
+       type string;
+     }
+     leaf memory {
+       type string;
+     }
+     leaf image-file {
+       type string;
+     }
+     leaf model {
+       type string;
+     }
+   }
+
+5. Extend the NED's YANG model
+------------------------------
+  
+  1. Open the NED live status YANG file: 
+
+  # cd  <NED package>/src
+  # emacs yang/tailf-ned-<NED name>-stats.yang
+
+  2. Add the generated YANG snippet to the YANG model
+
+  3 Recompile the NED
+
+  # make clean all
+
+   
+6. Reload NED package into NSO
+------------------------------
+  # ncs_cli -C -u admin
+  # packages reload
+
+  Test the functionality
+  # show devices device <a device> live-status <path to new operational data>
+
+  Example using the Cisco show version template:
+
+  admin@ncs# show devices device netsim-0 live-status version 
+  live-status version uptime "3 days, 13 hours, 53 minutes"
+  live-status version config-register 0x2102
+  live-status version reload-time "05:09:09 PDT Wed Apr 2 2008"
+  live-status version reload-reason reload
+  live-status version version 12.2(31)SGA1
+  live-status version memory 262144K
+  live-status version image-file bootflash:cat4500-entservicesk9-mz.122-31.SGA1.bin
+  live-status version model WS-C4948-10GE
+  admin@ncs# 
+

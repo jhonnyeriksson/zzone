@@ -1,0 +1,12 @@
+module tailf-ned-extreme-xos-id {
+  namespace "http://tail-f.com/ned/extreme-xos-id";
+  prefix extreme-xos-id;
+
+  import tailf-ncs-ned {
+    prefix ned;
+  }
+
+  identity extreme-xos {
+    base ned:cli-ned-id;
+  }
+}

@@ -1,0 +1,24 @@
+<ncs-pkg-build xmlns='http://tail-f.com/ns/ncs-pkg-build'>
+    <date>2024-08-29 14:40:03</date>
+    <file>ncs-6.3.2-extreme-xos-1.5.5.tar.gz</file>
+    <type>release</type>
+    <arch>linux.x86_64</arch>
+    <java>compiled Java class data, version 61.0</java>
+    <python></python>
+    <erlang></erlang>
+    <package>
+        <name>extreme-xos-cli-1.5</name>
+        <version>1.5.5</version>
+        <ref>1.5.5</ref>
+        <sha1>8dd989a</sha1>
+    </package>
+    <ncs>
+        <version>6.3.2</version>
+        <sha1></sha1>
+    </ncs>
+    <dev-support>
+        <version>1.0</version>
+        <branch>afb5251</branch>
+        <sha1>afb5251</sha1>
+    </dev-support>
+</ncs-pkg-build>

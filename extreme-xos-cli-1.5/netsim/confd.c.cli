@@ -1,0 +1,60 @@
+<clispec xmlns="http://tail-f.com/ns/clispec/1.0" style="c">
+
+  <operationalMode>
+    <modifications>
+      <delete src="screen-length"/>
+      <move src="write memory" dest="save configuration"/>
+      <move src="show running-config" dest="show configuration"/>
+    </modifications>
+
+    <cmd name="version" mount="show">
+      <info>System hardware and software version</info>
+      <help>System hardware and software version</help>
+      <callback>
+        <exec>
+          <osCommand>echo</osCommand>
+          <args>ExtremeXOS version  NETSIM</args>
+          <options>
+            <noInput/>
+          </options>
+        </exec>
+      </callback>
+    </cmd>
+
+     <cmd name="switch" mount="show">
+      <info>System hardware and software version</info>
+      <help>System hardware and software version</help>
+      <callback>
+        <exec>
+          <osCommand>echo</osCommand>
+          <args>System Type:  NETSIM</args>
+          <options>
+            <noInput/>
+          </options>
+        </exec>
+      </callback>
+    </cmd>
+
+
+    <cmd name="clipaging" mount="disable">
+      <info>Disable pagination</info>
+      <help>Disable pagination</help>
+      <callback>
+        <exec>
+          <osCommand>maapi</osCommand>
+          <args>--cliset screen-length 0</args>
+          <options>
+            <noInput/>
+          </options>
+        </exec>
+      </callback>
+    </cmd>
+ </operationalMode>
+
+  <configureMode>
+    <modifications>
+      <move src="show full-configuration" dest="show configuration"/>
+    </modifications>
+  </configureMode>
+
+</clispec>

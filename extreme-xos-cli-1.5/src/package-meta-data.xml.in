@@ -1,0 +1,28 @@
+<ncs-package xmlns="http://tail-f.com/ns/ncs-packages">
+  <name>extreme-xos</name>
+  <package-version>1.5.5</package-version>
+  <description>NED package for Extreme XOS</description>
+  <component>
+    <name>extreme-xos</name>
+    <ned>
+      <cli>
+        <ned-id xmlns:extreme-xos-id="http://tail-f.com/ned/extreme-xos-id">extreme-xos-id:extreme-xos</ned-id>
+        <java-class-name>com.tailf.packages.ned.extremexos.ExtremeXosNedCli</java-class-name>
+      </cli>
+      <device>
+        <vendor>Extreme</vendor>
+        <product-family>Extreme Switches</product-family>
+        <operating-system>EXOS</operating-system>
+      </device>
+      <option>
+        <name>entitlement-tag</name>
+        <value>regid.2021-01.com.cisco.extreme_XOS_NED,1.0_1e7d9726-4f47-4129-a17a-3ea61f4bb28c</value>
+      </option>
+      <option>
+        <name>show-tag</name>
+        <value>configure</value>
+      </option>
+    </ned>
+  </component>
+</ncs-package>
+

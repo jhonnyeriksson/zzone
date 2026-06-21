@@ -1,0 +1,177 @@
+{
+    "commands" : {
+        "CMD-NEW-LINE" :       "\n",
+        "CMD-CONFIG" :         "config t",
+        "CMD-SHOW" :           "show configuration",
+        "CMD-DELETE" :         "unconfigure",
+        "CMD-EXIT" :           "exit",
+        "CMD-COMMIT" :         "",
+        "CMD-CANCEL" :         "C",
+        "CMD-ACCEPT" :         "Y",
+        "CMD-REJECT" :         "N",
+        "CMD-SAVE" :           "save configuration",
+        "CMD-ESCAPE" :         "\u0003",
+        "CMD-REBOOT" :         "reboot",
+        "CMD-SHACC" : "show accounts",
+        "CMD-SCP2": "scp2"
+    },
+    "patterns" : {
+      "PAT-RNEW-PASSWORD": "Reenter password:",
+       "PAT-NEW-PASSWORD": "New password:",
+       "PAT-OLD-PASSWORD": "Current user's password:",
+        "PAT-CONTINUE-PMT" :       ".*Continue\\?\\s*\\[[Yy](es)?/[Nn](o)?\\]:\\s*$",
+         "PAT-OPER-PMT" :             ".*[^\\#\\(\\) ]+\\s*#[ ]?$",
+         "PAT-CONFIG-PMT" :           "^extreme-xos\\(config\\)#",
+        "PAT-UNKNOWN-PMT" :   "\\A\\S.*[$>]",
+        "PAT-LOGIN-PMT" :           "([Ll]ogin|[Uu]ser|[Uu]sername):",
+        "PAT-PASS-PMT" :            "[Pp]assword:",
+        "PAT-ACCEPT-PMT" :          ".*[\\[\\(][Yy]/[Nn][\\]\\)]:?",
+        "PAT-ACCEPT-LONG-PMT" :      ".*\\[[Yy]es/[Nn]o\\]:?",
+        "PAT-EXITED-PMT" :           "(\\A.*\\(.*\\)#)|(\\A\\S*#)",
+        "PAT-ANY-PMT" :              "(:|\\])\\s*$",
+        "PAT-ERROR-MSG" :            "[Ee]rror ",
+        "PAT-WARNING-MSG" :         "[Ww]arning",
+        "PAT-INFO-MSG" :            "info",
+        "PAT-COMMIT-REQUIRED-MSG" : "Skeletor says: Pattern indicating commit is required",
+        "PAT-UNCOMMITED-MSG" :      "Do you wish to save your configuration changes to primary.cfg? (y/N)",
+        "PAT-SEND-CONFIG-RETRY-MSG" : [
+            "Skeletor says: Add patterns to detect required retrys here"
+        ],
+        "PAT-SEND-CONFIG-IGNORE-RETRY-MSG" : [
+            "Skeletor says: Add patterns to detect retrys to ignore here"
+        ],
+        "PAT-SEND-CONFIG-ERROR-MSG" : [
+             "[Ee]rror.*",
+             "ERROR:.*",
+            "[Ee]xceeded.*",
+            "[Ii]nvalid.*",
+            "[Ii]ncomplete command.*",
+            "[Ii]ncomplete input.*"
+        ],
+        "PAT-SEND-CONFIG-IGNORE-DELETE-ERROR-MSG" : [
+            "Skeletor says: Add patterns to detect config errors to ignore during delete here"
+        ],
+        "PAT-SEND-CONFIG-IGNORE-ERROR-MSG" : [
+            "Remaining buffer: .*",
+            "Configuration saved to primary.cfg successfully.",
+            "Warning.*",
+            "Note:.*",
+            "Start typing the profile and end with a . as the first and the only character on a line.",
+            "Use - edit upm profile <name> - for block mode capability" 
+ 
+        ],
+        "PAT-SEND-OPER-ERROR-MSG" : [
+
+        ],
+        "PAT-SEND-OPER-NEW-LINE-MSG" : [
+            "Skeletor says: Add patterns to detect enter key press required here"
+        ],
+        "PAT-SEND-OPER-CANCEL-MSG" : [
+            "Skeletor says: Pattern to detect cancel cmd required"
+        ],
+        "PAT-SEND-ANY-IGNORE-MSG" : [
+            "Skeletor says: Pattern to ignore"
+        ],
+        "PAT-SEND-ANY-ERROR-MSG" : "Skeletor says: Pattern indicating error",
+        "PAT-SEND-ANY-ACCEPT-MSG" : [
+            "Skeletor says: Pattern to detect accept cmd required"
+        ],
+        "PAT-SEND-ANY-REJECT-MSG" : "Skeletor says: Pattern to detect reject cmd required",
+        "PAT-SEND-ANY-ESCAPE-MSG" : [
+            "Skeletor says: Add patterns to detect escape key press required here"
+        ],
+        "PAT-SEND-ANY-NEW-LINE-MSG" : [
+            "Skeletor says: Add patterns to detect enter key press required here"
+        ]
+    },
+    "actions" : {
+        "ENTER-CONFIG" : {
+            "states" : [
+               ["PAT-CONFIG-PMT", null, null, "DONE"],
+
+               ["PAT-OPER-PMT", "sendCommand", "CMD-CONFIG", "ENTER-CONFIG"]
+            ]
+        },
+        "EXIT-CONFIG" : {
+            "states" : [
+                ["PAT-CONFIG-PMT",     "sendCommand", "CMD-EXIT",   "EXIT-CONFIG"],
+                ["PAT-OPER-PMT",       null,          null,         "DONE"]
+            ]
+        },
+        "READ-CONFIG" : {
+            "states" : [
+                ["PAT-OPER-PMT", null, null, "DONE"]
+            ]
+        },
+        "SAVE-CONFIG" : {
+            "states" : [
+                ["PAT-ACCEPT-PMT",             "sendCommand", "CMD-ACCEPT",   "SAVE-CONFIG"],
+                ["PAT-SEND-OPER-CANCEL-MSG",   "sendCommand", "CMD-CANCEL",   "SAVE-CONFIG"],
+                ["PAT-SEND-OPER-NEW-LINE-MSG", "sendCommand", "CMD-NEW-LINE", "SAVE-CONFIG"],
+                ["PAT-SEND-OPER-ERROR-MSG",    "recoverError", null,          "SAVE-CONFIG"],
+                ["PAT-OPER-PMT",               null,           null,          "DONE"]
+            ]
+        },
+        "ABORT-CONFIG" : {
+            "states" : [
+                ["PAT-UNCOMMITED-MSG", "sendCommand", "CMD-REJECT", "ABORT-CONFIG"],
+                ["PAT-ACCEPT-PMT",     "sendCommand", "CMD-ACCEPT", "ABORT-CONFIG"],
+                                ["PAT-CONFIG-PMT",      "sendCommand", "CMD-EXIT",        "ABORT-CONFIG"],
+
+                ["PAT-OPER-PMT",       null,          null,         "DONE"]
+
+            ]
+        },
+        "SEND-CONFIG" : {
+            "states" : [
+                 ["PAT-OLD-PASSWORD",                 "sendOldSecret",    null,              "SEND-CONFIG"],
+                ["PAT-PASS-PMT",                            "sendSecret",    null,              "SEND-CONFIG"],
+                ["PAT-ACCEPT-PMT",                          "sendCommand",   "CMD-ACCEPT",      "SEND-CONFIG"],
+                ["PAT-ACCEPT-LONG-PMT",                     "sendCommand",   "CMD-ACCEPT-LONG", "SEND-CONFIG"],
+                ["PAT-SEND-CONFIG-IGNORE-RETRY-MSG",         null,           null,              "SEND-CONFIG"],
+                ["PAT-SEND-CONFIG-RETRY-MSG",                "sendRetry",    null,              "SEND-CONFIG"],
+                ["PAT-SEND-CONFIG-IGNORE-ERROR-MSG",         null,           null,              "SEND-CONFIG"],
+                ["PAT-SEND-CONFIG-IGNORE-DELETE-ERROR-MSG", "ignoreDelete",  null,              "SEND-CONFIG"],
+                ["PAT-SEND-CONFIG-ERROR-MSG",               "recoverError",  null,              "SEND-CONFIG"],
+                ["PAT-OPER-PMT",                          null,            null,              "DONE"],
+                ["PAT-UNKNOWN-PMT",                         "reportWarning", null,              "SEND-CONFIG"],
+                ["PAT-CONFIG-PMT",                          null,            null,              "DONE"]
+
+            ]
+        },
+        "SEND-OPER" : {
+            "states" : [
+                ["PAT-ACCEPT-PMT",             "sendCommand", "CMD-ACCEPT",   "SEND-OPER"],
+                ["PAT-SEND-OPER-CANCEL-MSG",   "sendCommand", "CMD-CANCEL",   "SEND-OPER"],
+                ["PAT-SEND-OPER-NEW-LINE-MSG", "sendCommand", "CMD-NEW-LINE", "SEND-OPER"],
+                ["PAT-SEND-CONFIG-IGNORE-ERROR-MSG",         null,           null,              "SEND-OPER"],
+
+                ["PAT-SEND-OPER-ERROR-MSG",    "recoverError", null,          "SEND-OPER"],
+                ["PAT-OPER-PMT",               null,           null,          "DONE"]
+            ]
+        },
+        "SEND-ANY" : {
+            "flush" : true,
+            "states" : [
+                ["PAT-SEND-ANY-IGNORE-MSG",   null,          null,           "SEND-ANY"],
+                ["PAT-SEND-ANY-ERROR-MSG",    "reportError", null,           "SEND-ANY"],
+                ["PAT-SEND-ANY-ACCEPT-MSG",   "sendCommand", "CMD-ACCEPT",   "SEND-ANY"],
+                ["PAT-SEND-ANY-REJECT-MSG",   "sendCommand", "CMD-REJECT",   "SEND-ANY"],
+                ["PAT-SEND-ANY-ESCAPE-MSG",   "sendCommand", "CMD-ESCAPE",   "SEND-ANY"],
+                ["PAT-SEND-ANY-NEW-LINE-MSG", "sendCommand", "CMD-NEW-LINE", "SEND-ANY"],
+                ["PAT-OPER-PMT",              null,           null,          "DONE"],
+                                ["PAT-CONFIG-PMT",            null,           null,          "DONE"]
+
+            ]
+        },
+        "EXIT-PROMPTS" : {
+            "states" : [
+                ["PAT-OPER-PMT",   null,          null,        "DONE"],
+                ["PAT-EXITED-PMT", null,          null,        "DONE"],
+                                ["PAT-CONFIG-PMT",     "sendCommand", "CMD-EXIT",   "EXIT-PROMPTS"],
+
+                ["PAT-ANY-PMT",   "sendCommand", "CMD-ESCAPE", "EXIT-PROMPTS"]
+            ]
+        }
+    }
+}

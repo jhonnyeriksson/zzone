@@ -1,0 +1,19 @@
+module extreme-xos-cli {
+  yang-version 1.1;
+  namespace "http://tail-f.com/ns/ned-id/extreme-xos-cli";
+  prefix extreme-xos-cli;
+
+  import tailf-common {
+    prefix tailf;
+  }
+
+  import tailf-ncs-ned {
+    prefix ned;
+  }
+
+  identity extreme-xos-cli {
+    tailf:abstract;
+    base ned:cli-ned-id;
+    
+  }
+}

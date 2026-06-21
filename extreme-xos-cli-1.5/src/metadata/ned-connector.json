@@ -1,0 +1,138 @@
+{
+    "commands" : {
+        "CMD-INIT-PROXY" :        "PROVIDED BY THE NED",
+        "CMD-REMOTE-NAME":        "PROVIDED BY THE NED",
+        "CMD-REMOTE-PASS" :       "PROVIDED BY THE NED",
+        "CMD-PROXY-REMOTE-NAME" : "PROVIDED BY THE NED",
+        "CMD-PROXY-REMOTE-PASS" : "PROVIDED BY THE NED",
+        "CMD-ACCEPT" :            "Yes",
+        "CMD-REJECT" :            "No",
+        "CMD-PAGINATE" :          "disable clipaging",
+        "CMD-VERSION" :           "show version",
+        "CMD-MODEL" :           "show switch",
+        "CMD-NEW-LINE" :          "\n"
+    },
+    "patterns" : {
+        "PAT-IGNORE-MSG" :         [
+        "ExtremeXOS",
+"Copyright (C) 1996-2018 Extreme Networks. All rights reserved.",
+"This product is protected by one or more US patents listed at https://www.extremenetworks.com/company/legal/patents/ along with their foreign counterparts.",
+"==============================================================================",
+
+
+"Press the <tab> or '?' key at any time for completions.",
+"Remember to save your configuration changes.",
+"Last login:.*"
+        ],
+        "PAT-ERROR-MSG" :          [
+            "Error: .+",
+            "[Aa]uthentication [Ff]ail",
+            "[Bb]ad [Pp]assword",
+            "[Ll]ogin [Ii]nvalid",
+            "[Aa]ccess [Dd]enied",
+            "[Pp]ermission [Dd]enied",
+            "[Rr]equest [Dd]enied",
+            "[Uu]sername or [Pp]assword (is incorrect|[Ee]rror)",
+            "[Pp]assword is invalid",
+            "[Cc]onnection refused"
+
+        ],
+
+         "PAT-PROXY-ERROR-MSG" : [
+            "Error: .+",
+            "[Aa]uthentication [Ff]ail",
+            "[Bb]ad [Pp]assword",
+            "[Ll]ogin [Ii]nvalid",
+            "[Aa]ccess [Dd]enied",
+            "[Pp]ermission [Dd]enied",
+            "[Rr]equest [Dd]enied",
+            "[Uu]sername or [Pp]assword (is incorrect|[Ee]rror)",
+            "[Pp]assword is invalid",
+            "[Cc]onnection refused",
+            "telnet: .*",
+            "ssh: .*",
+            ".*Configuration console exit, please retry to log on",
+            ".*The connection was closed by the remote host."
+        ],
+
+
+        "PAT-DEVICE-PMT" :     ".*[^\\# ]+\\s*#[ ]?$",
+        "PAT-PROXY-PMT" :       "PROVIDED BY THE NED",
+        "PAT-PROXY-ACCEPT" :    "\\A[a-zA-Z0-9][^\\# ]+#[ ]?$",
+        "PAT-LOGIN-PMT" :       "^.*([Ll]ogin|[Uu]ser|[Uu]sername):[ ]?$",
+        "PAT-PASSWORD-PMT" :    "[Pp]assword:[ ]?$",
+        "PAT-PASSWORD-CHANGE" : "[Nn]New [Pp]assword:[ ]?$",
+        "PAT-NETSIM" :          ".*(NETSIM).*",
+        "PAT-VERSION" :    ".*ExtremeXOS version\\s*([^\\s]*)\\s*",
+        "PAT-MODEL" :          "System Type:\\s*([^\\s]*)\\s*",
+        "PAT-SERIAL" :         "Switch\\s*:\\s*[^\\s]*\\s*([^\\s]*)\\s*",
+        "PAT-GATEWAY": "User Access Verification"
+    },
+
+
+
+   "actions" : {
+        "CONNECT" : {
+            "states" : [
+                ["PAT-GATEWAY",        null,          null,    "CONNECT-GATEWAY"],
+            
+                ["PAT-IGNORE-MSG",      null,          null,              "CONNECT"],
+                ["PAT-PASSWORD-PMT",    "sendSecret",  "CMD-REMOTE-PASS", "CONNECT"],
+                ["PAT-LOGIN-PMT",       "sendCommand", "CMD-REMOTE-NAME", "CONNECT"],
+                ["PAT-ERROR-MSG",       "reportError", null,              "CONNECT"],
+                ["PAT-PROXY-PMT",       "sendCommand", "CMD-INIT-PROXY",  "CONNECT-PROXY"],
+                ["PAT-DEVICE-PMT",        null,          null,              "DONE"]
+            ]
+        },
+        "CONNECT-PROXY" : {
+            "states" : [
+                ["PAT-IGNORE-MSG",      null,          null,                    "CONNECT-PROXY"],
+                ["PAT-PROXY-ACCEPT",    "sendCommand", "CMD-ACCEPT",            "CONNECT-PROXY"],
+                ["PAT-PASSWORD-CHANGE", "sendCommand", "CMD-REJECT",            "CONNECT-PROXY"],
+                ["PAT-PASSWORD-PMT",    "sendSecret",  "CMD-PROXY-REMOTE-PASS", "CONNECT-PROXY"],
+                ["PAT-LOGIN-PMT",       "sendCommand", "CMD-PROXY-REMOTE-NAME", "CONNECT-PROXY"],
+                ["PAT-ERROR-MSG",       "reportError", null,                    "CONNECT-PROXY"],
+                ["PAT-PROXY-ERROR-MSG", "reportError", null,                    "CONNECT-PROXY"],
+                ["PAT-DEVICE-PMT",         null,         null,                    "DONE"]
+            ]
+        },
+        "CONNECT-GATEWAY" : {
+            "states" : [
+                ["PAT-IGNORE-MSG",      null,          null,                    "CONNECT-GATEWAY"],
+                ["PAT-PASSWORD-PMT",    "sendSecret",  "CMD-REMOTE-PASS", "CONNECT-PROXY"],
+                ["PAT-ERROR-MSG",       "reportError", null,                    "CONNECT-GATEWAY"],
+                ["PAT-PROXY-ERROR-MSG", "reportError", null,                    "CONNECT-GATEWAY"],
+                ["PAT-DEVICE-PMT",         null,         null,                    "DONE"]
+            ]
+        },
+        "PROBE" : {
+            "init": "CMD-PAGINATE",
+            "states" : [
+                ["PAT-ERROR-MSG",  "reportError", null, "PROBE"],
+                ["PAT-DEVICE-PMT",   null,          null, "PROBE-PLATFORM"]
+            ]
+        },
+        "KEEP-ALIVE" : {
+          "init" : "CMD-NEW-LINE",
+          "states" : [
+                ["PAT-DEVICE-PMT",   null, null, "DONE"]            ]
+        },
+        "PROBE-PLATFORM" : {
+            "init" : "CMD-VERSION",
+            "states" : [
+                ["PAT-ERROR-MSG",  "reportError", null, "DONE"],
+                ["PAT-SERIAL",    "setData", "SERIAL",   "PROBE-PLATFORM"],
+                ["PAT-VERSION",  "setData", "VERSION", "PROBE-PLATFORM"],
+                ["PAT-DEVICE-PMT", null,      null,      "PROBE-MODEL"]
+            ]
+        },
+        "PROBE-MODEL" : {
+            "init" : "CMD-MODEL",
+            "states" : [
+                ["PAT-ERROR-MSG",  "reportError", null, "DONE"],
+                ["PAT-MODEL",    "setData", "MODEL",   "PROBE-MODEL"],
+                ["PAT-DEVICE-PMT", null,      null,      "DONE"]
+            ]
+        }
+    }
+}

@@ -1,0 +1,1159 @@
+extreme-xos v1.5.5 [2024-08-29]
+================================================================================
+
+Enhancements:
+
+  - Add device info for auto-configure feature
+     (EXOS-101)
+
+  - Update Nedcom to 1.317
+     (EXOS-102)
+
+
+Corrections:
+
+  - update Nedcom to 1.310
+     (EXOS-100)
+
+YANG model changes since 1.5.4:
+
+
+extreme-xos v1.5.4 [2024-05-10]
+================================================================================
+
+Corrections:
+
+  - Add missing dependency at Modify operation for //enable/stpd/auto-bind/vlan vs //configure stpd *.
+    Add exos-1 device lab with dedicated test for this issue.
+    Add error ignore in case of //configure netlogin ports error created by auto-create/delete.
+    Add default value 0 for //ports debounce time
+     (EXOS-98 / BEMS01749253 / SR-697184018)
+
+
+Enhancements:
+
+  - Add exos-1 lab device connection support
+     (EXOS-97)
+
+YANG model changes since 1.5.3:
+
+  Changed nodes:
+  /configure/ports/port_list/debounce/time
+  
+  Changed nodes in grouping <ports-enable-grouping@127>
+  /configure/stpd/ports/bpdu-restrict/...
+  /configure/stpd/ports/edge-safeguard/...
+      ports
+
+
+extreme-xos v1.5.3 [2024-04-26]
+================================================================================
+
+Enhancements:
+
+  - fix no-op warnings
+     (EXOS-95)
+
+
+Corrections:
+
+  - EXOS-94
+    * Add dependency order between create/log/target/upm,
+    /configure/log/target/upm,/create/log/filter, /create/upm/profile that fixes
+    deletion/modify scenario
+     (EXOS-94 / BEMS01741242 / SR-697184018)
+
+YANG model changes since 1.5.2:
+
+  Changed nodes:
+  /configure/log/target/upm
+  /create/log/target/upm
+  /enable/log/target/upm
+
+
+extreme-xos v1.5.2 [2024-03-29]
+================================================================================
+
+Enhancements:
+
+  - ned-info update
+     (EXOS-90)
+
+  - Update Nedcom to 1.306 + necessary fixes for it
+     (EXOS-93)
+
+
+Corrections:
+
+  - EXOS-91
+    * Add Redeploy of snmp access-profile functionality when the referenced
+    access-list is modified. This means that when an ACL is modified, the
+    referenced snmp access-profile is first deleted, then the acl is deleted,
+    followed by the recreate of the updated acl and finally putting back the
+    removed snmp access-profile
+     (EXOS-91 / BEMS01735668 / SR-697105524)
+
+  - Add support for Modify operation for /create/upm/profile, by adding specially tailored 'remove-before-change' functionality
+     (EXOS-92 / BEMS01736180 / SR-697112576)
+
+YANG model changes since 1.5.1:
+
+  Changed nodes:
+  /create/access-list
+  /create/upm/profile
+
+
+extreme-xos v1.5.1 [2023-10-06]
+================================================================================
+
+Corrections:
+
+  - Add missing dependency order between /configure/vlan*/add/ports* and /disable (no enable)/ip-security/dhcp-snooping/vlan */ports
+     (EXOS-89 / BEMS01647251 / SR-696139548)
+
+YANG model changes since 1.5:
+
+  Changed nodes:
+  /enable/ip-security/dhcp-snooping/vlan/ports
+
+
+extreme-xos v1.5 [2023-09-22]
+================================================================================
+Changes that might affect a package upgrade from version 1.4:
+  NOTE: The below YANG model changes are not backwards compatible:
+
+  Incompatible nodes:
+  /configure/netlogin/add/mac-list/ports
+
+
+Corrections:
+
+  - Fix missing dependency order between //configure vlan * add ports * and //enable ip-security dhcp-snooping vlan * ports *
+     (EXOS-87 / BSP-3494 / BEMS01644260)
+
+  - Change element type from leaf-list to leaf for /configure/netlogin/add/mac-list */ports as leaf-list functionality is not 
+    compatible with the device, and due to its presence, NSO tries to add/delete elements to the ports (not possible in the device), 
+    causing incorrect configuration commands.
+     (EXOS-88 / BSP-3495 / BEMS01644441)
+
+YANG model changes since 1.4:
+
+  Changed nodes:
+  /configure/netlogin/add/mac-list
+  /configure/netlogin/add/mac-list/ports
+  /enable/ip-security/dhcp-snooping/vlan
+  /enable/ip-security/dhcp-snooping/vlan/ports
+
+
+extreme-xos v1.4 [2023-09-01]
+================================================================================
+Changes that might affect a package upgrade from version 1.3.7:
+  NOTE: The below YANG model changes are not backwards compatible:
+
+  Removed nodes:
+  /configure/stpd/ports/mode/dot1d
+
+
+Enhancements:
+
+  - Remove /configure/stpd* ports mode dot1d* as it's autoconfigurable by device.
+    Remove meta-data tags from dry-run native output when
+    /ned-settings/extreme-xos/logger/level is not set to debug (e.g info)
+     (EXOS-86 / BSP-3422 / BEMS01636579)
+
+YANG model changes since 1.3.7:
+
+
+extreme-xos v1.3.7 [2023-08-14]
+================================================================================
+
+Corrections:
+
+  - Fix several ordering issues between //create/stpd, //enable/stpd and configure/stpd
+    README update
+     (EXOS-85 / BSP-3269 / BEMS01624215)
+
+YANG model changes since 1.3.6:
+
+  Changed nodes:
+  /configure/stpd
+  /configure/stpd/ports/link-type
+  /enable/stpd
+  /enable/stpd/auto-bind
+  /enable/stpd/auto-bind/vlan
+  
+  Changed nodes in grouping <ports-enable-grouping@114>
+  /configure/stpd/ports/bpdu-restrict/...
+  /configure/stpd/ports/edge-safeguard/...
+      ports
+
+
+extreme-xos v1.3.6 [2023-07-03]
+================================================================================
+
+Enhancements:
+
+  - EXOS-84
+    * Add the below yang elements
+    * Add +configure stpd s0 add vlan BLACK_HOLE ports 1-3 dot1d
+    +configure stpd s0 ports link-type edge 1
+    +
+    +configure cdp voip-vlan NAC_INET_USER ports 1-2
+    +configure lldp port 3 advertise port-description
+    +configure lldp port 1 advertise system-capabilities
+    +configure lldp port 2 advertise management-address
+    +configure inline-power detection legacy-and-802.3af 4-point ports 1
+     (EXOS-84 / BSP-3086 / BEMS01608153)
+
+YANG model changes since 1.3.5:
+
+  New nodes:
+  /configure/cdp/voip-vlan
+  /configure/cdp/voip-vlan/ports
+  /configure/cdp/voip-vlan/ports/id
+  /configure/cdp/voip-vlan/vlan_name
+  /configure/inline-power/detection/portlist
+  /configure/inline-power/detection/portlist/legacy-and-802.3af
+  /configure/inline-power/detection/portlist/ports
+  /configure/lldp/ports
+  /configure/lldp/ports/advertise/management-address
+  /configure/lldp/ports/advertise/port-description
+  /configure/lldp/ports/advertise/system-capabilities
+  /configure/lldp/ports/id
+  /configure/stpd/add
+  /configure/stpd/add/dot1d
+  /configure/stpd/add/ports
+  /configure/stpd/add/vlan
+  /configure/stpd/ports/link-type
+  /configure/stpd/ports/link-type/edge
+  /configure/stpd/ports/link-type/ports
+  /configure/stpd/ports/mode/dot1d
+
+
+extreme-xos v1.3.5 [2023-06-16]
+================================================================================
+
+Enhancements:
+
+  - Add /ned-settings extreme-xos write inject-command *.
+    Updated README-ned-settings.md
+     (EXOS-83 / BSP-3044 / BEMS01604298)
+
+YANG model changes since 1.3.4:
+
+
+extreme-xos v1.3.4 [2023-05-19]
+================================================================================
+
+Enhancements:
+
+  - Enhancements:
+    - This NED is now bundled with the new harmonised style of NED README
+    files.
+    The information has been divided into two markdown annotated README
+    files:
+    - README.md (the main README)
+    - README-ned-settings.md (info about all available NED settings)
+     (EXOS-79)
+
+  - EXOS-81
+    * Add /configure access-list <filename> any *
+     (EXOS-81 / BSP-2961 / BEMS01597586)
+
+YANG model changes since 1.3.3:
+
+  New nodes:
+  /configure/access-list
+  /configure/access-list/aclname
+  /configure/access-list/any
+
+
+extreme-xos v1.3.3 [2023-05-12]
+================================================================================
+
+Enhancements:
+
+  - Migrated drned tests to python3.
+     (EXOS-77)
+
+  - Add /create stpd *
+     (EXOS-80 / BSP-1615 / BEMS01595378)
+
+YANG model changes since 1.3.2:
+
+  New nodes:
+  /create/stpd
+  /create/stpd/name
+
+
+extreme-xos v1.3.2 [2023-04-12]
+================================================================================
+
+Enhancements:
+
+  - Add /disable/edp/ports *
+     (EXOS-78)
+
+YANG model changes since 1.3.1:
+
+  New nodes:
+  /disable/edp/ports
+  /disable/edp/ports/id
+
+  Changed nodes:
+  /enable/cdp
+
+
+extreme-xos v1.3.1 [2023-04-03]
+================================================================================
+
+Enhancements:
+
+  - Add:
+    - enable cdp ports <int> 
+    - enable ip-security dhcp-snooping vlan <string> port <int>
+    violation-action { <drop-packet> | <none> }
+    - configure stpd <string> ports edge-safeguard enable <int>
+    - configure stpd <string> ports bpdu-restrict enable <int>
+     (EXOS-76 / BSP-1472 / BEMS01580943)
+
+YANG model changes since 1.3:
+
+  New nodes:
+  /configure/stpd
+  /configure/stpd/name
+  /enable/cdp/ports
+  /enable/cdp/ports/id
+  /enable/ip-security/dhcp-snooping/vlan
+  /enable/ip-security/dhcp-snooping/vlan/id
+  /enable/ip-security/dhcp-snooping/vlan/ports
+  /enable/ip-security/dhcp-snooping/vlan/ports/id
+  /enable/ip-security/dhcp-snooping/vlan/ports/violation-action
+  
+  New nodes in grouping <ports-enable-grouping@87>
+  /configure/stpd/ports/bpdu-restrict/...
+  /configure/stpd/ports/edge-safeguard/...
+      ports
+      ports/enable
+      ports/id
+
+
+extreme-xos v1.3 [2023-03-20]
+================================================================================
+Changes that might affect a package upgrade from version 1.2.15:
+  NOTE: The below YANG model changes are not backwards compatible:
+
+  Incompatible nodes:
+  /create/qosprofile
+
+  Removed nodes:
+  /create/qosprofile/qosprofile
+
+
+Enhancements:
+
+  - EXOS-74 part2
+    * Add the below elements
+     (EXOS-74 / BSP-1259 / BEMS01561000)
+
+YANG model changes since 1.2.15:
+
+  New nodes:
+  /configure/log/filter
+  /configure/log/filter/add/events
+  /configure/log/filter/name
+  /configure/log/target/upm
+  /configure/log/target/upm/filter
+  /configure/log/target/upm/name
+  /configure/log/target/upm/severity
+  /configure/netlogin/add/mac-list
+  /configure/netlogin/add/mac-list/mac
+  /configure/netlogin/add/mac-list/mask
+  /configure/netlogin/add/mac-list/ports
+  /configure/netlogin/authentication/protocol-order
+  /configure/netlogin/dot1x/ports
+  /configure/netlogin/dot1x/ports/id
+  /configure/netlogin/dot1x/ports/timers/quiet-period
+  /configure/netlogin/dot1x/ports/timers/server-timeout
+  /configure/netlogin/dot1x/ports/timers/supp-resp-timeout
+  /configure/netlogin/mac/authentication/database-order/local
+  /configure/netlogin/mac/authentication/database-order/radius
+  /configure/netlogin/mac/ports
+  /configure/netlogin/mac/ports/id
+  /configure/netlogin/mac/ports/timers/delay
+  /configure/netlogin/mac/ports/timers/reauth-wrap/reauth-period
+  /configure/netlogin/mac/ports/timers/reauth-wrap/reauthentication
+  /configure/netlogin/ports
+  /configure/netlogin/ports/id
+  /configure/netlogin/ports/mode
+  /configure/netlogin/vlan
+  /configure/policy/captive-portal/listening
+  /configure/policy/captive-portal/web-redirect
+  /configure/policy/captive-portal/web-redirect/index
+  /configure/policy/captive-portal/web-redirect/server
+  /configure/policy/captive-portal/web-redirect/status
+  /configure/policy/captive-portal/web-redirect/url
+  /configure/policy/maptable/response
+  /configure/policy/profile
+  /configure/policy/profile/access-list
+  /configure/policy/profile/index
+  /configure/policy/profile/name
+  /configure/policy/profile/pvid
+  /configure/policy/profile/pvid-status
+  /configure/policy/profile/web-redirect
+  /configure/policy/rule-model
+  /configure/policy/slices/shared
+  /configure/policy/slices/tci-overwrite
+  /configure/policy/vlanauthorization/enable
+  /configure/radius/dynamic-authorization
+  /configure/radius/dynamic-authorization/index
+  /configure/radius/dynamic-authorization/nas-ip
+  /configure/radius/dynamic-authorization/server/client-ip
+  /configure/radius/dynamic-authorization/server/host
+  /configure/radius/netlogin/server
+  /configure/radius/netlogin/server/client-ip
+  /configure/radius/netlogin/server/index
+  /configure/radius/netlogin/server/server
+  /configure/radius/netlogin/server/udp-port
+  /configure/radius/server
+  /configure/radius/server/index
+  /configure/vlan/add/ports/tagged
+  /create/log/filter
+  /create/log/target/upm
+  /create/upm/profile
+  /create/upm/profile/commands
+  /create/upm/profile/name
+  /enable/log/target/upm
+  /enable/netlogin/ports
+  /enable/netlogin/ports/id
+  /enable/policy
+  /enable/radius/dynamic-authorization
+  /enable/radius/netlogin
+  /enable/stpd
+  /enable/stpd/auto-bind/vlan
+  /enable/stpd/name
+  
+  New nodes in grouping <radius-timeout-grouping@123>
+  /configure/radius/...
+  /configure/radius/mgmt-access/...
+  /configure/radius/netlogin/...
+      timeout
+  
+  New nodes in grouping <shared-secret-grouping@135>
+  /configure/radius/dynamic-authorization/server/...
+  /configure/radius/server/...
+      shared-secret/encrypted
+  
+  New nodes in grouping <vr-grouping@231>
+  /configure/radius/dynamic-authorization/server/...
+  /configure/radius/netlogin/server/...
+      vr
+  
+  New nodes in grouping <netlogin-authprotocol-grouping@105>
+  /enable/netlogin/dot1x-max/...
+  /enable/netlogin/ports/...
+      dot1x
+      mac
+      web-based
+
+  Changed nodes:
+  /configure
+  /configure/ports/port_list
+  /configure/vlan/add/ports
+  /configure/vr/delete
+  /create/qosprofile
+  
+  Changed nodes in grouping <tacacs-server-grouping@277>
+  /configure/tacacs-accounting/primary/...
+  /configure/tacacs-accounting/secondary/...
+  /configure/tacacs/primary/...
+  /configure/tacacs/secondary/...
+      shared-secret
+
+
+extreme-xos v1.2.15 [2023-03-06]
+================================================================================
+
+Corrections:
+
+  - Add extra output support for live-status exec scp2, when downloading image version 30.5.1.15
+     (EXOS-75 / BSP-1314 / BEMS01568184)
+
+
+Enhancements:
+
+  - EXOS-74
+    * Add the following elements: 1. configure ports <int> description-string
+    <string>
+    2. unconfigure ports <int> description-string
+    3. configure port <int> rate-limit flood broadcast <int>
+    4. configure port <int> rate-limit flood broadcast no-limit
+    5. create qosprofile <string>
+    6. enable diffserv examination port <int>
+    7. disable diffserv examination port <int>
+    8. enable dot1p examination port <int>
+    9. disable dot1p examination port <int>
+     (EXOS-74 / BSP-1259 / BEMS01561000)
+
+YANG model changes since 1.2.14:
+
+  New nodes:
+  /configure/ports/port_list/description-string
+  /configure/ports/port_list/rate-limit/flood/broadcast
+  /create/qosprofile
+  /create/qosprofile/qosprofile
+  
+  New nodes in grouping <exam-grouping@80>
+  /disable/dot1p/...
+  /enable/diffserv/...
+      examination/ports/all
+      examination/ports/ports-list
+
+  Changed nodes:
+  /configure/ports/port_list
+
+
+extreme-xos v1.2.14 [2023-02-08]
+================================================================================
+
+Enhancements:
+
+  - EXOS-73
+    * Add /live-status/exec/scp2 action command
+    * add result parsing to remove repetitive output
+     (EXOS-73 / BSP-1216 / BEMS01555547)
+
+YANG model changes since 1.2.13:
+
+
+extreme-xos v1.2.13 [2022-11-11]
+================================================================================
+
+Corrections:
+
+  - EXOS-72
+    * Nedcom update
+    * Update all loggers to be in harmony with the general Neds approach. README
+    update
+     (EXOS-72 / NEDCOM-820)
+
+YANG model changes since 1.2.12:
+
+
+extreme-xos v1.2.12 [2022-10-03]
+================================
+
+Enhancements:
+
+  - Fixed SonarQube related issues.
+     (EXOS-68 / EXOS-67)
+
+  - Infrastructure changes affecting only non-delivered files.
+     (EXOS-71)
+
+
+extreme-xos v1.2.11 [2022-05-02]
+================================================================================
+
+Corrections:
+
+  - Fix incorrect cli command for /configure/vlan* when both tag and description are set
+     (EXOS-70)
+
+YANG model changes since 1.2.10:
+
+  Changed nodes:
+  /configure/vlan
+  /configure/vlan/description
+  /configure/vlan/tag
+
+
+extreme-xos v1.2.10 [2022-04-29]
+================================================================================
+
+Enhancements:
+
+  - EXOS-69
+    * Add /enable/loopback-mode vlan *. Add /enable/ipforwarding vlan *; Add
+    /configure /log target syslog <target-address-x.x.x.x> vr VR-Default local2
+    from <src-address-x.x.x.x>. Add /onfigure snmpv3 add target-addr * param *
+    ipaddress <target-address-x.x.x.x> transport-port * from
+    <src-address-x.x.x.x>tag-list *. Add new ned-settings. Update README file.
+     (EXOS-69 / PS-44340 / RT49227)
+
+YANG model changes since 1.2.9:
+
+  New nodes:
+  /configure/log/target/syslog/from
+  /configure/snmpv3/add/target-addr/from
+  /configure/vlan/description
+  /enable/ipforwarding/vlan
+  /enable/ipforwarding/vlan/id
+  /enable/loopback-mode/vlan
+  /enable/loopback-mode/vlan/id
+
+  Changed nodes:
+  /configure/log/target/syslog
+  /configure/log/target/syslog/filter
+  /configure/log/target/syslog/format
+  /configure/vlan/ipaddress/ipaddress
+  /configure/vlan/ipaddress/netmask
+
+
+extreme-xos v1.2.9 [2022-01-21]
+================================================================================
+
+Enhancements:
+
+  - update tests to target exos-vm 22.6 and 30.5
+     (EXOS-65)
+
+  - update Nedcom
+     (EXOS-66)
+
+YANG model changes since 1.2.8:
+
+
+extreme-xos v1.2.8 [2022-01-14]
+================================================================================
+
+Enhancements:
+
+  - update loggers to new Loggers
+     (EXOS-60)
+
+  - add /enable/cli/config-logging for  EXOS versions that are incompatible with
+  the previous format: /enable/cli-config-logging
+     (EXOS-63 / PS-43263 / RT48147)
+
+  - bump ncs-min-version to avoid nso issue
+     (EXOS-64)
+
+YANG model changes since 1.2.7:
+
+  New nodes:
+  /enable/cli/config-logging
+
+
+extreme-xos v1.2.7 [2021-10-08]
+================================================================================
+
+Enhancements:
+
+  - Add secrets handling for /configure/snmpv3/add/user passwords
+     (EXOS-61 / PS-42704 / RT47583)
+
+YANG model changes since 1.2.6:
+
+  Changed nodes:
+  /configure/snmpv3/add/user/auth-encrypted/localized-key
+  /configure/snmpv3/add/user/localized-key
+
+
+extreme-xos v1.2.6 [2021-10-05]
+================================================================================
+
+Corrections:
+
+  - update netsim detector
+     (EXOS-59)
+
+YANG model changes since 1.2.5:
+
+
+extreme-xos v1.2.5 [2021-09-18]
+================================================================================
+
+Enhancements:
+
+  - Infrastructure changes affecting only non-delivered files.
+     (EXOS-57)
+
+  - Reworked netsim detector.
+     (EXOS-58)
+
+
+extreme-xos v1.2.4 [2021-09-03]
+================================================================================
+
+Corrections:
+
+  - Update platform info regex matching based on physical device show commands output format instead of virtual device format
+     (EXOS-56 / PS-42327 / RT47207)
+
+YANG model changes since 1.2.3:
+
+
+extreme-xos v1.2.3 [2021-08-27]
+================================================================================
+Enhancements:
+
+  - update Nedcom to 1.213
+
+
+Corrections:
+
+  - Add fix for incorrect ordered-by user list entries ordering
+     (EXOS-55 / PS-42271 / RT47151)
+
+YANG model changes since 1.2.2:
+
+  Changed nodes:
+  /configure/dns-client/add/domain-suffix
+  /configure/dns-client/add/name-server
+
+
+extreme-xos v1.2.2 [2021-06-25]
+================================================================================
+
+Corrections:
+
+  - add support for default accounts creation
+     (EXOS-50 / PS-41676 / RT46562)
+
+
+Enhancements:
+
+  - change device command to 'show configuration detail' to get the actual password values for the default accounts;add special handling for empty password string for the 'old-password'; README update
+     (EXOS-49 / PS-41635 / RT46521)
+
+YANG model changes since 1.2.1:
+
+
+extreme-xos v1.2.1 [2021-06-15]
+================================================================================
+
+Enhancements:
+
+  - EXOS-48 dev
+    * change account password from a single leaf containing the new and old
+    passwords to two dedicated leaves; readme update
+    * nedcom update
+     (EXOS-48 / PS-41531 / RT46412)
+
+YANG model changes since 1.2:
+
+  New nodes:
+  /create/account/old-password
+
+  Changed nodes:
+  /create/account/encrypted
+
+
+extreme-xos v1.2 [2021-05-21]
+================================================================================
+Changes that might affect a package upgrade from version 1.1.4:
+  NOTE: The below YANG model changes are not backwards compatible:
+
+  Incompatible nodes:
+  /configure/snmpv3/add/user
+
+  Removed nodes:
+  /configure/snmpv3/add/user/auth-encrypted/hex
+  /configure/snmpv3/add/user/engine-id
+  /configure/snmpv3/add/user/hex
+
+
+Corrections:
+
+  - EXOS-45
+    * Ignore failing tests due to nso-5.2.2.1
+    * More tests to be ignored
+     (EXOS-45)
+
+  - EXOS-46 dev
+    * Remove /configure/snmv3/add/user * engine-id as this value it's an
+    operational data, and the user only uses the local engine-id. The engine-id
+    value is omitted at config and show.
+    * Add fix proper handling of
+    /configure/snmv3/add/user */authentication */auth-encrypted/localized-key
+    and /privacy-encrypted localized-key to support both clear-text and NSO
+    encrypted strings as input. README update
+    * tests update
+     (EXOS-46 / PS-41243 / RT46126)
+
+
+Enhancements:
+
+  - EXOS-42 dev
+    * add /configure/snmp/location default value and delete behavior as set to
+    default
+    * add default values to /snmp/sysName and /snm/sysContact; add delete
+    handling for /sysName by setting it to default value
+    * tests update
+    * update /snmp/sysContact to set to default at delete
+    * update test
+     (EXOS-42 / PS-41156 / RT46039)
+
+  - EXOS-44 dev
+    * add support for nso encrypted single password value containing new and old
+    passwords
+    * update /create/accounts/ list to support password change using 'configure
+    accounts' command
+    * update secrets handling to support both single password and <new old>
+    passwords format
+    * add hiddent users to 'create account' list, using 'show accounts' output and
+    add support for password change for hidden users
+    * update README file
+    * update for netsim
+     (EXOS-44 / PS-41171 / RT46054)
+
+  - Removed unneeded xos40:0.txt file
+     (EXOS-47)
+
+YANG model changes since 1.1.4:
+
+  Changed nodes:
+  /configure
+  /configure/snmp/sysContact
+  /configure/snmp/sysLocation
+  /configure/snmp/sysName
+  /configure/snmpv3/add/user
+  /configure/snmpv3/add/user/auth-encrypted/localized-key
+  /configure/snmpv3/add/user/localized-key
+  /create/account
+  /create/account/encrypted
+
+
+extreme-xos v1.1.4 [2021-04-23]
+================================================================================
+
+Enhancements:
+
+  - update Nedcom to 1.203
+     (EXOS-41)
+
+YANG model changes since 1.1.3:
+
+
+extreme-xos v1.1.3 [2021-04-19]
+================================================================================
+
+Corrections:
+
+  - Add default values for /configure/tacacs/timeout; /configure/tacas-accounting/timeout; Fix deletion handling for these elements and also /configure/tacas/priv-lvl
+     (EXOS-40 / PS-41035 / RT45918)
+
+YANG model changes since 1.1.2:
+
+  Changed nodes:
+  /configure/tacacs/priv-lvl
+
+  Changed nodes in grouping <tacacs-grouping@176>
+  /configure/tacacs-accounting/...
+  /configure/tacacs/...
+      timeout
+
+
+extreme-xos v1.1.2 [2021-04-16]
+================================================================================
+
+Enhancements:
+
+  - add /configure/banner/after-login
+     (EXOS-39 / PS-41000 / RT45883)
+
+YANG model changes since 1.1.1:
+
+  New nodes:
+  /configure/banner/after-login
+
+
+extreme-xos v1.1.1 [2021-04-09]
+================================================================================
+
+Enhancements:
+
+  - EXOS-38 dev
+    * Add encrypted secrets obfuscation from dry-run native format output and
+    all trace files; update loggers to use latest nedcom implementation; update
+    Nedcom to 1.200; README update
+     (EXOS-38 / PS-40922 / RT45807)
+
+YANG model changes since 1.1:
+
+
+extreme-xos v1.1 [2021-04-02]
+================================================================================
+Changes that might affect a package upgrade from version 1.0.5:
+  NOTE: The below YANG model changes are not backwards compatible:
+
+  Incompatible nodes:
+  /configure/snmpv3/add/user/privacy-encrypted
+
+  Removed nodes:
+  /configure/snmpv3/add/user/privacy-encrypted/hex
+  /configure/snmpv3/add/user/privacy-encrypted/localized-key
+
+
+Enhancements:
+
+  - EXOS-37 dev
+    * Add support for clear-text passwords for /configure/snmpv3/add/user
+    * Add /disable/snmp/traps/port-up-down/port
+    * README file update regarding clear-text passwords
+     (EXOS-37 / PS-40862 / RT45747)
+
+YANG model changes since 1.0.5:
+
+  New nodes:
+  /configure/snmpv3/add/user/hex
+  /configure/snmpv3/add/user/localized-key
+  /disable/snmp/traps/port-up-down/port
+
+  Changed nodes:
+  /configure/snmpv3/add/user/auth-encrypted
+  /configure/snmpv3/add/user/auth-encrypted/localized-key
+  /configure/snmpv3/add/user/privacy-encrypted
+
+
+extreme-xos v1.0.5 [2021-03-22]
+================================================================================
+
+Corrections:
+
+  - Set ncs-min-version to 5.2.2.1
+     (EXOS-36 / PS-40744 / RT45626)
+
+YANG model changes since 1.0.4:
+
+
+extreme-xos v1.0.4 [2021-03-19]
+================================================================================
+
+Corrections:
+
+  - Add 'ordered-by user' to /dns-client/add/name-server and /dns-client/add/domain-suffix
+     (EXOS-34 / PS-40655 / RT45538)
+
+  - remove trailing '\n' from banner causing compare diff in some cases
+     (EXOS-35 / PS-40658 / RT45541)
+
+YANG model changes since 1.0.3:
+
+  Changed nodes:
+  /configure/dns-client/add/domain-suffix
+  /configure/dns-client/add/name-server
+
+
+extreme-xos v1.0.3 [2021-03-12]
+================================================================================
+
+Enhancements:
+
+  - add /timezone, /cli-config-logging, /log/debug-mode, /cli/max-sessions
+     (EXOS-32 / PS-40550 / RT45436)
+
+  - EXOS-33 dev
+    * Add /create vlan * vr *
+    * test update
+     (EXOS-33 / PS-40577 / RT45461)
+
+YANG model changes since 1.0.2:
+
+  New nodes:
+  /configure/cli/max-sessions
+  /configure/timezone/autodst
+  /configure/timezone/gmt_offset
+  /configure/timezone/name
+  /create/vlan/vr
+  /enable/cli-config-logging
+  /enable/log/debug-mode
+
+  Changed nodes:
+  /configure
+  /create/vlan
+
+
+extreme-xos v1.0.2 [2021-03-04]
+================================================================================
+
+Corrections:
+
+  - add fix for correct banner ingestion
+     (EXOS-30 / PS-40479 / RT45365)
+
+
+Enhancements:
+
+  - Add support for cleartext provisioning by default.
+    This means that service/user encrypted strings (type
+    tailf:aes-cfb-128-encrypted-string) can be passed to the Ned, that will
+    automatically decrypt values before sending it to the device as clear text
+    (without 'encrypted' tag, tag will be autoremoved from the configuration
+    line)
+     (EXOS-31 / PS-40480 / RT45366)
+
+YANG model changes since 1.0.1:
+
+  Changed nodes:
+  /create/account/encrypted
+
+
+extreme-xos v1.0.1 [2021-02-09]
+===============================
+
+    - Corrected the description in package-meta-data.xml file.
+
+
+extreme-xos v1.0 [February 5, 2021]
+================================================================================
+Initial version.
+
+YANG model:
+
+  New nodes:
+  /configure/banner/before-login/save-to-configuration
+  /configure/dns-client/add/domain-suffix
+  /configure/dns-client/add/domain-suffix/domain_name
+  /configure/dns-client/add/name-server
+  /configure/dns-client/add/name-server/ip_address
+  /configure/dns-client/add/name-server/vr
+  /configure/iproute/add/default/gateway
+  /configure/iproute/add/route
+  /configure/iproute/add/route/address
+  /configure/iproute/add/route/gateway
+  /configure/iproute/add/route/netmask
+  /configure/log/target/syslog
+  /configure/log/target/syslog/filter/filter
+  /configure/log/target/syslog/filter/severity
+  /configure/log/target/syslog/format/date
+  /configure/log/target/syslog/format/event-name
+  /configure/log/target/syslog/format/host-name
+  /configure/log/target/syslog/format/priority
+  /configure/log/target/syslog/format/severity
+  /configure/log/target/syslog/format/tag-name
+  /configure/log/target/syslog/format/timestamp
+  /configure/log/target/syslog/ipPort
+  /configure/log/target/syslog/local
+  /configure/log/target/syslog/match/any
+  /configure/log/target/syslog/match/regex
+  /configure/log/target/syslog/vr
+  /configure/ports/port_list
+  /configure/ports/port_list/debounce/time
+  /configure/ports/port_list/port
+  /configure/snmp/access-profile/add
+  /configure/snmp/access-profile/add/condition
+  /configure/snmp/access-profile/add/previous_rule
+  /configure/snmp/access-profile/add/rule
+  /configure/snmp/sysContact
+  /configure/snmp/sysLocation
+  /configure/snmp/sysName
+  /configure/snmpv3/add/access
+  /configure/snmpv3/add/access/group_name
+  /configure/snmpv3/add/access/notify-view
+  /configure/snmpv3/add/access/read-view
+  /configure/snmpv3/add/access/sec-level
+  /configure/snmpv3/add/access/sec-model
+  /configure/snmpv3/add/access/write-view
+  /configure/snmpv3/add/community
+  /configure/snmpv3/add/community/community_index
+  /configure/snmpv3/add/community/name
+  /configure/snmpv3/add/group
+  /configure/snmpv3/add/group/group_name
+  /configure/snmpv3/add/group/sec-model
+  /configure/snmpv3/add/group/user
+  /configure/snmpv3/add/target-addr
+  /configure/snmpv3/add/target-addr/addr_name
+  /configure/snmpv3/add/target-addr/ipaddress
+  /configure/snmpv3/add/target-addr/param
+  /configure/snmpv3/add/target-addr/tag-list
+  /configure/snmpv3/add/target-addr/transport-port
+  /configure/snmpv3/add/target-params
+  /configure/snmpv3/add/target-params/group_name
+  /configure/snmpv3/add/target-params/mp-model
+  /configure/snmpv3/add/target-params/sec-level
+  /configure/snmpv3/add/target-params/sec-model
+  /configure/snmpv3/add/user
+  /configure/snmpv3/add/user/aes-bits
+  /configure/snmpv3/add/user/authentication
+  /configure/snmpv3/add/user/engine-id
+  /configure/snmpv3/add/user/privacy
+  /configure/snmpv3/add/user/user_name
+  /configure/snmpv3/engine-id
+  /configure/syslog/add
+  /configure/syslog/add/ipPort
+  /configure/syslog/add/local
+  /configure/syslog/add/vr
+  /configure/tacacs/priv-lvl
+  /configure/vlan
+  /configure/vlan/add/ports
+  /configure/vlan/add/ports/id
+  /configure/vlan/add/ports/untagged
+  /configure/vlan/delete/ports
+  /configure/vlan/delete/ports/id
+  /configure/vlan/id
+  /configure/vlan/ipaddress/ipaddress
+  /configure/vlan/ipaddress/netmask
+  /configure/vlan/tag
+  /configure/vr
+  /configure/vr/add/ports
+  /configure/vr/delete/ports
+  /configure/vr/id
+  /create/access-list
+  /create/access-list/actions
+  /create/access-list/application
+  /create/access-list/conditions
+  /create/access-list/dynamic-rule
+  /create/account
+  /create/account/account-name
+  /create/account/account-type
+  /create/account/encrypted
+  /create/vlan
+  /create/vlan/id
+  /create/vr
+  /create/vr/id
+  /disable/stpd
+  /disable/stpd/stpd_name
+  /disable/telnet
+  /enable/log/target/syslog
+  /enable/log/target/syslog/ipPort
+  /enable/log/target/syslog/local
+  /enable/log/target/syslog/vr
+  /enable/snmp/access/snmp-v1v2c
+  /enable/snmp/access/snmpv3
+  /enable/snmp/traps/configuration/change
+  /enable/snmp/traps/configuration/save
+  /enable/snmp/traps/fdb
+  /enable/sntp-client
+  /enable/ssh2
+  /enable/tacacs
+  /enable/tacacs-accounting
+  /enable/tacacs-authorization
+
+  New nodes in grouping <tacacs-grouping@171>
+  /configure/tacacs-accounting/...
+  /configure/tacacs/...
+      timeout
+
+  New nodes in grouping <tacacs-server-grouping@188>
+  /configure/tacacs-accounting/primary/...
+  /configure/tacacs-accounting/secondary/...
+  /configure/tacacs/primary/...
+  /configure/tacacs/secondary/...
+      server/client-ip
+      server/host
+      server/port
+      server/vr
+      shared-secret/encrypted
+
+  New nodes in grouping <encrypt-grouping@103>
+  /configure/snmpv3/add/user/auth-encrypted/...
+  /configure/snmpv3/add/user/privacy-encrypted/...
+      hex
+      localized-key
+
+  New nodes in grouping <user-grouping@70>
+  /configure/snmpv3/add/community/...
+  /configure/snmpv3/add/target-params/...
+      user
+
+  New nodes in grouping <sntpc-grouping@125>
+  /configure/sntp-client/primary/...
+  /configure/sntp-client/secondary/...
+      host
+      vr
+
+
+
+================================================================================

@@ -1,0 +1,3341 @@
+module tailf-ned-extreme-xos {
+
+  namespace "http://tail-f.com/ned/extreme-xos";
+  prefix extreme-xos;
+
+  import tailf-common {
+    prefix tailf;
+  }
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+
+  import cliparser-extensions-v11 {
+    prefix cli;
+  }
+
+  import ietf-yang-types {
+    prefix yang;
+  }
+
+  revision 2024-05-10 {
+    description "version 1.5.4, see CHANGES";
+  }
+  // =========================================================================
+  //                        CUSTOM EXTENSIONS
+  // =========================================================================
+  
+  extension upm-list-out {
+    cli:direction "both";
+    cli:state "multi-line";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.upmListOut";
+  }
+  extension accounts-password { //replce show input "regex-target :: replacer"
+    cli:direction "to-device";
+    cli:state "post-match";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.accountsPwd";
+  }
+  extension replace-input { //replce show input "regex-target :: replacer"
+    cli:direction "from-device";
+    cli:state "pre-match";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.replaceInput";
+  }
+  extension multi-line-banner {
+    cli:direction "to-device";
+    cli:state "post-match";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.multiLineBanner";
+  }
+  extension send-secret {
+    cli:direction "to-device";
+    cli:state "post-match";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.sendSecret";
+  }
+  extension replace-delete-output {
+    cli:direction "to-device";
+    cli:state "post-match";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.deleteWith";
+    argument value;
+  }
+  extension trim-delete-if-match {
+    cli:direction "to-device";
+    cli:state "post-match";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.deleteWith";
+    argument value;
+  }
+  extension delete-with {
+    cli:direction "to-device";
+    cli:state "post-match";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.deleteWith";
+    argument value;
+  }
+
+  extension no-to-disable {
+    cli:direction "both";
+    cli:state "pre-match|post-match";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.noToDisable";
+  }
+  extension quoted-string {
+    cli:direction "to-device";
+    cli:state "post-match";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.quotedString";
+  }
+  
+  extension redeploy-access-profile-at-acl-modify {
+    cli:direction "to-device";
+    cli:state "post-match";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.redeployAccesProfileAtAclModify";
+  }
+  
+  extension remove-before-change {
+    cli:direction "to-device";
+    cli:state "post-match";
+    cli:java-callback-method "com.tailf.packages.ned.extremexos.ExtremeXosCliExtensions.removeBeforeChange";
+  }
+  
+  // =========================================================================
+  //                        GROUPINGS
+  // =========================================================================
+  grouping port-list-grouping {
+    list ports {
+      tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+        tailf:cli-when-target-create;
+      }
+      tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+        tailf:cli-when-target-delete;
+      }
+      tailf:info "Ports";
+      tailf:cli-suppress-mode;
+      tailf:cli-compact-syntax;
+      tailf:cli-range-list-syntax;
+      key id;
+      leaf id {
+        type union {
+          type uint32 {
+            tailf:info "<port_list>;;Port list";
+          }
+          type enumeration {
+            enum "all" {
+              tailf:info "all";
+            }
+          }
+        }
+      }       
+    }
+  }
+  
+  grouping ports-enable-grouping {
+    list ports {
+      extreme-xos:replace-delete-output "un(configure.*)ena(ble.*) :: $1disa$2";
+
+      tailf:cli-drop-node-name;
+      tailf:cli-diff-set-after "/extreme-xos:create/vlan" { tailf:cli-when-target-create; }
+      tailf:cli-diff-delete-before "/extreme-xos:create/vlan" { tailf:cli-when-target-delete; }
+      tailf:cli-diff-create-after "/extreme-xos:enable/stpd" { tailf:cli-when-target-create; }
+      tailf:cli-diff-delete-before "/extreme-xos:enable/stpd" { tailf:cli-when-target-delete; }
+      tailf:cli-diff-create-after "/extreme-xos:create/stpd" { tailf:cli-when-target-create; }
+      tailf:cli-diff-delete-before "/extreme-xos:create/stpd" { tailf:cli-when-target-delete; }
+      tailf:cli-diff-create-after "/extreme-xos:enable/stpd/auto-bind/vlan" { tailf:cli-when-target-set; }
+      tailf:cli-diff-create-after "/extreme-xos:enable/stpd/auto-bind/vlan" { tailf:cli-when-target-modify; }
+
+      tailf:cli-diff-delete-before "/extreme-xos:enable/stpd/auto-bind/vlan" { tailf:cli-when-target-delete; }
+      tailf:cli-diff-delete-before "/extreme-xos:enable/stpd/auto-bind/vlan" { tailf:cli-when-target-modify; }
+
+      tailf:cli-suppress-mode;
+      tailf:cli-delete-when-empty;
+      tailf:cli-range-list-syntax;
+      key id;
+      leaf id {
+        type union {
+          type uint32 {
+            tailf:info "<port_list>;;Port list";
+          }
+          type enumeration {
+            enum "all" {
+              tailf:info "all";
+            }
+          }
+        }
+      }
+      leaf enable {
+        tailf:cli-prefix-key;
+        tailf:info "Enable option"; 
+        type empty;
+      }
+    }
+  }
+  
+  grouping vlanList-grouping {
+    leaf-list vlan {
+      tailf:cli-list-syntax;
+      tailf:non-strict-leafref { path "/extreme-xos:create/vlan/id"; }
+
+      tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+        tailf:cli-when-target-create;
+      }
+      tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+        tailf:cli-when-target-delete;
+      }
+      tailf:info "VLAN";
+      type string {
+        tailf:info "<vlan_name>;;VLAN name";
+      }
+    }
+  }
+  
+  grouping netlogin-authprotocol-grouping {
+    leaf dot1x {
+      tailf:info "Configure the 802.1x authentication protocol";
+      type empty;
+      //tailf:cli-full-command;
+    }
+    leaf mac {
+      tailf:info "Configure the MAC-based authentication protocol";
+      type empty;
+      //tailf:cli-full-command;
+    }
+    leaf web-based {
+      tailf:info "Configure the web-based authentication protocol";
+      type empty;
+      //tailf:cli-full-command;
+    }
+  }
+  
+  grouping radius-timeout-grouping {
+    leaf timeout {
+      extreme-xos:replace-delete-output "unconfigure(.*) :: configure$1 3";
+      tailf:cli-no-value-on-delete;
+      tailf:info "RADIUS server timeout";
+      type uint16 {
+        tailf:info "<seconds>;;RADIUS server timeout seconds. Range is 1 to 240.";
+      }
+      default 3;
+    }
+  }
+  
+  grouping shared-secret-grouping {
+    container shared-secret {
+      tailf:info "shared secret";
+      tailf:cli-flatten-container;
+      leaf encrypted {
+        cli:secret "encrypted <SECRET>" {
+          cli:arguments "always-encrypted";
+        }
+        extreme-xos:send-secret;
+        extreme-xos:quoted-string;
+
+        tailf:info "Password is Encrypted";
+        type string {
+          tailf:info "<encrypted_secret>;;encrypted secret string";
+        }
+      }
+    }
+  }
+  
+  grouping exam-grouping {
+    container examination {
+      tailf:info "examination";
+      container ports {
+        tailf:info "ports";
+        choice ports {
+          leaf all {
+            tailf:info "all";
+            type empty;
+          }
+          leaf-list ports-list {
+            tailf:cli-list-syntax;
+            tailf:cli-range-list-syntax;
+            tailf:cli-drop-node-name;
+            type uint32 {
+              tailf:info "<port_list>;;Port list";
+            }
+          }
+        }
+      }
+    }
+  }
+  grouping user-grouping {
+    leaf user {
+      tailf:cli-suppress-no;
+      tailf:cli-no-value-on-delete;
+      tailf:cli-no-name-on-delete;
+      tailf:info "User";
+      type string {
+        tailf:info "hex|<user_name>;;Following value is to be specified in hexadecimal\n" +
+            "       User Name (in ASCII)";
+      }
+    }
+  }
+  grouping sec-level-grouping {
+    leaf sec-level {
+      tailf:info "Security Level";
+      type enumeration {
+        enum "authnopriv";
+        enum "noauth";
+        enum "priv";
+      }
+    }
+  }
+  grouping sec-model-grouping {
+    leaf sec-model {
+      tailf:info "Security Model";
+      type enumeration {
+        enum "snmpv1";
+        enum "snmpv2c";
+        enum "usm";
+      }
+    }
+  }
+
+  grouping sntpc-grouping {
+    leaf host {
+      tailf:cli-no-value-on-delete;
+      tailf:cli-drop-node-name;
+      type inet:host;
+    }
+    leaf vr {
+      tailf:cli-diff-create-after "/extreme-xos:create/vr" {
+        tailf:cli-when-target-create;
+      }
+      tailf:cli-diff-delete-before "/extreme-xos:create/vr" {
+        tailf:cli-when-target-delete;
+    }
+      tailf:cli-no-value-on-delete;
+      tailf:cli-no-name-on-delete;
+      tailf:info "Virtual router ID";
+      type string {
+        tailf:info "<vr_name>;;Virtual router ID";
+      }
+    }
+  }
+
+  grouping vr-grouping {
+    leaf vr {
+      tailf:cli-diff-create-after "/extreme-xos:create/vr" {
+        tailf:cli-when-target-create;
+      }
+      tailf:cli-diff-delete-before "/extreme-xos:create/vr" {
+        tailf:cli-when-target-delete;
+      }
+      tailf:info "Virtual router ID";
+      type string {
+        tailf:info "<vr_name>;;Virtual router ID";
+      }
+    }
+  }
+  grouping portList-grouping {
+    leaf-list ports {
+      tailf:info "Physical ports";
+      tailf:cli-range-list-syntax;
+      type uint32 {
+        tailf:info "<portlist>;;List of ports separated by comma";
+      }
+    }
+  }
+
+  grouping tacacs-grouping {
+    container primary {
+      tailf:info "primary server";
+      uses tacacs-server-grouping;
+    }
+    container secondary {
+      tailf:info "secondary server";
+      uses tacacs-server-grouping;
+    }
+    leaf timeout {
+      extreme-xos:replace-delete-output "unconfigure (\\S+) timeout :: configure $1 timeout 3";
+      tailf:ned-default-handling "trim";
+
+      tailf:cli-no-value-on-delete;
+      tailf:info "TACACS+ server timeout";
+      type uint32 {
+        tailf:info "<sec>;;TACACS+ server timeout seconds";
+      }
+      default 3;
+    }
+  }
+
+  grouping tacacs-server-grouping {
+    container server {
+      tailf:info "TACACS+ server";
+      tailf:cli-compact-syntax;
+      tailf:cli-sequence-commands;
+      leaf host {
+        tailf:cli-no-value-on-delete;
+        tailf:cli-drop-node-name;
+        type inet:host;
+      }
+      leaf port {
+        tailf:cli-no-value-on-delete;
+        tailf:cli-drop-node-name;
+        type uint32 {
+          tailf:info "<tcp_port>;;server tcp port";
+        }
+      }
+      leaf client-ip {
+        tailf:cli-no-value-on-delete;
+        tailf:cli-no-name-on-delete;
+        tailf:info "client ip";
+        type inet:ip-address {
+          tailf:info "<client_ipaddr>;;client ip ipaddress";
+        }
+      }
+      leaf vr {
+        tailf:cli-no-value-on-delete;
+        tailf:cli-no-name-on-delete;
+        tailf:cli-diff-create-after "/extreme-xos:create/vr" {
+          tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:create/vr" {
+          tailf:cli-when-target-delete;
+        }
+        tailf:info "Virtual router ID";
+        type string {
+          tailf:info "<vr_name>;;Virtual router ID";
+        }
+      }
+
+    }
+    uses shared-secret-grouping;
+  }
+
+  // =========================================================================
+  //                        MODEL
+  // =========================================================================
+
+  // =========================================================================
+  //                        CREATE/DELETE
+  // =========================================================================
+
+  container create {
+    extreme-xos:delete-with "delete";
+
+    tailf:info "Create system configuration";
+
+    //create / account *
+    list account {
+      tailf:info "Login account";
+      tailf:cli-compact-syntax;
+      tailf:cli-suppress-mode;
+      key "account-name";
+
+      leaf account-name {
+        type string {
+          tailf:info "<account-name>;;Account name";
+        }
+      }
+      leaf account-type {
+        tailf:cli-prefix-key;
+        tailf:cli-no-value-on-delete;
+        tailf:cli-drop-node-name;
+        type enumeration {
+          enum "admin" {
+            tailf:info "Administrative privilege";
+          }
+          enum "lawful-intercept" {
+            tailf:info "Lawful intercept privilege";
+          }
+          enum "user" {
+            tailf:info "User (non-administrative) privilege";
+          }
+        }
+      }
+
+      leaf encrypted {
+        tailf:cli-suppress-no;
+        tailf:cli-no-value-on-delete;
+        tailf:cli-no-name-on-delete;
+       // tailf:ned-ignore-compare-config;
+        cli:secret "encrypted <SECRET>" {
+          cli:arguments "always-encrypted";
+        }
+        extreme-xos:accounts-password;
+        tailf:info "Password is Encrypted";
+        type string {
+          tailf:info "<new_password>;;clear-text or post-encrypted hash code";
+        }
+      }
+      leaf old-password {
+        type string {
+          tailf:info "<old_password>;;clear-text old password";
+        }
+        tailf:cli-suppress-no;
+        tailf:cli-no-value-on-delete;
+        tailf:cli-no-name-on-delete;
+        tailf:cli-drop-node-name;
+        tailf:ned-ignore-compare-config;
+      }
+    }
+
+    //create / access-list *
+    list access-list {
+      extreme-xos:redeploy-access-profile-at-acl-modify;
+      tailf:info "dynamic rule";
+      tailf:cli-compact-syntax;
+      tailf:cli-delete-when-empty;
+      tailf:cli-remove-before-change;
+      tailf:cli-sequence-commands {
+        tailf:cli-reset-siblings;
+      }
+      tailf:cli-suppress-mode;
+      key dynamic-rule;
+      leaf dynamic-rule {
+        type string {
+          tailf:info "<dynamic-rule>;;Dynamic Rule Name";
+        }
+      }
+      leaf conditions {
+        tailf:cli-suppress-no;
+        tailf:cli-drop-node-name;
+        tailf:cli-no-value-on-delete;
+        type string {
+          tailf:info "<conditions>;;Conditions separated by a semi-colon";
+        }
+      }
+      leaf actions {
+        tailf:cli-suppress-no;
+        tailf:cli-drop-node-name;
+        tailf:cli-no-value-on-delete;
+
+        type string {
+          tailf:info "<actions>;;Actions separated by a semi-colon";
+        }
+      }
+      leaf application {
+        tailf:cli-suppress-no;
+        tailf:cli-no-value-on-delete;
+        tailf:cli-no-name-on-delete;
+        type string;
+      }
+    }
+
+
+    //create / vlan *
+    list vlan {
+      tailf:cli-diff-create-after "../vr" {
+        tailf:cli-when-target-create;
+      }
+      tailf:cli-diff-delete-before "../vr" {
+        tailf:cli-when-target-delete;
+      }
+      tailf:info "VLAN list (1-4094)";
+      tailf:cli-compact-syntax;
+      tailf:cli-suppress-mode;
+      key id;
+      leaf id {
+        type string {
+          tailf:info "<vlan_name>;;VLAN Name";
+        }
+      }
+      leaf vr {
+        tailf:cli-no-value-on-delete;
+        tailf:cli-no-name-on-delete;
+        type string {
+          tailf:info "<vr-name>;;Virtual router name";
+        }
+      }
+    }
+
+    //create / vr *
+    list vr {
+      tailf:info "Virtual router";
+      tailf:cli-compact-syntax;
+      tailf:cli-suppress-mode;
+      tailf:cli-delete-when-empty;
+      key id;
+      leaf id {
+        type string {
+          tailf:info "<vr-name>;;Virtual router name";
+        }
+      }
+    }
+  
+    //create qosprofile
+    leaf-list qosprofile {
+      tailf:cli-list-syntax;
+      tailf:info "qosprofile";
+      type string {
+        tailf:info "<qosprofile>;;QOS profile";
+      }
+    }
+    
+    //create log
+    container log {
+      tailf:info "Configure log service";
+      
+      //create log filter
+      leaf-list filter {
+        tailf:cli-list-syntax;
+        tailf:info "Create a filter";
+        type string {
+          tailf:info "<name>;;Name of the filter to create";
+        }
+      }
+      
+      //create log target
+      container target {
+        tailf:info "Create a target";
+      
+        leaf-list upm {
+          tailf:cli-diff-delete-before "../../filter" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-modify-before "../../filter" {
+            tailf:cli-when-target-modify;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/upm/profile" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-create-after "/extreme-xos:create/upm/profile" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/upm/profile/commands" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-create-after "/extreme-xos:create/upm/profile/commands" {
+            tailf:cli-when-target-set;
+          }
+          tailf:cli-list-syntax;
+          tailf:info "Type of the target is upm";
+          type string {
+            tailf:info "<upm_profile_name>;;Name of an already existing upm profile";
+          }
+        }
+      }
+      
+      
+    }
+    
+    //create upm profile
+    container upm {
+      tailf:info "Profile";
+      list profile {
+        extreme-xos:remove-before-change;
+        tailf:meta-data "! meta-data :: turbo :: no-prompt-after-send";
+        tailf:cli-explicit-exit;
+        tailf:cli-exit-command ".";
+        tailf:info "UPM profile";
+        key name;
+        leaf name {
+          type string {
+            tailf:info "<profile-name>;;name";
+          }
+        }
+        leaf commands {        
+          tailf:cli-drop-node-name;
+          tailf:cli-full-command;
+          tailf:cli-multi-value;
+          tailf:cli-preformatted;
+          extreme-xos:upm-list-out;
+          type string {
+            tailf:info "\"command1\ncommand\ncommand3\n...\" - commands quoted string, '\n' separated";
+          }
+        }
+      }
+      
+    }
+    
+    //create stpd *
+    list stpd {
+      tailf:info "STP domain";
+      tailf:cli-compact-syntax;
+      tailf:cli-suppress-mode;
+      tailf:cli-delete-when-empty;
+      key name;
+      leaf name {
+        type string {
+          tailf:info "<stpd_name>;;STP domain name";
+        }
+      }
+    }
+  }
+
+  // =========================================================================
+  //                        configure
+  // =========================================================================
+
+  container configure {
+    extreme-xos:delete-with "unconfigure";
+    extreme-xos:trim-delete-if-match "unconfigure vlan \\S* tag";
+    extreme-xos:trim-delete-if-match "unconfigure timezone.*";
+    extreme-xos:trim-delete-if-match "unconfigure account.*";
+    extreme-xos:trim-delete-if-match "unconfigure log target upm.*";
+  
+    //configure access-list
+    list access-list {
+      tailf:cli-diff-create-after "/extreme-xos:create/access-list" {
+        tailf:cli-when-target-create;
+      }
+      tailf:cli-diff-delete-before "/extreme-xos:create/access-list" {
+        tailf:cli-when-target-delete;
+      }
+      tailf:info "Access list";
+      tailf:cli-compact-syntax;
+      tailf:cli-remove-before-change;
+      tailf:cli-sequence-commands {
+        tailf:cli-reset-siblings;
+      }
+      tailf:cli-suppress-mode;
+      key aclname;
+      leaf aclname {
+        type string {
+          tailf:info "<aclname>;;ACL policy file name";
+        }
+      }
+      leaf any {
+        tailf:cli-no-name-on-delete;
+        tailf:cli-no-value-on-delete;
+        tailf:info "Apply the ACL to wildcard, including all VLANs and all ports";
+        type enumeration {
+          enum "egress" { tailf:info "Acls applied to egress"; } 
+          enum "ingress" { tailf:info "Acls applied to ingress"; } 
+        }
+      }
+      
+    }
+
+      //configure/snmp
+    container snmp {
+
+      tailf:info "Simple network Management Protocol";
+
+      container access-profile {
+        tailf:info "Access Profile";
+        list add {
+          tailf:info "Add";
+          tailf:cli-diff-create-after "/extreme-xos:create/access-list" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/access-list" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          tailf:cli-remove-before-change;
+          tailf:cli-sequence-commands;
+         // tailf:cli-show-long-obu-diffs;
+          tailf:cli-delete-when-empty;
+          //ordered-by user;
+          key "rule";
+          leaf rule {
+            type string {
+              tailf:info "<rule>;;Access-list rule Name";
+            }
+          }
+          leaf condition {
+            tailf:cli-drop-node-name;
+            tailf:cli-no-value-on-delete;
+            type enumeration {
+              enum "first" { tailf:info "Rule to be added as first rule"; }
+              enum "before" { tailf:info "Rule to be added before rule"; }
+              enum "after" { tailf:info "Rule to be added after rule"; }
+
+            }
+          }
+          leaf previous_rule {
+            tailf:cli-no-value-on-delete;
+            tailf:cli-drop-node-name;
+            tailf:non-strict-leafref {
+              path "/extreme-xos:configure/snmp/access-profile/add/rule";
+            }
+            type string {
+              tailf:info "<previous_rule>;;Previously added rule";
+            }
+          }
+        }
+      }
+
+      //configure/snmp/sysContact
+      leaf sysContact {
+        extreme-xos:replace-delete-output "unconfigure snmp sysContact :: configure snmp sysContact \"support@extremenetworks.com, +1 888 257 3000\"";
+        tailf:cli-no-value-on-delete;
+
+        tailf:info "System Contact";
+        type string {
+          tailf:info "<sysName>;;System Contact";
+        }
+        default "support@extremenetworks.com, +1 888 257 3000";
+      }
+      //configure/snmp/sysLocation
+      leaf sysLocation {
+        extreme-xos:replace-delete-output "unconfigure snmp sysLocation :: configure snmp sysLocation \"NO LOCATION PROVIDED\"";
+        tailf:cli-no-value-on-delete;
+        tailf:info "System Location";
+        type string {
+          tailf:info "<sysName>;;System Location";
+        }
+        default "NO LOCATION PROVIDED";
+      }
+      //configure/snmp/sysName
+      leaf sysName {
+        extreme-xos:replace-delete-output "unconfigure snmp sysName :: configure snmp sysName \"EXOS-Switch\"";
+        tailf:cli-no-value-on-delete;
+        tailf:info "System Name";
+        type string {
+          tailf:info "<sysName>;;System Name";
+        }
+        default "EXOS-Switch";
+      }
+
+    }
+
+    //configure/snmpv3
+    container snmpv3 {
+      tailf:info "Configure SNMPv3";
+
+      //configure/snmpv3//engine-id
+      leaf engine-id {
+        tailf:cli-no-value-on-delete;
+        tailf:cli-no-name-on-delete;
+        tailf:info "Configure SNMP engine-id";
+        type yang:hex-string {
+          tailf:info "<hex_engine_id>;;Engine-id (in hexadecimal)";
+        }
+      }
+
+      container add {
+        tailf:info "Add";
+
+        list access {
+          tailf:info "Access";
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          key "group_name sec-model sec-level";
+          leaf group_name {
+            type string {
+              tailf:info "hex|group_name>;;Following value is to be specified in hexadecimal\n" +
+                  "       Group name (in ASCII)";
+            }
+          }
+          leaf sec-model {
+            tailf:cli-expose-key-name;
+            tailf:info "Security Model";
+            type enumeration {
+              enum "snmpv1";
+              enum "snmpv2c";
+              enum "usm";
+            }
+          }
+          leaf sec-level {
+            tailf:cli-expose-key-name;
+            tailf:info "Security Level";
+            type enumeration {
+              enum "authnopriv";
+              enum "noauth";
+              enum "priv";
+            }
+          }
+          leaf read-view {
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Read View";
+            type string {
+              tailf:info "hex|<read_view_name>;;Following value is to be specified in hexadecimal\n" +
+                  "    Read View Name (in ASCII)";
+            }
+          }
+          leaf write-view {
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+
+            tailf:info "Write View";
+            type string {
+              tailf:info "hex|<write-view>;;Following value is to be specified in hexadecimal\n" +
+                  "    Write View Name (in ASCII)";
+            }
+          }
+          leaf notify-view {
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+
+            tailf:info "Notify View";
+            type string {
+              tailf:info "hex|<notify-view>;;Following value is to be specified in hexadecimal\n" +
+                  "    Notify View Name (in ASCII)";
+            }
+          }
+        }
+
+        list community {
+          tailf:info "Community";
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          key "community_index";
+          leaf community_index {
+            type string {
+              tailf:info "hex|<community_index>;;Following value is to be specified in hexadecimal\n" +
+                  "       Community Index (in ASCII)";
+            }
+          }
+          leaf name {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+
+            tailf:info "Community name";
+            type string {
+              tailf:info "<community_name>;;Community name (in ASCII)";
+            }
+          }
+          uses user-grouping;
+
+        }
+
+        list group {
+          tailf:info "Group";
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          key "group_name user sec-model";
+          leaf group_name {
+            type string {
+              tailf:info "hex|<<group_name>>;;Following value is to be specified in hexadecimal\n" +
+                  "       Group Name (in ASCII)";
+            }
+          }
+          leaf user {
+            tailf:cli-expose-key-name;
+            tailf:info "User";
+            type string {
+              tailf:info "hex|<user_name>;;Following value is to be specified in hexadecimal\n" +
+                  "       User Name (in ASCII)";
+            }
+          }
+          leaf sec-model {
+            tailf:cli-expose-key-name;
+            tailf:info "Security Model";
+            type enumeration {
+              enum "snmpv1";
+              enum "snmpv2c";
+              enum "usm";
+            }
+          }
+        }
+
+        list target-addr {
+          tailf:info "Target Address";
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          key addr_name;
+          leaf addr_name {
+            type string {
+              tailf:info "<addr_name>;;Address Name (in ASCII)";
+            }
+          }
+          leaf param {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Param";
+            type string {
+              tailf:info "<param_name>;;Param name (in ASCII)";
+            }
+          }
+          leaf ipaddress {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "IP address (IPv4 or IPv6 Address)";
+            type inet:ip-address;
+          }
+          leaf transport-port {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Transport port";
+            type uint32 {
+              tailf:info "<port_number>;;Port number";
+            }
+          }
+
+          leaf from {
+            tailf:cli-diff-set-after "/extreme-xos:configure/vlan/ipaddress/ipaddress" {
+              tailf:cli-when-target-create;
+            }
+            tailf:cli-diff-delete-before "/extreme-xos:configure/vlan/ipaddress/ipaddress" {
+              tailf:cli-when-target-delete;
+            }
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Src IP address (IPv4 or IPv6 Address)";
+            type inet:ip-address {
+              tailf:info "<src_ip_address>;;Src IPv4 address";
+            }
+          }
+
+          leaf-list tag-list {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Tag list";
+            tailf:cli-range-list-syntax;
+            tailf:cli-flat-list-syntax;
+            type string {
+              tailf:info "<tag_list>;;List of tags separated by commas";
+            }
+          }
+        }
+
+        list target-params {
+          tailf:info "Target Params";
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          key "group_name";
+          leaf group_name {
+            type string {
+              tailf:info "<param_name>;;Param Name (in ASCII)";
+            }
+          }
+          uses user-grouping;
+          leaf mp-model {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Message Processing Model";
+            type enumeration {
+              enum "snmpv1";
+              enum "snmpv2c";
+              enum "snmpv3";
+            }
+          }
+
+          leaf sec-model {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Security Model";
+            type enumeration {
+              enum "snmpv1";
+              enum "snmpv2c";
+              enum "usm";
+            }
+          }
+
+          leaf sec-level {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Security Level";
+            type enumeration {
+              enum "authnopriv";
+              enum "noauth";
+              enum "priv";
+            }
+          }
+        }
+
+        list user {
+          extreme-xos:replace-input "(\\s+engine-id [0-9a-f:]+) :: ";
+          tailf:info "User";
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          key "user_name";
+          leaf user_name {
+            type string {
+              tailf:info "hex|<user_name>;;Following value is to be specified in hexadecimal\n" +
+                  "       User Name (in ASCII)";
+            }
+          }
+          leaf authentication {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Authentication scheme";
+            type enumeration {
+              enum "md5" {
+                tailf:info "MD5";
+              }
+              enum "sha" {
+                tailf:info "SHA";
+              }
+            }
+          }
+          container auth-encrypted {
+            tailf:cli-suppress-no;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Authentication secret is to be entered in encrypted form";
+            tailf:cli-flatten-container;
+
+            leaf localized-key {
+              tailf:cli-suppress-no;
+              tailf:cli-no-value-on-delete;
+              tailf:cli-no-name-on-delete;
+              tailf:info "Following value is a MD5 or SHA hash of the engine-id and user's password";
+              cli:secret " auth-encrypted localized-key (\\S+)" {
+                cli:arguments "always-encrypted";
+              }
+              extreme-xos:send-secret;
+              tailf:cli-disallow-value "privacy";
+              type string {
+                tailf:info "<auth_localized_key>|<auth_password>;;Authentication localized key (in hexadecimal)| Authentication Password (in ASCII)";
+              }
+            }
+          }
+          leaf privacy {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Privacy";
+            type enumeration {
+              enum "3des" {
+                tailf:info "Specifies the use of the 168-bit 3DES algorithm for encryption";
+              }
+              enum "aes" {
+                tailf:info "Specifies the use of the AES algorithm for encryption";
+              }
+              enum "des" {
+                tailf:info "Specifies the use of the 56-bit DES algorithm for encryption(default)";
+              }
+            }
+          }
+          leaf aes-bits {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:cli-drop-node-name;
+            when "../privacy = 'aes'";
+            type enumeration {
+              enum "128" {
+                tailf:info "Specifies the use of the 128-bit AES algorithm for encryption";
+              }
+              enum "192" {
+                tailf:info "Specifies the use of the 192-bit AES algorithm for encryption";
+              }
+              enum "256" {
+                tailf:info "Specifies the use of the 256-bit AES algorithm for encryption";
+              }
+            }
+          }
+          leaf privacy-encrypted {
+            tailf:cli-suppress-no;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Privacy Password is to be entered in encrypted form";
+            type empty;
+          }
+          leaf localized-key {
+            tailf:cli-suppress-no;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Following value is a MD5 or SHA hash of the engine-id and user's password";
+            cli:secret " privacy-encrypted localized-key (\\S+)"{
+              cli:arguments "always-encrypted";
+            }
+            extreme-xos:send-secret;
+            type string {
+              tailf:info "<auth_localized_key>|<auth_password>;;Authentication localized key (in hexadecimal)| Authentication Password (in ASCII)";
+            }
+          }
+
+        }
+      }
+
+    }
+
+
+    //configure / vlan *
+    list vlan {
+      tailf:info "VLAN list (1-4094)";
+     /// tailf:cli-compact-syntax;
+      tailf:cli-suppress-mode;
+      tailf:cli-delete-when-empty;
+
+      key id;
+      leaf id {
+        type string {
+          tailf:info "<vlan_name>;;VLAN Name";
+        }
+      }
+
+      container delete {
+        when "../id = 'default'";
+        tailf:info "Delete entities from VLAN";
+        list ports {
+          tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:info "port list";
+          tailf:cli-suppress-mode;
+          tailf:cli-compact-syntax;
+          tailf:cli-range-list-syntax;
+          key id;
+          leaf id {
+            type union {
+              type uint32 {
+                tailf:info "<port_list>;;Port list";
+              }
+              type enumeration {
+                enum "all" {
+                  tailf:info "all";
+                }
+              }
+            }
+          }
+        }
+      }
+
+      //configure / vlan * / add ports *
+      container add {
+        tailf:info "Add entities to VLAN";
+        list ports {
+          tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-create-before "../../tag" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-create-after "../../tag" {
+            tailf:cli-when-target-set;
+          }
+          tailf:cli-diff-create-after "/extreme-xos:configure/vr/add/ports"{
+            tailf:cli-when-target-delete;
+          }
+          tailf:info "Ports in this VLAN to add";
+          tailf:cli-suppress-mode;
+          tailf:cli-compact-syntax;
+          tailf:cli-range-list-syntax;
+          key id;
+          leaf id {
+            type union {
+              type uint32 {
+                tailf:info "<port_list>;;Port list";
+              }
+              type enumeration {
+                enum "all" {
+                  tailf:info "all";
+                }
+              }
+            }
+          }
+          choice tag {
+            leaf untagged {
+              tailf:cli-no-name-on-delete;
+              tailf:info "untagged";
+              type empty;
+            }
+            leaf tagged {
+              tailf:cli-no-name-on-delete;
+              tailf:info "untagged";
+              type empty;
+            }
+          }
+        }
+
+      }
+      container ipaddress {
+        tailf:info "IP address";
+        tailf:cli-compact-syntax;
+        tailf:cli-sequence-commands {
+          tailf:cli-reset-siblings;
+        }
+        leaf ipaddress {
+          tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-set-before "../../tag" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-remove-before-change;
+          tailf:cli-suppress-no;
+          tailf:cli-no-value-on-delete;
+          tailf:cli-drop-node-name;
+          type inet:ip-address {
+            tailf:info "<ipaddress>;;IP address";
+          }
+        }
+        leaf netmask {
+          tailf:cli-suppress-no;
+          tailf:cli-no-value-on-delete;
+          tailf:cli-drop-node-name;
+          type inet:ip-address {
+            tailf:info "<netmask>;;IP netmask";
+          }
+        }
+      }
+
+      leaf tag {
+        tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-delete;
+        }
+        tailf:cli-full-command;
+        tailf:cli-no-value-on-delete;
+        tailf:info "VLAN tag";
+        type uint16 {
+          tailf:info "<tag>;;VLAN tag ID between 1 and 4094";
+        }
+      }
+
+      leaf description {
+        tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-delete;
+        }
+        tailf:cli-no-value-on-delete;
+        tailf:cli-full-command;
+
+        tailf:info "Description string up to 64 characters";
+        type string {
+          tailf:info "<vlan-desc>;;Description string in quotes up to 64 characters";
+        }
+        default "none";
+      }
+    }
+
+
+
+    //vr *
+    list vr {
+      tailf:info "Virtual router";
+      tailf:cli-compact-syntax;
+      tailf:cli-suppress-mode;
+      tailf:cli-delete-when-empty;
+      key id;
+      leaf id {
+        type string {
+          tailf:info "<vr-name>;;Virtual router name";
+        }
+      }
+      container delete {
+        when "../id = 'VR-Default'";
+
+        tailf:info "Delete configuration";
+        uses portList-grouping;
+      }
+      container add {
+        tailf:info "Add configuration";
+        leaf-list ports {
+          tailf:cli-diff-create-after "/extreme-xos:create/vr" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/vr" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:info "Physical ports";
+          tailf:cli-range-list-syntax;
+          type uint32 {
+            tailf:info "<portlist>;;List of ports separated by comma";
+          }
+        }
+      }
+    }
+
+
+    //#iproute
+    //configure iproute
+    container iproute {
+
+      tailf:info "IP routing module";
+
+      //add/delete
+      container add {
+        tailf:info "Add route";
+
+        container default {
+          tailf:info "default route";
+          leaf gateway {
+            tailf:cli-drop-node-name;
+            type inet:ip-address {
+              tailf:info "<gateway>;;gateway address";
+            }
+          }
+        }
+        list route {
+          tailf:cli-drop-node-name;
+          tailf:cli-suppress-mode;
+          key "address netmask gateway";
+          leaf address {
+            type inet:ip-address {
+              tailf:info "<ipaddress>;;Destination address";
+            }
+          }
+          leaf netmask {
+            type inet:ip-address {
+              tailf:info "<netmask>;;IP address netmask";
+            }
+          }
+          leaf gateway {
+            type inet:ip-address {
+              tailf:info "<gateway>;;gateway address";
+            }
+          }
+        }
+
+      }
+    }
+
+    //configure tacacs
+    container tacacs {
+      //extreme-xos:replace-delete-output "<target> :: <replacement> :: <exception>"
+
+      extreme-xos:replace-delete-output "unconfigure tacacs (\\w+) server :: unconfigure tacacs server $1";
+
+
+      extreme-xos:trim-delete-if-match "unconfigure.*shared-secret";
+      tailf:info "Configure TACACS+ Server";
+      uses tacacs-grouping;
+
+      leaf priv-lvl {
+        extreme-xos:replace-delete-output "unconfigure tacacs priv-lvl :: configure tacacs priv-lvl optional";
+        tailf:ned-default-handling "trim";
+
+        tailf:info "Privilege level attribute of authorization request.";
+        tailf:cli-no-value-on-delete;
+        type enumeration {
+          enum "optional" {
+            tailf:info "Allow login with read-only privilege if priv-lvl is not provided. (Default)";
+          }
+          enum "required" {
+            tailf:info "Fail login attempt if priv-lvl attribute is not provided";
+          }
+        }
+        default "optional";
+      }
+    }
+    container tacacs-accounting {
+      extreme-xos:replace-delete-output "unconfigure tacacs-accounting (\\w+) server :: unconfigure tacacs-accounting server $1";
+      extreme-xos:trim-delete-if-match "unconfigure.*shared-secret";
+
+      tailf:info "Configure TACACS+ Accounting Server";
+      uses tacacs-grouping;
+    }
+
+
+    //configure banner
+    container banner {
+      tailf:info "System login banner";
+      container before-login {
+        tailf:info "Banner to be displayed before login (default)";
+        leaf save-to-configuration {
+          tailf:cli-no-value-on-delete;
+          extreme-xos:replace-delete-output "unconfigure banner before-login save-to-configuration :: configure banner before-login save-to-configuration  ";
+          extreme-xos:multi-line-banner;
+          tailf:info "Save the before login banner to the configuration file as well as non-volatile memory";
+          type string;
+        }
+      }
+      leaf after-login {
+        tailf:info "Banner to be displayed after login";
+        tailf:cli-no-value-on-delete;
+        extreme-xos:replace-delete-output "unconfigure banner after-login :: configure banner after-login  ";
+        extreme-xos:multi-line-banner;
+        type string;
+
+      }
+    }
+
+    //configure syslog
+    container syslog {
+
+      tailf:info "Remote syslog target";
+      list add {
+        tailf:cli-diff-create-after "/extreme-xos:create/vr" {
+        tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:create/vr" {
+          tailf:cli-when-target-delete;
+        }
+        tailf:info "Add a syslog target";
+        tailf:cli-compact-syntax;
+        tailf:cli-suppress-mode;
+        key "ipPort vr local";
+        leaf ipPort {
+          type string {
+            tailf:info "<ipPort>;;Remote syslog server IPv4 address : UDP Port";
+          }
+        }
+
+        leaf vr {
+          tailf:cli-expose-key-name;
+          tailf:info "Virtual router ID";
+          type string {
+            tailf:info "<vr_name>;;Virtual router ID";
+          }
+        }
+
+        leaf local {
+          tailf:cli-drop-node-name;
+          type string {
+            tailf:info "<local>;;Remote syslog server facility";
+          }
+        }
+      }
+    }
+
+    //configure log
+    container log {
+      tailf:info "Configure log service";
+      
+      //configure log target
+      container target {
+        tailf:info "Configure target";
+        //configure log target / syslog
+        list syslog {
+          //extreme-xos:replace-delete-output "<target> :: <replacement> :: <exception>"
+          extreme-xos:replace-delete-output "unconfigure log target syslog :: configure syslog delete :: format,filter,match,from";
+          extreme-xos:trim-delete-if-match "unconfigure log target syslog.*filter.*";
+          extreme-xos:trim-delete-if-match "unconfigure log target syslog.*match.*";
+          extreme-xos:trim-delete-if-match "unconfigure log target syslog.*from.*";
+          tailf:cli-diff-create-after "/extreme-xos:create/vr" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/vr" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-create-after "/extreme-xos:configure/syslog/add" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:configure/syslog/add" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:info "Remote syslog target";
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          tailf:cli-delete-when-empty;
+          key "ipPort vr local";
+          leaf ipPort {
+            type string {
+              tailf:info "<ipPort>;;Remote syslog server IPv4 address : UDP Port";
+            }
+          }
+          leaf vr {
+            tailf:cli-expose-key-name;
+            tailf:info "Virtual router ID";
+            type string {
+              tailf:info "<vr_name>;;Virtual router ID";
+            }
+          }
+          leaf local {
+            type string {
+              tailf:info "<local>;;Remote syslog server facility";
+            }
+          }
+
+          leaf from {
+            tailf:cli-diff-set-after "/extreme-xos:configure/vlan/ipaddress/ipaddress" {
+              tailf:cli-when-target-create;
+            }
+            tailf:cli-diff-delete-before "/extreme-xos:configure/vlan/ipaddress/ipaddress" {
+              tailf:cli-when-target-delete;
+            }
+            tailf:info "Configure specific local source IP address";
+            tailf:cli-full-command;
+            type inet:ip-address {
+              tailf:info "<source-ip-address>;;Local source address to use";
+            }
+          }
+
+
+          container filter {
+           // tailf:cli-no-name-on-delete;
+            tailf:cli-compact-syntax;
+            tailf:cli-sequence-commands {
+              tailf:cli-reset-siblings;
+            }
+            tailf:info "Filter";
+            leaf filter {
+              tailf:cli-diff-set-after "/extreme-xos:configure/syslog/add" {
+                tailf:cli-when-target-create;
+              }
+              tailf:cli-diff-delete-before "/extreme-xos:configure/syslog/add" {
+                tailf:cli-when-target-delete;
+              }
+             // tailf:cli-no-value-on-delete;
+              tailf:cli-drop-node-name;
+              type string {
+                tailf:info "<filter-name>;filter name";
+              }
+            }
+            leaf severity {
+              tailf:cli-no-name-on-delete;
+              tailf:cli-no-value-on-delete;
+              tailf:info "Configure a severity threshold for this target";
+              type string {
+                tailf:info "<severity>;;Severity value to use";
+              }
+            }
+          }
+
+          container format {
+
+            tailf:info "Display format";
+            tailf:cli-compact-syntax;
+            tailf:cli-sequence-commands {
+              tailf:cli-reset-siblings;
+            }
+            leaf timestamp {
+              tailf:cli-diff-set-after "/extreme-xos:configure/syslog/add" {
+                tailf:cli-when-target-create;
+              }
+              tailf:cli-diff-delete-before "/extreme-xos:configure/syslog/add" {
+                tailf:cli-when-target-delete;
+              }
+              tailf:cli-no-name-on-delete;
+              tailf:cli-no-value-on-delete;
+              tailf:info "Configure timestamp format";
+              type enumeration {
+                enum "hundredths" {
+                  tailf:info "Time format as hh:mm:ss.HH (e.g. 12:00:23.96)";
+                }
+                enum "none" {
+                  tailf:info "Do not display anything";
+                }
+                enum "seconds" {
+                  tailf:info "Time format as hh:mm:ss (e.g. 12:00:23)";
+                }
+              }
+            }
+            leaf date {
+              tailf:cli-no-name-on-delete;
+              tailf:cli-no-value-on-delete;
+              tailf:info "Configure date format";
+              type enumeration {
+                enum "Mmm-dd" {
+                  tailf:info "Date format as specified in RFC 3164 (e.g. Jan 14)";
+                }
+                enum "dd-Mmm-yyyy" {
+                  tailf:info "Date format as 14-Jan-2003";
+                }
+                enum "dd-mm-yyyy" {
+                  tailf:info "Date format as 14-01-2003";
+                }
+                enum "mm/dd/yyyy" {
+                  tailf:info "Date format as 01/14/2003";
+                }
+                enum "none" {
+                  tailf:info "Do not display anything";
+                }
+
+              }
+            }
+            leaf event-name {
+              tailf:cli-no-name-on-delete;
+              tailf:cli-no-value-on-delete;
+              tailf:info "Configure event name format ";
+              tailf:cli-optional-in-sequence;
+              tailf:cli-break-sequence-commands;
+              type enumeration {
+                enum "component" {
+                  tailf:info "Display component name";
+                }
+                enum "condition" {
+                  tailf:info "Display component and condition name";
+                }
+                enum "none" {
+                  tailf:info "Do not display anything";
+                }
+              }
+            }
+            leaf priority {
+              tailf:cli-no-name-on-delete;
+              tailf:info "Enable or disable the display of the priority";
+              type empty;
+            }
+            leaf host-name {
+              tailf:cli-no-name-on-delete;
+              tailf:info "Enable or disable the display of the host name";
+              type empty;
+            }
+            leaf severity {
+              tailf:cli-no-name-on-delete;
+              tailf:info "Enable or disable the display of the severity";
+              type empty;
+            }
+            leaf tag-name {
+              tailf:cli-no-name-on-delete;
+              tailf:info "Enable or disable the display of the tag name";
+              type empty;
+            }
+
+          }
+          container match {
+           // tailf:cli-no-name-on-delete;
+            tailf:info "Configure regular expression";
+            choice regex-choice {
+              leaf any {
+                tailf:cli-diff-set-after "/extreme-xos:configure/syslog/add" {
+                  tailf:cli-when-target-create;
+                }
+                tailf:cli-diff-delete-before "/extreme-xos:configure/syslog/add" {
+                  tailf:cli-when-target-delete;
+                }
+               // tailf:cli-no-name-on-delete;
+                tailf:info "Do not match any regular expression";
+                type empty;
+              }
+              leaf regex {
+                tailf:cli-diff-set-after "/extreme-xos:configure/syslog/add" {
+                  tailf:cli-when-target-create;
+                }
+                tailf:cli-diff-delete-before "/extreme-xos:configure/syslog/add" {
+                  tailf:cli-when-target-delete;
+                }
+                //tailf:cli-no-value-on-delete;
+                tailf:cli-drop-node-name;
+                tailf:cli-disallow-value "any";
+                type string {
+                  tailf:info "<regex>;;Regular expression to match";
+                }
+              }
+            }
+          }
+
+        }
+      
+        //configure log target / upm
+        list upm {
+          tailf:cli-diff-delete-before "/extreme-xos:create/upm/profile" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-create-after "/extreme-xos:create/upm/profile" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/log/target/upm" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-create-after "/extreme-xos:create/log/target/upm" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/log/filter" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/log/filter" {
+            tailf:cli-when-target-modify;
+          }
+          tailf:info "Sending messages to UPM as events";
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          tailf:cli-delete-when-empty;
+
+          key name;
+          leaf name {
+            tailf:non-strict-leafref { path "/extreme-xos:create/log/target/upm"; }
+            type string {
+              tailf:info "<upm_profile_name>;;UPM Profile Name";
+            }
+          }
+          leaf filter {
+            tailf:info "Filter";
+            tailf:cli-diff-delete-before "/extreme-xos:create/log/filter" {
+              tailf:cli-when-target-delete;
+            }
+            tailf:non-strict-leafref { path "/extreme-xos:create/log/filter"; }
+            type string {
+              tailf:info "<name>;;Name of the filter to configure";
+            }
+          }
+          leaf severity {
+            tailf:cli-case-insensitive;
+            tailf:info "Configure a severity threshold for this target";
+            type enumeration {
+              enum "critical";
+              enum "debug-data";
+              enum "debug-summary";
+              enum "debug-verbose";
+              enum "error";
+              enum "info";
+              enum "notice";
+              enum "warning";
+            }
+          } 
+          
+          
+        }
+      }
+      //configure log filter
+      list filter {
+        tailf:cli-diff-delete-before "/extreme-xos:create/log/filter" {
+           tailf:cli-when-target-delete;
+        }
+        tailf:info "Configure filter";
+        tailf:cli-compact-syntax;
+        tailf:cli-suppress-mode;
+        tailf:cli-delete-when-empty;
+
+        key name;
+        leaf name {
+          tailf:non-strict-leafref { path "/extreme-xos:create/log/filter"; }
+          type string {
+            tailf:info "<name>;;Name of the filter to configure";
+          }
+        }
+        container add {        
+          tailf:info "Add event to filter";
+          leaf-list events {
+            extreme-xos:replace-delete-output "un(.*) add (.*) :: $1 delete $2";
+            tailf:info "Events to add";
+            tailf:cli-list-syntax;  
+            type string {
+              tailf:info "<event-component>;;Component to add or delete";
+            }
+          }
+        }
+      }
+    }
+
+    // configure ports
+    container ports {
+      tailf:info "Ports";
+      list port_list {
+        tailf:cli-drop-node-name;
+        tailf:cli-suppress-mode;
+        tailf:cli-compact-syntax;
+        tailf:cli-delete-when-empty;
+
+        key "port";
+        leaf port {
+          type uint32 {
+            tailf:info "<port_list>;;Port list";
+          }
+        }
+       //ports debounce
+        container debounce {
+          tailf:cli-no-name-on-delete;
+          tailf:info "Configure debounce time for the amount of time specified in milliseconds.";
+          leaf time {
+            tailf:cli-no-name-on-delete;
+            tailf:cli-no-value-on-delete;
+            tailf:info "Configure amount of time to delay link down detection.";
+            type uint32 {
+              tailf:info "<milliseconds>;;Time in milliseconds. Range is 0 (no debouncing) to 5000.";
+            }
+            default 0;
+          }
+        }
+        
+        //ports description-string        
+        leaf description-string {
+          tailf:cli-no-value-on-delete;
+          tailf:info "Description string associated with the port (255 Chars limit)";
+          type string {
+            tailf:info "<string>;;Character string up to 255 characters";
+          }
+        }
+        
+        //ports rate-limit
+        container rate-limit {
+          tailf:info "Rate limiting";
+          container flood {
+            tailf:info "Flood rate limiting";
+            leaf broadcast {
+              extreme-xos:replace-delete-output "unconfigure (.*broadcast) \\d+ :: configure $1 no-limit";
+
+              tailf:info "Broadcast traffic";
+              type union {
+                type enumeration {
+                  enum "no-limit" {
+                    tailf:info "Unlimited rate";
+                  }
+                }
+                type uint32 {
+                  tailf:info "<pps>;;Packets per second allowed (0-262144)";
+                }
+              }
+              default "no-limit";
+            }
+          }
+        }
+        
+        //auto                       
+     /*   container auto {  //commented as unable to delete in all cases (known issues reported by Extreme)
+          //tailf:cli-no-name-on-delete;
+          tailf:info "Auto negotiation";
+          tailf:cli-compact-syntax;
+          tailf:cli-sequence-commands;
+          leaf onoff {
+            //tailf:cli-no-value-on-delete;
+            extreme-xos:replace-delete-output "unconfigure (.*auto) off.* :: configure $1 on";
+            tailf:cli-drop-node-name;
+            type enumeration {
+              enum "off" {
+                tailf:info "Auto negotiation OFF" ;
+              }
+              enum "on" {
+                tailf:info " Auto negotiation ON (speed can be advertised)" ;
+              }
+            } 
+          }
+          
+          leaf speed {
+            tailf:cli-no-name-on-delete;
+            tailf:cli-no-value-on-delete;
+            tailf:info "Advertised Port speed";
+            type string {
+              tailf:info "<speed>;;10, 100, 1000(1G), 2500(2.5G), 5000(5G), 10000(10G), 25000(25G), 40000(40G), 50000(50G), 100000(100G)";
+            }
+          }
+          
+          leaf duplex {            
+            tailf:cli-no-name-on-delete;
+            tailf:cli-no-value-on-delete;
+            tailf:info "Duplex setting";
+            type enumeration {
+              enum "full" { tailf:info "Full duplex"; }
+              enum "half" { tailf:info "Half duplex"; }
+            }
+          }
+        } */
+      }
+    }
+
+    //configure dns-client
+    container dns-client {
+      tailf:info "DNS Client";
+      container add {
+        tailf:info "Add";
+        list name-server {
+          ordered-by user;
+          tailf:cli-show-long-obu-diffs;
+          tailf:cli-diff-create-after "/extreme-xos:create/vr" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/vr" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:info "DNS server";
+          tailf:cli-suppress-mode;
+          tailf:cli-compact-syntax;
+          key "ip_address vr";
+          leaf ip_address {
+            type inet:ip-address {
+              tailf:info "<ip_address>;;ip address of DNS server";
+            }
+          }
+          leaf vr {
+            tailf:cli-expose-key-name;
+            type string {
+              tailf:info "<vr_name>;;Virtual router ID";
+            }
+          }
+        }
+        list domain-suffix {
+          ordered-by user;
+          tailf:cli-show-long-obu-diffs;
+          tailf:info "domain suffix";
+          tailf:cli-suppress-mode;
+          tailf:cli-compact-syntax;
+          key domain_name;
+          leaf domain_name {
+            type string {
+              tailf:info "<domain_name>;;Domain Name";
+            }
+          }
+        }
+      }
+    }
+
+    //configure sntp-client
+    container sntp-client {
+      tailf:info "Configure SNTP Client";
+      container primary {
+        tailf:cli-compact-syntax;
+        tailf:cli-sequence-commands;
+        tailf:info "primary server";
+        uses sntpc-grouping;
+      }
+      container secondary {
+        tailf:cli-compact-syntax;
+        tailf:cli-sequence-commands;
+        tailf:info "secondary server";
+        uses sntpc-grouping;
+      }
+    }
+
+    //configure cli
+    container cli {
+      extreme-xos:replace-delete-output "unconfigure cli max-sessions.* :: configure cli max-sessions 8";
+
+      tailf:info "Command Line Interface settings";
+      leaf max-sessions {
+        tailf:info "Maximum number of simultaneous CLI sessions";
+        type uint8 {
+          tailf:info "<num-of-sessions>;;New maximum value, range is 1 to 16";
+        }
+        tailf:ned-default-handling "trim";
+        default 8;
+      }
+    }
+    
+    //configure timezone
+    container timezone {
+      tailf:info "Time zone";
+      tailf:cli-compact-syntax;
+      tailf:cli-sequence-commands;
+      leaf name {
+        tailf:cli-no-value-on-delete;
+        tailf:cli-no-name-on-delete;
+
+        tailf:cli-optional-in-sequence;
+        tailf:info "name";
+        type string {
+          tailf:info "<tz_name>;;Timezone Name";
+        }
+      }
+      leaf gmt_offset {
+        tailf:cli-no-value-on-delete;
+        tailf:cli-drop-node-name;
+        type uint32 {
+          tailf:info "<GMT_offset>;;GMT Offset in minutes";
+        }
+      }
+      leaf autodst {
+        tailf:cli-no-value-on-delete;
+        tailf:cli-drop-node-name;
+        type enumeration {
+          enum "autodst" {
+            tailf:info "Auto Daylight Saving time";
+          }
+          enum "noautodst" {
+            tailf:info "No Daylight Saving time";
+          }
+        }
+        default "autodst";
+      }
+    }
+    
+    //configure radius 
+    container radius {
+      tailf:info "Configure RADIUS Server";
+    
+      //configure radius *
+      list server {
+        extreme-xos:replace-delete-output "(unconfigure radius) (\\d+) :: $1 server $2";
+
+        tailf:cli-compact-syntax;
+        tailf:cli-sequence-commands;
+        tailf:cli-suppress-mode;
+        tailf:cli-drop-node-name;
+        key index;
+        leaf index {
+          type uint16 {
+            tailf:info "<index>;;RADIUS server index";
+          }
+        }
+        uses shared-secret-grouping {
+          refine "shared-secret" {
+            tailf:cli-no-name-on-delete;
+          }
+          refine "shared-secret/encrypted" {
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+          }
+        }  
+      }
+    
+      //configure radius netlogin *
+      container netlogin {
+        tailf:info "RADIUS authentication for netlogin access";
+      
+        list server {
+          extreme-xos:replace-delete-output "(unconfigure radius) netlogin (\\d+) :: $1 server $2";
+
+          tailf:cli-drop-node-name;       
+          tailf:cli-compact-syntax;
+          tailf:cli-sequence-commands;
+          tailf:cli-suppress-mode;       
+          key index;
+          leaf index {
+            type uint16 {
+              tailf:info "<index>;;RADIUS server index";
+            }
+          }
+          leaf server {
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "RADIUS server";
+            type inet:ip-address {
+              tailf:info "<host_ipaddr>;;server ip or ipv6 address";
+            }
+          }
+          leaf udp-port {
+            tailf:cli-no-value-on-delete;
+            tailf:cli-drop-node-name;
+            type uint16 {
+              tailf:info "<udp_port>;;server UDP port. Range is 1 to 65535. Default: Auth - 1812, Acct - 1813";
+            }
+          }
+          leaf client-ip {
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "client ip";
+            type inet:ip-address {
+              tailf:info "<client_ipaddr>;;client ip or ipv6 address";
+            } 
+          }
+          uses vr-grouping {
+            refine vr {
+              tailf:cli-no-value-on-delete;
+              tailf:cli-no-name-on-delete;
+            }
+          }
+        }
+        uses radius-timeout-grouping;
+
+        
+      }
+      
+      //configure radius dynamic-authorization *
+      list dynamic-authorization   {
+        extreme-xos:replace-delete-output "(unconfigure.*) (\\d+) :: $1 server $2";
+
+        tailf:info "Configure RADIUS Dynamic Authorization Server";
+        tailf:cli-compact-syntax;
+        tailf:cli-suppress-mode;       
+        key index;
+        leaf index {
+          type uint16 {
+            tailf:info "<index>;;RADIUS server index";
+          }
+        }
+        
+        //configure radius dynamic-authorization * / server *
+        container server {
+          tailf:cli-compact-syntax;
+          tailf:cli-sequence-commands;
+          tailf:cli-no-name-on-delete;
+          tailf:info "RADIUS server";
+          leaf host {
+            tailf:cli-drop-node-name;
+            tailf:cli-no-value-on-delete;
+            type inet:ip-address {
+              tailf:info "<host_ipaddr>;;server ip or ipv6 address";
+            }
+          }
+        
+          leaf client-ip {
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "client ip";
+            type inet:ip-address {
+              tailf:info "<client_ipaddr>;;client ip or ipv6 address";
+            } 
+          }
+          uses vr-grouping {
+            refine vr {
+              tailf:cli-no-value-on-delete;
+              tailf:cli-no-name-on-delete;
+            }
+          }
+          uses shared-secret-grouping {
+            refine "shared-secret" {
+              tailf:cli-no-name-on-delete;
+            }
+            refine "shared-secret/encrypted" {
+              tailf:cli-no-value-on-delete;
+              tailf:cli-no-name-on-delete;
+            }
+          }
+        }
+        
+        //configure radius dynamic-authorization * / nas-ip
+        leaf nas-ip {
+          tailf:cli-no-value-on-delete;
+          tailf:cli-no-name-on-delete;
+          tailf:info "Configure Network Access Server (NAS) IP Address requirement";
+          type enumeration {
+            enum "ignore" { tailf:info "Ignore Network Access Server (NAS) IP Address requirement";}
+            enum "require" { tailf:info "Require Network Access Server (NAS) IP Address (Default)";}
+          }
+          default "require";
+        }
+        
+      }
+      
+      //configure radius mgmt-access
+      container mgmt-access {
+        tailf:info "RADIUS authentication for management access";
+        uses radius-timeout-grouping;
+      }
+      
+      //configure radius timeout
+      uses radius-timeout-grouping;
+    }
+    
+    //configure netlogin
+    container netlogin {
+      tailf:info "Configure Network Login specific settings";
+      tailf:cli-diff-dependency "/extreme-xos:enable/netlogin/ports";
+      //netlogin add mac-list
+      container add {
+        tailf:info "Add a MAC-list entry";
+        list mac-list {
+          tailf:cli-delete-when-empty;
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          tailf:info "Configure a Network Login MAC-list entry";
+          key "mac mask";
+          leaf mac {
+            type string {
+              tailf:info "<mac>;;MAC address to as to the MAC-list";
+            }
+          }
+          leaf mask {
+            type uint8 {
+              tailf:info "<mask>;;Number of bits used for the mask";
+            }
+          }
+          leaf ports {
+            tailf:info "Physical ports";
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            type string {
+              tailf:info "<portlist>;;List of ports separated by comma";
+            }
+          }
+        }
+      }
+      
+      //netlogin mac
+      container mac {
+        tailf:info "Configure Network Login settings specific to MAC";
+        
+        //netlogin mac authentication
+        container authentication {
+          tailf:info "Configure order of authentication methods to use";
+          container database-order {
+            tailf:info "Configure order of authentication database methods to use";
+            tailf:cli-compact-syntax;
+            leaf local {
+              tailf:cli-no-name-on-delete;
+              tailf:info "Local user database authentication method";
+              type empty;
+            }
+            leaf radius {
+              tailf:cli-no-name-on-delete;
+              tailf:info "Radius Server authentication method";
+              type empty;
+            }
+          }
+        }
+        
+        //netlogin mac ports
+        list ports {
+          tailf:info "port list";
+          tailf:cli-suppress-mode;
+          tailf:cli-delete-when-empty;
+          tailf:cli-range-list-syntax;
+          key id;
+          leaf id {
+            type union {
+              type uint32 {
+                tailf:info "<port_list>;;Port list";
+              }
+              type enumeration {
+                enum "all" {
+                  tailf:info "all";
+                }
+              }
+            }
+          }
+          container timers {
+            tailf:info "Configure MAC protocol timers";
+            leaf delay {
+              extreme-xos:replace-delete-output "un(.*) :: $1 0";
+              tailf:cli-no-value-on-delete;
+              tailf:info "Delay MAC authentication to wait for 802.1x or web-based authentication to take place";
+              type uint8 {
+                tailf:info "<delay>;;MAC authentication delay in seconds (0..120 sec) (default 0 second)";
+              }
+              default 0;
+            }
+            container reauth-wrap {
+              tailf:cli-drop-node-name;
+              tailf:cli-compact-syntax;
+              extreme-xos:replace-delete-output "un(.* reauth-period).*(reauthentication).* :: $1 3600 $2 off";
+
+              leaf reauth-period {
+               // tailf:cli-no-value-on-delete;
+                tailf:info "Configure MAC reauthentication period";
+                type uint32 {
+                  tailf:info "<reauth_period>;;Reauth period (30..86400 sec) (Default 3600 sec)";
+                }
+                default 3600;
+              }
+              leaf reauthentication {
+              //  tailf:cli-no-value-on-delete;
+                tailf:info "Configure MAC reauthentication";
+                type enumeration {
+                  enum "off" { tailf:info "MAC reauthentication is disabled (default)"; }
+                  enum "on" { tailf:info "MAC reauthentication is enabled"; }
+                }
+                default "off";
+              }
+            }
+          }         
+        }
+      }
+      
+      //netlogin dot1x
+      container dot1x {
+        tailf:info "Configure Network Login settings specific to 802.1X";
+        //netlogin dot1x ports
+        list ports {
+          tailf:info "Specify list of ports to configure 802.1X protocol timers";
+          tailf:cli-suppress-mode;
+          tailf:cli-delete-when-empty;
+          tailf:cli-range-list-syntax;
+          key id;
+          leaf id {
+            type union {
+              type uint32 {
+                tailf:info "<port_list>;;Port list";
+              }
+              type enumeration {
+                enum "all" {
+                  tailf:info "all";
+                }
+              }
+            }
+          }
+          container timers {
+            tailf:info "Configure 802.1X protocol timers";
+            extreme-xos:replace-delete-output "un(.* server-timeout).*(quiet-period).*(supp-resp-timeout).* :: $1 30 $2 60 $3 30";
+            tailf:cli-compact-syntax;
+            leaf server-timeout {
+              //tailf:cli-no-value-on-delete;
+              tailf:info "Configure RADIUS server timeout for 802.1X";
+              type uint16 {
+                tailf:info "<server_timeout>;;RADIUS server timeout (1..120 sec)";
+              }
+              default 30;
+            }
+            leaf quiet-period {
+              //tailf:cli-no-value-on-delete;
+              tailf:info "Configure 802.1X quiet period";
+              type uint16 {
+                tailf:info "<quiet_period>;;Quiet period (0..65535 sec)";
+              }
+              default 60;
+            }
+            leaf supp-resp-timeout {
+             // tailf:cli-no-value-on-delete;
+              tailf:info "Configure supplicant response timeout";
+              type uint16 {
+                tailf:info "<supp_resp_timeout>;;Supplicant response timeout (1..120 sec)";
+              }
+              default 30;
+            }
+          }
+        }
+      }
+      
+      //netlogin ports
+      list ports {
+        extreme-xos:trim-delete-if-match "unconfigure netlogin ports \\S+";
+
+        tailf:info "Specify ports to add";
+        tailf:cli-suppress-mode;
+        //tailf:cli-compact-syntax;
+        tailf:cli-range-list-syntax;
+        tailf:cli-delete-when-empty;
+
+        key id;
+        leaf id {
+          type union {
+            type uint32 {
+              tailf:info "<port_list>;;Port list";
+            }
+            type enumeration {
+              enum "all" {
+                tailf:info "all";
+              }
+            }
+          }
+        }
+        leaf mode {
+          tailf:cli-no-name-on-delete;
+          tailf:cli-no-value-on-delete;
+          tailf:info "Configure port operation mode";
+          type enumeration {
+            enum "mac-based-vlans" { tailf:info "Allow more than one untagged VLAN"; }
+            enum "port-based-vlans" { tailf:info "Allow only one untagged VLAN"; }
+          }
+        }
+        
+      }
+      
+      //netlogin authentication
+      container authentication {
+        tailf:info "Configure Network Login client authentication settings";
+        leaf protocol-order {
+          tailf:cli-diff-set-after "/extreme-xos:enable/policy";
+          tailf:cli-no-value-on-delete;
+          extreme-xos:replace-delete-output "un(.*) :: $1 dot1x web-based mac cep";
+
+          tailf:info "Configure order of authentication protocol methods to use";
+          tailf:cli-multi-value;
+          type string;
+          //default "dot1x web-based mac cep";
+        }
+      }
+    
+      //netlogin vlan
+      leaf vlan {
+        tailf:cli-no-value-on-delete;
+        tailf:non-strict-leafref { path "/extreme-xos:create/vlan/id"; }
+
+        tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-delete;
+        }
+        tailf:info "VLAN";
+        type string {
+          tailf:info "<vlan_name>;;VLAN name";
+        }
+      }
+    }
+    
+    
+    //configure policy
+    container policy {
+      tailf:info "Policy Classification";
+    
+      //configure policy / rule-model
+      leaf rule-model {
+        tailf:cli-diff-delete-after "/extreme-xos:enable/policy" {
+          tailf:cli-when-target-delete;
+        }
+        tailf:cli-diff-set-before "/extreme-xos:enable/policy" {
+          tailf:cli-when-target-set;
+        }
+        extreme-xos:replace-delete-output "un(.*) :: $1 hierarchical";
+        tailf:cli-no-value-on-delete;
+        tailf:info "Select a rule model for configuring and ordering policy based rules";
+        type enumeration {
+          enum "access-list" {
+            tailf:info "Access-list rule model allows multiple match criteria 
+            per rule along with assignable rule ordering within an access-list.";
+          }
+          enum "hierarchical" {
+            tailf:info "Hierarchical rule model allows one match criteria per rule 
+            and uses the rule type to assign its precedence (Default).";
+          }
+        }
+        default "hierarchical";
+      }
+      
+      //configure policy /  slices
+      container slices {
+        tailf:info "Configure Lookup Stage TCAM resources";
+        leaf tci-overwrite {
+          tailf:cli-diff-set-before "/extreme-xos:enable/policy" {
+            tailf:cli-when-target-set;
+          }
+          extreme-xos:replace-delete-output "un(.*) :: $1 4";
+          tailf:cli-no-value-on-delete;
+          tailf:info "Configure Lookup Stage TCAM resources used by profile with tci-overwrite enabled";
+          type uint8 {
+            tailf:info "<slices>;;Number of slices between 0 and 4 (Default 4)";
+          }
+          default 4;
+        }
+        leaf shared {
+          tailf:cli-diff-delete-before "../tci-overwrite" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-set-before "/extreme-xos:enable/policy" {
+              tailf:cli-when-target-set;
+          }
+          extreme-xos:replace-delete-output "un(.*) :: $1 0";
+          tailf:cli-no-value-on-delete;
+          tailf:info "Configure Lookup Stage TCAM resources";
+          type uint8 {
+            tailf:info "<shared>;;Shared slice value - (0-4)";
+          }
+          default 0;
+        }
+      }
+      
+      //configure policy / maptable
+      container maptable {
+        tailf:info "Set VLAN ID - Policy Profile mappings table";
+        leaf response {
+          tailf:cli-no-value-on-delete;
+          tailf:info "Indicates which attributes to use from RADIUS response";
+          type enumeration {
+            enum "both" { tailf:info "Apply both attributes"; }
+            enum "policy" { tailf:info "Apply the filter-id attribute"; }
+            enum "tunnel" { tailf:info "Apply the vlan-tunnel attribute"; }
+          }
+        }
+      }
+      
+      //configure policy / vlanauthorization  
+      container vlanauthorization {
+        tailf:info "Configure VLAN Authorization specific settings";
+        leaf enable {
+          tailf:cli-no-name-on-delete;
+          extreme-xos:replace-delete-output "un(.*) :: $1 disable";
+          tailf:info "Enable VLAN Authorization";
+          type empty;
+        }
+      }
+      
+      //configure policy / profile *
+      list profile {
+        tailf:info "Set current policy profile";
+        tailf:cli-compact-syntax;
+        tailf:cli-suppress-mode;
+        key index;
+        leaf index {
+          type uint8 {
+            tailf:info "<profile_index>;;Policy ID [1-63]";
+          }
+        }
+        leaf name {
+          tailf:cli-no-value-on-delete;
+          tailf:cli-no-name-on-delete;
+          tailf:info "Policy profile name";
+          type string {
+            tailf:info "<name>;;Profile name string 1-64 characters";
+          }
+        }
+        leaf access-list {
+          tailf:cli-no-value-on-delete;
+          tailf:cli-no-name-on-delete;
+          tailf:info "Assign an access-list to this profile";
+          type string {
+            tailf:info "<list_name>;;Existing Access-list name to assign to this profile";
+          }
+        }
+              
+        leaf pvid-status {
+          tailf:cli-no-value-on-delete;
+          tailf:cli-no-name-on-delete;
+          tailf:info "PVid status - enable / disable";
+          type enumeration {
+            enum "enable";
+            enum "disable";
+          }
+        }
+                    
+        leaf pvid {
+          tailf:cli-no-value-on-delete;
+          tailf:cli-no-name-on-delete;
+          tailf:info "PVid value - (0-4095)";
+          type uint16 {
+            tailf:info "<pvid>;;PVid value - (0-4095)";
+          }
+        }
+             
+        leaf web-redirect {
+          tailf:cli-no-value-on-delete;
+          tailf:cli-no-name-on-delete;
+          tailf:info "Web Redirect class index value - (0-10)";
+          type uint16 {
+            tailf:info "<web_redir_index>;;Web Redirect class index value - (0-10)(Defaults to 0 which is disabled)";
+          }
+        }
+      }
+      //configure policy / captive-portal        
+      container captive-portal {
+        tailf:info "Configure a Captive Portal that uses HTTP redirection to force a client's web browser to be redirected to a URL";
+        leaf-list listening {
+          tailf:cli-list-syntax;
+          tailf:cli-remove-before-change;
+          tailf:info "Configure Captive Portal HTTP listening ports (up to 3 L4 ports)";
+          type string {
+            tailf:info "<socket_list>;;List of up to 3 sockets on which to listen (1-65535) comma separated (eg.. 80,8080,2000)";
+          }
+        }
+        list web-redirect {
+          tailf:info "Configure Web Redirect";
+          tailf:cli-suppress-mode;
+          tailf:cli-compact-syntax;
+          key "index server";
+          leaf index {
+            type uint8 {
+              tailf:info "<redirect_index>;;Configure a Web Redirect index (1-10)";
+            }
+          }
+          leaf server {
+            tailf:cli-expose-key-name;
+            tailf:info "Configure a Server for the Web Redirect Index";
+            type uint8 {
+              tailf:info "<server_id>;;Server id to use (1-2)";
+            }
+          }
+          leaf url {
+            tailf:cli-no-value-on-delete;
+            tailf:cli-no-name-on-delete;
+            tailf:info "Captive Portal Server absolute URL";
+            type string {
+              tailf:info "<redirect_url>;;HTTP or HTTPS URL that user is redirected to (http://<IPv4Address or Hostname>:<L4Port>/<Path>)";
+            }           
+          }
+          leaf status {
+            tailf:cli-no-value-on-delete;
+            tailf:cli-drop-node-name;
+            type enumeration {
+              enum "enable" { tailf:info "Captive Portal Server status - enable / disable (Default disable)"; }
+              enum "disable";
+            }
+          }
+        }
+      }
+    }
+    
+    //configure stpd *
+    list stpd {
+      tailf:info "STP domain/STP global configuration";
+      tailf:cli-compact-syntax;
+      tailf:cli-suppress-mode;
+      tailf:cli-delete-when-empty;
+      tailf:cli-diff-create-after "/extreme-xos:enable/stpd" { tailf:cli-when-target-create; }
+      tailf:cli-diff-delete-before "/extreme-xos:enable/stpd" { tailf:cli-when-target-delete; }
+      extreme-xos:trim-delete-if-match "unconfigure.*mode dot1d.*";
+      key name;
+      leaf name {
+        type string {
+          tailf:info "<stpd_name>;;STP domain name";
+        }
+      }
+      container ports {
+        tailf:info "Ports in this STP domain to configure";
+
+        container edge-safeguard {       
+          tailf:info "Edge port safe guard mode (transmit BPDUs)";
+          uses ports-enable-grouping;
+        }
+        container bpdu-restrict {       
+          tailf:info "Disable port as soon as BPDU is received";
+          uses ports-enable-grouping;
+        }
+        
+//        container mode { //removed, as causing service issues due to autoconfiguration
+//          tailf:info "BPDU encapsulation mode";
+//          leaf-list dot1d { //auto-deleted: skip delete command
+//            
+//            tailf:cli-range-list-syntax;
+//            tailf:info "802.1d mode (Default)";
+//            type uint32 {
+//              tailf:info "<port_list>;;Ports in this STP domain to configure";
+//            }
+//          }
+//        }
+        
+        list link-type {
+          tailf:info "802.1w port mode";
+          tailf:cli-suppress-mode;
+          tailf:cli-compact-syntax;
+          tailf:cli-range-list-syntax;
+          tailf:cli-diff-create-after "/extreme-xos:create/stpd" { tailf:cli-when-target-create; }
+          tailf:cli-diff-delete-before "/extreme-xos:create/stpd" { tailf:cli-when-target-delete; }
+          tailf:cli-diff-create-after "/extreme-xos:enable/stpd" { tailf:cli-when-target-create; }
+          tailf:cli-diff-delete-before "/extreme-xos:enable/stpd" { tailf:cli-when-target-delete; }
+          key ports;
+          leaf ports {
+            type union {
+              type uint32 {
+                tailf:info "<port_list>;;List of ports to configure";
+              }
+              type enumeration {
+                enum "all" {
+                  tailf:info "Configure all ports in the system";
+                }
+              }
+            }
+          }
+          leaf edge {
+            tailf:cli-prefix-key;
+            tailf:info "edge mode";
+            tailf:cli-no-name-on-delete;
+            type empty;
+          }
+        }
+        
+      }
+      
+      list add {
+        tailf:info "Add ports in a vlan to a STP domain";
+        tailf:cli-compact-syntax;
+        tailf:cli-suppress-mode;
+        tailf:cli-delete-when-empty;
+        key "vlan";
+        leaf vlan {
+          type string {
+            tailf:info "VLAN";
+          }
+          tailf:cli-expose-key-name;
+        }
+        leaf-list ports {
+          tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:info "Ports in this VLAN to add";
+          tailf:cli-range-list-syntax;
+          type uint32 {
+             tailf:info "<port_list>;;Ports in this VLAN to add";
+          }
+        }
+        leaf dot1d {
+          tailf:cli-no-name-on-delete;
+          tailf:info "802.1d mode";
+          type empty;        
+        }
+      }
+    }
+    
+    //configure cdp
+    container cdp {
+      tailf:info "Cisco Discovery Protocol (CDP)";
+    
+      //configure cdp voip-vlan *
+      list voip-vlan {
+        extreme-xos:replace-delete-output "un(configure cdp voip-vlan) \\S+ (.*) :: $1 none $2";
+        tailf:info "VLAN information for Voice traffic received from IP phone.";
+        tailf:cli-compact-syntax;
+        tailf:cli-suppress-mode;
+        tailf:cli-delete-when-empty;
+        tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-delete;
+        }
+        key vlan_name;
+        leaf vlan_name {
+          type string {
+            tailf:info "<vlan_name>;;VLAN name";
+          }
+        }
+        uses port-list-grouping;
+      }
+    }
+    
+    
+    //configure lldp
+    container lldp {
+      tailf:info "Configure LLDP specific settings";
+    
+      //configure lldp ports *
+      list ports {
+        tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-delete;
+        }
+        tailf:info "Specify ports to configure";
+        tailf:cli-suppress-mode;
+        tailf:cli-compact-syntax;
+        tailf:cli-range-list-syntax;
+        key id;
+        leaf id {
+          type union {
+            type uint32 {
+              tailf:info "<port_list>;;List of ports to configure";
+            }
+            type enumeration {
+              enum "all" {
+                tailf:info "Configure all ports in the system";
+              }
+            }
+          }
+        }
+        //configure lldp ports * advertise
+        container advertise {
+          tailf:cli-no-name-on-delete;
+          tailf:info "Specifies to send the TLV to neighbors";
+          leaf port-description {
+            tailf:cli-no-name-on-delete;
+            tailf:info "Advertise the LLDP Port Description TLV";
+            type empty;
+          }
+          leaf system-capabilities {
+            tailf:cli-no-name-on-delete;
+            tailf:info "Advertise the LLDP System Capabilities TLV";
+            type empty;
+          }
+          leaf management-address {
+            tailf:cli-no-name-on-delete;
+            tailf:info "Advertise the LLDP Management Address TLV";
+            type empty;
+          }
+        }
+      }
+    
+    }
+    
+    //configure inline-power
+    container inline-power {
+      tailf:info "Inline-Power";
+                  
+      //configure inline-power label * ports       
+      /*list portlist {
+        tailf:cli-drop-node-name;
+        tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-delete;
+        }
+        
+        tailf:cli-suppress-mode;
+        tailf:cli-compact-syntax;
+        tailf:cli-range-list-syntax;
+        key ports;
+        leaf ports {
+          tailf:info "port";
+          tailf:cli-expose-key-name;
+          type union {
+            type uint32 {
+              tailf:info "<port_list>;;List of ports to configure";
+            }
+            type enumeration {
+              enum "all" {
+                tailf:info "Configure all ports in the system";
+              }
+            }
+          }
+        }
+        leaf label {
+          tailf:cli-no-name-on-delete;
+          tailf:cli-no-value-on-delete;
+          tailf:info "Port label";
+          tailf:cli-prefix-key;
+          type string {
+            tailf:info "<string>;;Label for port(s)";
+          }
+        }
+      }*/
+      
+      container detection {
+        tailf:info "PoE device detection mode";
+      
+        //configure inline-power detection * ports        
+        list portlist {
+          tailf:cli-drop-node-name;
+          tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-delete;
+          }
+          
+          tailf:cli-suppress-mode;
+          tailf:cli-compact-syntax;
+          tailf:cli-range-list-syntax;
+          key ports;
+          leaf ports {
+            tailf:info "port";
+            tailf:cli-expose-key-name;
+            type union {
+              type uint32 {
+                tailf:info "<port_list>;;List of ports to configure";
+              }
+              type enumeration {
+                enum "all" {
+                  tailf:info "Configure all ports in the system";
+                }
+              }
+            }
+          }
+          leaf legacy-and-802.3af {
+            tailf:cli-no-name-on-delete;
+            tailf:cli-no-value-on-delete;
+            tailf:cli-prefix-key;
+            tailf:info "Capacitive and IEEE 802.3af detection (default for VPEX V400 products)";
+            type enumeration {
+              enum "2-point" { tailf:info "2-point detection (for extended detection signature range)"; }
+              enum "4-point" { tailf:info "4-point detection (default)"; }
+            }
+          }
+        }        
+      }
+    }
+    
+    
+    
+  }
+  
+
+  // =========================================================================
+  //                        ENABLE/DISABLE
+  // =========================================================================
+
+  //ENABLE/
+
+  container enable {
+    tailf:info "Enable running system setting";
+    extreme-xos:no-to-disable;
+
+    //enable snmp
+    container snmp {
+      tailf:info "Enable SNMP";
+      container access {
+        tailf:cli-display-separated;
+        tailf:info "Enable SNMP-v1v2c and SNMPv3 access";
+        presence true;
+        leaf snmp-v1v2c {
+          tailf:info "Enable SNMPv1 and SNMPv2c access";
+          type empty;
+        }
+        leaf snmpv3 {
+          tailf:info "Enable SNMPv3 access";
+          type empty;
+        }
+      }
+
+      container traps {
+        tailf:info "Configure SNMP Trap generation settings";
+        //enable snmp fdb
+        leaf fdb {
+          tailf:info "Configure FDB related traps";
+          type enumeration {
+            enum "mac-tracking" {
+              tailf:info "Configure MAC address tracking specific traps";
+            }
+          }
+        }
+        //enable snmp configuration
+        container configuration {
+          tailf:info "Traps for switch configuration";
+          leaf change {
+            tailf:info "Generate trap when configuration is changed (Default disabled)";
+            type empty;
+          }
+          leaf save {
+            tailf:info "Generate trap when configuration is saved (Default disabled)";
+            type empty;
+          }
+        }
+
+        //
+
+      }
+    }
+
+    //enable ssh2
+    leaf ssh2 {
+      tailf:info "allow incoming ssh connections";
+      type empty;
+    }
+/*    leaf syslog { //This is a macro: USE generic RPC instead
+      tailf:info "Configure syslog service";
+      type empty;
+    }*/
+    leaf cli-config-logging {
+      tailf:info "CLI command logging";
+      type empty;
+    }
+    //enable tacacs
+    leaf tacacs {
+      tailf:info "TACACS+ Client";
+      type empty;
+    }
+    //enable tacacs-accounting
+    leaf tacacs-accounting {
+      tailf:info "TACACS+ accounting";
+      type empty;
+    }
+    //enable tacacs-authorization
+    leaf tacacs-authorization {
+      tailf:info "TACACS+ Client Cli Authorization";
+      type empty;
+    }
+    //enable sntp-client
+    leaf sntp-client {
+      tailf:info "Enable SNTP client";
+      type empty;
+    }
+    //enable log
+    container log {
+      tailf:info "Configure log service";
+      leaf debug-mode {
+        tailf:info "Debug-Mode";
+        type empty;
+      }
+      container target {
+        tailf:info "Target to enable or disable";
+        
+        //enable log target syslog *
+        list syslog {
+          tailf:cli-diff-create-after "/extreme-xos:create/vr" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/vr" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:info "Remote syslog target";
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          key "ipPort vr local";
+          leaf ipPort {
+            type string {
+              tailf:info "<ipPort>;;Remote syslog server IPv4 address : UDP Port";
+            }
+          }
+          leaf vr {
+            tailf:cli-expose-key-name;
+            tailf:info "Virtual router ID";
+            type string {
+              tailf:info "<vr_name>;;Virtual router ID";
+            }
+          }
+          leaf local {
+            tailf:cli-drop-node-name;
+            type string {
+              tailf:info "<local>;;Remote syslog server facility";
+            }
+          }
+        }
+        
+        //enable log target upm *
+        leaf-list upm {
+          tailf:info "Sending messages to UPM as event";
+          tailf:cli-list-syntax;
+          tailf:cli-diff-create-after "/extreme-xos:create/log/target/upm" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/log/target/upm" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-modify-before "/extreme-xos:create/log/target/upm" {
+            tailf:cli-when-target-modify;
+          }
+          type string {
+            tailf:info "<upm_profile_name>;;UPM Profile Name";
+          }          
+        }
+      }
+    }
+
+    //enable cli
+    container cli {
+      tailf:info "Command line interface (CLI)";
+      leaf config-logging { //only in newer OS versions
+        tailf:info "CLI command logging";
+        type empty;
+      }
+    }
+
+    //enable loopback-mode
+    container loopback-mode {
+      tailf:info "loopback";
+      list vlan {
+        tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-delete;
+        }
+        tailf:info "VLAN";
+        tailf:cli-compact-syntax;
+        tailf:cli-suppress-mode;
+
+        key id;
+        leaf id {
+          type string {
+            tailf:info "<vlan_name>;;VLAN Name";
+          }
+        }
+      }
+    }
+    //enable ipforwarding
+    container ipforwarding {
+      tailf:info "IP forwarding";
+      list vlan {
+        tailf:info "VLAN";
+        tailf:cli-compact-syntax;
+        tailf:cli-suppress-mode;
+        tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-delete;
+        }
+        tailf:cli-diff-set-after "/extreme-xos:configure/vlan/ipaddress/ipaddress" {
+          tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:configure/vlan/ipaddress/ipaddress" {
+          tailf:cli-when-target-delete;
+        }
+        key id;
+        leaf id {
+          type string {
+            tailf:info "<vlan_name>;;VLAN Name";
+          }
+        }
+      }
+    }
+
+   //enable diffserv
+    container diffserv {
+      tailf:info "diffserv";
+      uses exam-grouping;
+    }
+    
+    //enable radius *
+    container radius {
+      tailf:info "RADIUS Client";
+      leaf netlogin {
+        tailf:info "RADIUS authentication for netlogin access";
+        type empty;
+      }
+      leaf dynamic-authorization {
+        tailf:info "RADIUS Dynamic Authorization";
+        type empty;
+      }
+    }
+    
+    //enable stpd
+    list stpd {
+      tailf:info "STP domain";
+      tailf:cli-compact-syntax;
+      tailf:cli-suppress-mode;
+      tailf:cli-delete-when-empty;
+      tailf:cli-diff-set-after "/extreme-xos:create/stpd" {
+        tailf:cli-when-target-create;
+      }
+      tailf:cli-diff-delete-before "/extreme-xos:create/stpd" {
+        tailf:cli-when-target-delete;
+      }
+      key name;
+      leaf name {
+        type string {
+          tailf:info "<stpd_name>;;STP domain name";
+        }
+      }
+      container auto-bind {
+        
+        tailf:info "Auto-bind feature for dynamic port changes";
+        uses vlanList-grouping {
+          refine "vlan" {
+            tailf:cli-diff-delete-after "/extreme-xos:configure/stpd/ports";
+          }
+        }
+      }
+    }
+    
+    
+    //enable netlogin
+    container netlogin {
+      tailf:info "Network Login related commands";
+      //enable netlogin ports *
+      list ports {
+        tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-create;
+        }
+        tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+          tailf:cli-when-target-delete;
+        }
+        tailf:info "port list";
+        tailf:cli-suppress-mode;
+        tailf:cli-delete-when-empty;
+        tailf:cli-range-list-syntax;
+        key id;
+        leaf id {
+          type union {
+            type uint32 {
+              tailf:info "<port_list>;;Port list";
+            }
+            type enumeration {
+              enum "all" {
+                tailf:info "all";
+              }
+            }
+          }
+        }
+        uses netlogin-authprotocol-grouping;
+      }
+      container dot1x-max{
+        tailf:cli-drop-node-name;
+        tailf:cli-compact-syntax;
+        uses netlogin-authprotocol-grouping {
+          refine "dot1x" {
+            tailf:cli-diff-set-after "/extreme-xos:configure/netlogin/vlan" {
+              tailf:cli-when-target-create;
+            }
+            tailf:cli-diff-delete-before "/extreme-xos:configure/netlogin/vlan" {
+              tailf:cli-when-target-delete;
+            }
+          }
+          refine "mac" {
+            tailf:cli-diff-set-after "/extreme-xos:configure/netlogin/vlan" {
+              tailf:cli-when-target-create;
+            }
+            tailf:cli-diff-delete-before "/extreme-xos:configure/netlogin/vlan" {
+              tailf:cli-when-target-delete;
+            }
+          }
+          refine "web-based" {
+            tailf:cli-diff-set-after "/extreme-xos:configure/netlogin/vlan" {
+              tailf:cli-when-target-create;
+            }
+            tailf:cli-diff-delete-before "/extreme-xos:configure/netlogin/vlan" {
+              tailf:cli-when-target-delete;
+            }
+          }
+        }
+      }
+      
+    }
+    
+    //enable policy
+    leaf policy {
+      tailf:info "Policy Classification";
+      type empty;
+    }
+    
+    //enable cdp ports *
+    container cdp {
+      tailf:info "Cisco Discovery Protocol (CDP)";
+      uses port-list-grouping;
+    }
+    
+    //enable ip-security dhcp-snooping vlan <string> port <int> violation-action  { <drop-packet> | <none> }
+    container ip-security {
+      tailf:info "IP Security";
+      container dhcp-snooping {
+        tailf:info "DHCP Snooping";
+        list vlan {
+          tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:cli-diff-set-after "/extreme-xos:configure/vlan" {
+            tailf:cli-when-target-create;
+          }
+          tailf:cli-diff-delete-before "/extreme-xos:configure/vlan" {
+            tailf:cli-when-target-delete;
+          }
+          tailf:info "VLAN";
+          tailf:cli-compact-syntax;
+          tailf:cli-suppress-mode;
+          tailf:cli-delete-when-empty;
+          key id;
+          leaf id {
+            type string {
+              tailf:info "<vlan_name>;;VLAN Name";
+            }
+          }
+          list ports {
+            tailf:cli-diff-set-after "/extreme-xos:create/vlan" {
+              tailf:cli-when-target-create;
+            }
+            tailf:cli-diff-delete-before "/extreme-xos:create/vlan" {
+              tailf:cli-when-target-delete;
+            }
+            tailf:cli-diff-set-after "/extreme-xos:configure/vlan/add/ports" {
+              tailf:cli-when-target-create;
+            }
+            tailf:cli-diff-delete-before "/extreme-xos:configure/vlan/add/ports" {
+              tailf:cli-when-target-delete;
+            }
+            tailf:cli-diff-delete-before "/extreme-xos:configure/vlan/add/ports" {
+              tailf:cli-when-target-create;
+            }
+            tailf:info "port list";
+            tailf:cli-suppress-mode;
+            tailf:cli-compact-syntax;
+            tailf:cli-range-list-syntax;
+            key id;
+            leaf id {
+              type union {
+                type uint32 {
+                  tailf:info "<port_list>;;Port list";
+                }
+                type enumeration {
+                  enum "all" {
+                    tailf:info "all";
+                  }
+                }
+              }
+            }
+            leaf violation-action {
+              tailf:cli-no-name-on-delete;
+              tailf:cli-no-value-on-delete;
+              tailf:info "Action to take on DHCP violation";
+              type enumeration {
+                enum drop-packet { tailf:info "Drop the violating DHCP packet"; }
+                enum none { tailf:info "Take no action"; }
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    
+  }
+
+  
+  //disable
+  container disable {
+    tailf:info "Enable running system setting";
+    extreme-xos:no-to-disable;
+
+    leaf telnet {
+      type empty;
+      tailf:info "allow incoming telnet connections";
+    }
+
+    //disable stpd *
+    list stpd {
+      tailf:info "STP domain";
+      tailf:cli-suppress-mode;
+      key stpd_name;
+      leaf stpd_name {
+        type string {
+          tailf:info "<stpd_name>;;STP domain name";
+        }
+      }
+    }
+    //enable snmp
+    container snmp {
+      tailf:info "Disable SNMP";
+      container traps {
+        tailf:info "Configure SNMP Trap generation settings";
+        //disable snmp traps
+        container port-up-down {
+          tailf:info "Configure port-up-down specific traps";
+          leaf-list port {
+            tailf:info "Specify ports to configure";
+            tailf:cli-list-syntax;
+            tailf:cli-range-list-syntax;
+            type uint32 {
+              tailf:info "<port_list>;;Port List to configure";
+            }
+          }
+        }
+      }
+    }
+    
+    //disable dot1p
+    container dot1p {
+      tailf:info "dot1p";
+      uses exam-grouping;
+    }
+    
+    //disable edp ports *
+    container edp {
+      tailf:info "EDP (Extreme Discovery Protocol)";
+      uses port-list-grouping;
+    }
+  }
+
+  // =========================================================================
+  //                        EOF
+  // =========================================================================
+
+}

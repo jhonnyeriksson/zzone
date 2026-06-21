@@ -1,0 +1,8 @@
+This is an altered version of the grack nanojaon library.
+
+List of modifications:
+
+April 4 2019
+The JsonObject class now extends LinkedHashMap instead of standard HashMap.
+This was done to ensure that the insertion order is retained when generating
+a JSON formatted string out of a JsonObject.

@@ -1,0 +1,76 @@
+module tailf-ned-extreme-xos-stats {
+
+   namespace "http://tail-f.com/ned/extreme-xos/stats";
+   prefix extreme-xos-stats;
+
+   import tailf-common {
+     prefix tailf;
+   }
+
+
+   /// ========================================================================
+   /// exec
+   /// ========================================================================
+
+  container exec {
+    tailf:info "Execute commands on device";
+
+    tailf:action any {
+      tailf:info "Run any command on the device";
+      tailf:actionpoint ncsinternal {
+        tailf:internal;
+      }
+      input {
+        leaf-list args {
+          tailf:cli-drop-node-name;
+          tailf:cli-flat-list-syntax;
+          type string {
+            tailf:info "Commands to be run";
+          }
+        }
+      }
+      output {
+        leaf result {
+          type string;
+        }
+      }
+    }
+  
+   tailf:action scp2 {
+      tailf:info "Run scp2 command";
+      tailf:actionpoint ncsinternal {
+        tailf:internal;
+      }
+      input {
+        leaf vr {
+          tailf:info "Virtual router";
+          type string {
+            tailf:info "<vr_name>;;Virtual router name, default VR-Mgmt";   
+          }          
+        }
+        leaf host {
+          type string {
+            tailf:info "<user@host:file>;;User @ remote host or IP address 
+            (IPv6 addresses in square brackets) with remote file name";
+          }
+        }
+        leaf local-file {
+          type string {
+            tailf:info "<local-file>;;Local file name";
+          }
+        }
+        leaf password {
+          tailf:suppress-echo "true";
+          type tailf:aes-cfb-128-encrypted-string {
+            tailf:info "Password";
+          }
+        }
+      }
+      output {
+        leaf result {
+          type string;
+        }
+      }
+    }
+  }
+}

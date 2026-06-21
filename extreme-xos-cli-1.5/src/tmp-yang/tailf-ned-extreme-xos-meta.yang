@@ -1,0 +1,729 @@
+module tailf-ned-extreme-xos-meta {
+  namespace "http://tailf.com/ned/extreme-xos/meta";
+  prefix extreme-xos-meta;
+
+  import tailf-ncs {
+    prefix ncs;
+  }
+
+  import tailf-common {
+    prefix tailf;
+  }
+
+  import ietf-inet-types {
+    prefix inet;
+  }
+
+  // This import is required when building for CDM style NSOs
+  // Is automatically un-commented in  by the NED build system when
+  // building for NSO >= 5.0
+  //#if (SUPPORTS_CDM == "YES")
+  //  #replace (//) (  )
+      import extreme-xos-cli {
+        prefix family;
+      }
+  //#endif
+
+  revision 2023-06-16 {
+    description "version 1.3.5, see CHANGES";
+  }
+
+  //
+  // README NedDocPlugin extension statements
+  //
+  extension doc-footer-text {
+    argument value;
+  }
+
+  extension doc-footer-from-file {
+    argument value;
+  }
+
+  extension doc-new-section {
+  }
+
+  extension doc-skip-new-section {
+  }
+
+  extension doc-skip {
+  }
+
+
+  grouping general-settings-grouping {
+    leaf extended-parser {
+      tailf:info "Make the NED handle CLI parsing (i.e. transform the "
+        +"running-config from the device to the model based config tree).";
+      default "turbo-mode";
+      type enumeration {
+        enum "auto" {
+          tailf:info "Uses turbo-mode when available, will use fastest available"
+            + "method to load data to NSO.";
+        }
+        enum "turbo-mode" {
+          tailf:info "The NED executes the whole command parsing by itself, "
+            + "completely bypassing the NSO CLI parser. The configuration "
+            + "dump is transferred to NSO using maapi setvalues call.";
+        }
+        enum "turbo-xml-mode" {
+          tailf:info "The NED executes the whole command parsing by itself, "
+            + "completely bypassing the NSO CLI parser. The configuration "
+            + "dump is transferred to NSO in XML format.";
+        }
+        enum "robust-mode" {
+          tailf:info "Makes the NED filter the configuration so that unmodele"
+            + "d content is removed before being passed to the NSO CLI-engine"
+            + ". This protects against configuration ending up at the wrong l"
+            + "evel when NSO CLI parser fallbacks (which potentially can caus"
+            + "e following config to be skipped).";
+        }
+      }
+    }
+    leaf log-verbose {
+//      tailf:hidden all;
+      tailf:info "[DEPRECATED]Enabled extra verbose logging in NED (for debugging)";
+      default "false";
+      type boolean;
+    }
+    
+    // extreme-xos write
+    container write {
+      tailf:info "Settings used when writing to device";
+    
+      // extreme-xos write inject-command *
+      list inject-command {
+        tailf:info "Inject command (before or after) specified config-line upon commit";
+        description 'This ned-setting list can be used to inject commands (e.g. config
+          lines) when writing to the device (i.e. upon commit). This can be
+          used, for example, to undo undesired dynamic config automatically
+          set by the device.
+          Example: toogling the policy when modifying it:
+          
+          admin@ncs(config-device-exos-30.5)# ned-settings extreme-xos write inject-command c1 config-line "(?:un)?configure policy.*" command "enable policy" after-each        
+          admin@ncs(config-device-exos-30.5)# ned-settings extreme-xos write inject-command c2 config-line "(?:un)?configure policy.*" command "disable policy" before-each
+          admin@ncs(config-device-exos-30.5)# commit
+          
+          admin@ncs(config-device-exos-30.5)# config 
+
+         admin@ncs(config-config)# configure policy rule-model access-list 
+         admin@ncs(config-config)# commit dry-run outformat native 
+         native {
+             device {
+                 name exos-30.5
+                 data disable policy
+                      configure policy rule-model access-list
+                      enable policy
+             }
+         }
+         admin@ncs(config-config)# 
+          
+          admin@ncs(config-config)# configure policy profile 2 access-list ACL2
+          admin@ncs(config-config)# configure policy profile 3 access-list ACL3
+          admin@ncs(config-config)# commit dry-run outformat native 
+          native {
+              device {
+                  name vz32
+                  data disable policy
+                       configure policy profile 2 name ACL2 access-list ACL2
+                       configure policy profile 3 name ACL3 access-list ACL3
+                       enable policy
+        }
+        }
+          ';
+        tailf:cli-suppress-mode;
+        tailf:cli-delete-when-empty;
+        tailf:cli-compact-syntax;
+        tailf:cli-sequence-commands;
+        tailf:cli-incomplete-command;
+        ordered-by user;
+        key id;
+        leaf id {
+          tailf:cli-suppress-range;
+          type string {
+            tailf:info "WORD;;List id, any string";
+          }
+        }
+        leaf config-line {
+          tailf:info "The config line where command should be injected (DOTALL regex) [optional]";
+          tailf:cli-optional-in-sequence;
+          tailf:cli-incomplete-command;
+          type string {
+            tailf:info "WORD;;Config line (regular expression)";
+          }
+        }
+        leaf command {
+          tailf:info "The command to inject after|before config-line ";
+          tailf:cli-incomplete-command;
+          type string {
+            tailf:info "WORD;;Command line";
+          }
+        }
+        leaf where {
+          tailf:cli-drop-node-name;
+          type enumeration {
+            enum before-each {
+              tailf:info "insert command before each matching <config-line>";
+            }
+            enum before-first {
+              tailf:info "insert command before first matching <config-line>";
+            }
+            enum after-each {
+              tailf:info "insert command after each matching <config-line>";
+            }
+            enum after-last {
+              tailf:info "insert command after last matching <config-line>";
+            }
+            enum before-topmode {
+              tailf:info "insert command before regex <config-line> topmode";
+            }
+            enum after-topmode {
+              tailf:info "insert command after regex <config-line> topmode";
+            }
+            enum first {
+              tailf:info "inject command first if regex <config-line> matches or is unset";
+            }
+            enum last {
+              tailf:info "inject command last if regex <config-line> matches or is unset";
+            }
+          }
+        }
+      }
+    }
+
+  }
+
+  grouping connection-settings-grouping {
+    container connection {
+      tailf:info "Configure settings specific to the connection between"
+        + " NED and device";
+      container ssh {
+        tailf:info "Settings related to the SSH client used by the NED.";
+        leaf client {
+          tailf:info "Configure the SSH client to use. Relevant only when using the NED with NSO 5.6 or later.";
+          type enumeration {
+            enum "ganymed" {
+              tailf:info "The legacy SSH client. Used on all older versions of NSO.";
+            }
+            enum "sshj" {
+              tailf:info "The new SSH client with support for the latest crypto features. "+
+                "This is the default when using the NED on NSO 5.6 or later.";
+            }
+          }
+        }
+        container host-key {
+          when "not(../client='ganymed')";
+          leaf known-hosts-file {
+            tailf:info "Path to openssh formatted 'known_hosts' file containing valid host keys.";
+            type string;
+          }
+          leaf public-key-file {
+            tailf:info "Path to openssh formatted public (.pub) host key file.";
+            type string;
+          }
+        }
+        container auth-key {
+          when "not(../client='ganymed')";
+          leaf private-key-file {
+            tailf:info "Path to openssh formatted private key file.";
+            type string;
+          }
+        }
+      }
+
+      leaf number-of-retries {
+        tailf:info "Configure max number of retries the NED will try to"
+          + " connect to the device before giving up. Default 0";
+        type uint8 {
+          range "0..255";
+        }
+        default 0;
+      }
+      leaf time-between-retry {
+        tailf:info "Configure the time in seconds the NED will wait between"
+          +" each connect retry. Default 1s";
+        type uint8 {
+          range "1..255";
+        }
+        default 1;
+      }
+      leaf character-set {
+        tailf:info "Character set to use for telnet session";
+        default "UTF-8";
+        type string;
+      }
+      container commands {
+        tailf:info "Configure device interaction during connection phase.";
+
+        leaf meta-data {
+          tailf:info "Change the default connector. Default 'ned-connector.json'";
+          type string {
+            tailf:info "WORD;;Connector name (located in src/metadata resources)";
+          }
+        }
+
+        leaf initial-action {
+          tailf:info "Interactor action used to initialize a connection";
+          type union {
+            type enumeration {
+              enum CONNECT;
+              enum CONNECT-PROXY;
+            }
+            type string;
+          }
+        }
+
+        leaf awaken-console {
+          tailf:info "Command sent to awaken console during connection.";
+          type string;
+        }
+
+        leaf send-delay {
+          tailf:info "Delay in ms before sending a command during connection.";
+          type uint32;
+          default 0;
+        }
+
+        leaf expect-timeout {
+          tailf:info "Default limit in ms for waiting for command response.";
+          type uint32;
+          default 60000;
+        }
+      }
+      container logger {
+        tailf:info "Setting related to logging";
+        leaf silent {
+          tailf:info "Toggle detailed logs to only written to store";
+          type boolean;
+          default false;
+        }
+      }
+    }
+  }
+
+  grouping console-settings-grouping {
+
+    container console {
+      tailf:info "Settings used while interacting with a device.";
+
+      leaf ignore-errors {
+        tailf:info "Flag indicating if errors should be ignored";
+        type boolean;
+        default false;
+      }
+
+      leaf ignore-warnings {
+        tailf:info "Flag indicating if warnings should be ignored";
+        type boolean;
+        default false;
+      }
+
+      leaf ignore-retries {
+        tailf:info "Flag indicating if retries should be ignored";
+        type boolean;
+        default false;
+      }
+
+      leaf max-retries {
+        tailf:info "Maximum number of retries of a command.";
+        type uint16;
+        default 100;
+      }
+
+      leaf retry-delay {
+        tailf:info "Number of ms before retrying a command.";
+        type uint16;
+        default 1000;
+      }
+
+      leaf send-delay {
+        tailf:info "Enable delay before sending commands.";
+        type uint32 {
+          tailf:info "Delay in ms.";
+        }
+        default 0;
+      }
+
+      leaf expect-timeout {
+        tailf:info "Set default timeout for sending commands.";
+        type uint32 {
+          tailf:info "Limit in ms.";
+        }
+        default 60000;
+      }
+
+      leaf chunk-size {
+        tailf:info "Enable executing commands in chunks.";
+        type uint8 {
+          tailf:info "Maximum number of commands.";
+        }
+        default 1;
+      }
+
+      leaf line-feed {
+        tailf:info "Overwrites default line-feed character";
+        type string {
+          tailf:info "Example: '\n'";
+        }
+      }
+      leaf obfuscate-secret {
+        tailf:info "Secrets will be obfuscated in trace & log files.";
+        type boolean;
+        default true;
+      }
+      container extension {
+        tailf:info "Settings used to extend device interaction via console.";
+
+        list warning {
+          tailf:info "Device warning regex entry list. Use to ignore warnings/errors etc.";
+          tailf:cli-suppress-mode;
+          tailf:cli-delete-when-empty;
+          key warning;
+          leaf warning {
+            tailf:cli-multi-word-key;
+            tailf:cli-suppress-range;
+            type string {
+              tailf:info "WORD;;Warning regular expression, e.g. vlan.* does not exist.*";
+            }
+          }
+        }
+
+        list command {
+          tailf:info "Extend available commands to send";
+          tailf:cli-suppress-mode;
+          tailf:cli-delete-when-empty;
+          key name;
+          leaf name {
+            type string {
+              tailf:info "Key id of the command";
+            }
+          }
+          leaf data {
+            tailf:cli-drop-node-name;
+            tailf:cli-no-value-on-delete;
+            type string {
+              tailf:info "Command";
+            }
+          }
+        }
+
+        list pattern {
+          tailf:info "Extend available patterns to expect";
+          tailf:cli-suppress-mode;
+          tailf:cli-delete-when-empty;
+          key name;
+          leaf name {
+            type string {
+              tailf:info "Key id of the pattern";
+            }
+          }
+          leaf data {
+            tailf:cli-drop-node-name;
+            tailf:cli-no-value-on-delete;
+            type string {
+              tailf:info "A regular expression";
+            }
+          }
+        }
+
+        list action {
+          tailf:info "Extend available actions to perform";
+
+          key name;
+          leaf name {
+            tailf:cli-disallow-value "DONE";
+            type string {
+              tailf:info "A name for the action";
+            }
+          }
+
+          leaf init {
+            tailf:info "Command sent to intialize action";
+            tailf:cli-no-value-on-delete;
+            tailf:non-strict-leafref {
+              path "../../command/name";
+            }
+            type string {
+              tailf:info "A key from the command list";
+            }
+          }
+
+          leaf flush {
+            tailf:info "Flush device buffer once action is completed";
+            tailf:cli-no-value-on-delete;
+            type boolean;
+          }
+
+          list state {
+            tailf:info "Extend state machine with answers/questions to handle.";
+            tailf:cli-suppress-mode;
+            tailf:cli-delete-when-empty;
+            tailf:cli-compact-syntax;
+            tailf:cli-sequence-commands {
+              tailf:cli-reset-siblings;
+            }
+            ordered-by user;
+
+            key pattern;
+            leaf pattern {
+              tailf:info "Regular expression indicating action required";
+              tailf:non-strict-leafref {
+                path "../../../pattern/name";
+              }
+              type string {
+                tailf:info "A key from the pattern list";
+              }
+            }
+
+            leaf method {
+              tailf:info "Method used to take action.";
+              tailf:cli-drop-node-name;
+              tailf:cli-no-value-on-delete;
+              tailf:cli-optional-in-sequence;
+              type enumeration {
+                enum reportInfo;
+                enum reportError;
+                enum reportWarning;
+                enum sendCommand;
+                enum sendSecret;
+                enum sendRetry;
+                enum recoverError;
+              }
+            }
+
+            leaf argument {
+              when "../method";
+              tailf:info "Additional info to method";
+              tailf:cli-drop-node-name;
+              tailf:cli-no-value-on-delete;
+              tailf:cli-optional-in-sequence;
+              tailf:non-strict-leafref {
+                path "../../../command/name";
+              }
+              type string {
+                tailf:info "Data to method e.g. a key from the command list";
+              }
+            }
+
+            leaf next {
+              tailf:info "State once action is taken.";
+              tailf:cli-no-name-on-delete;
+              tailf:cli-no-value-on-delete;
+              tailf:non-strict-leafref {
+                path "../../name";
+              }
+              type string;
+              default "DONE";
+            }
+          }
+        }
+      }
+    }
+  }
+
+  grouping logger-settings-grouping {
+    container logger {
+      tailf:info "Settings for controlling logs generated.";
+      leaf level {
+        tailf:info "Set level of logging";
+        type enumeration {
+          enum error;
+          enum info;
+          enum verbose;
+          enum debug;
+        }
+        default info;
+      }
+      leaf java {
+        tailf:info "Toggle logs to be added to ncs-java-vm.log";
+        type boolean;
+        default true;
+      }
+      leaf verbose {
+//        tailf:hidden all;
+        tailf:info "[DEPRECATED]Toggle additional verbose logs.";
+        type boolean;
+        default false;
+      }
+      leaf debug {
+//        tailf:hidden all;
+        tailf:info "[DEPRECATED]Toggle debug logs for ned development.";
+        type boolean;
+        default false;
+      }
+
+
+      container connection {
+//        tailf:hidden all;
+        tailf:info "[DEPRECATED]Set connection log levels";
+        tailf:cli-compact-syntax;
+
+        leaf silent {
+//          tailf:hidden all;
+          tailf:info "[DEPRECATED]Toggle detailed logs to only be dumped on failure.";
+          type boolean;
+          default false;
+        }
+      }
+    }
+  }
+
+  grouping proxy-settings-grouping {
+    container proxy {
+      tailf:info "Configure NED to access device via a proxy";
+      presence true;
+      leaf remote-connection {
+        tailf:info "Connection type between proxy and device";
+        mandatory true;
+        type enumeration {
+          enum "ssh";
+          enum "telnet";
+          enum "serial";
+        }
+      }
+      leaf remote-address {
+        tailf:info "Address of host behind the proxy";
+        tailf:display-when "not (../remote-connection='serial')";
+        type inet:ip-address;
+      }
+      leaf remote-port {
+        tailf:info "Port of host behind the proxy";
+        tailf:display-when "not (../remote-connection='serial')";
+        type uint16;
+      }
+      leaf remote-name {
+        tailf:info "User name on the device behind the proxy";
+        mandatory true;
+        type string;
+      }
+      leaf remote-password {
+        tailf:info "Password on the device behind the proxy";
+        mandatory true;
+        type tailf:aes-cfb-128-encrypted-string;
+      }
+      leaf proxy-prompt {
+        tailf:info "Prompt pattern on the proxy host before connecting to device.";
+        tailf:display-when "not (../remote-connection='serial')";
+        type string;
+      }
+      //leaf proxy-prompt-2 {
+      //    tailf:info "Prompt pattern on after connecting to device.";
+      //    tailf:display-when "not (../remote-connection='serial')";
+      //    type string;
+      //  }
+      leaf remote-ssh-args {
+        tailf:info "Additional arguments used to establish proxy connection.";
+        type string;
+      }
+    }
+  }
+
+  grouping developer-config-grouping {
+    container developer {
+      tailf:info "Contains settings used by the NED developers";
+      leaf load-from-file {
+        tailf:info "Make the NED load a file containing raw device config when doing sync-from. Does only work on NETSIM targets";
+        type string;
+      }
+      leaf model-id {
+        tailf:info "Simulate a model number";
+        type uint32;
+      }
+      leaf os-major {
+        tailf:info "Simulate OS major number";
+        when "../model-id";
+        type uint8;
+      }
+      leaf os-minor {
+        tailf:info "Simulate OS major number";
+        when "../model-id";
+        type uint8;
+        default 0;
+      }
+      leaf device-type {
+        tailf:info "Real or simulated device.";
+        when "../model-id";
+        type enumeration {
+          enum "netsim";
+          enum "device";
+        }
+        default "netsim";
+      }
+      leaf trace-enable {
+        tailf:info "Enable developer tracing. WARNING: may choke NSO with large commits|systems";
+        type boolean;
+        default false;
+      }
+      leaf trace-timestamp {
+        tailf:info "Add timestamp from NED instance in trace messages for debug purpose";
+        type boolean;
+        default false;
+      }
+      leaf progress-verbosity {
+        tailf:info "Maximum NED verbosity level which will get written in devel.log file";
+        type enumeration {
+          enum disabled {
+            value -1;
+          }
+          enum normal {
+            value 0;
+          }
+          enum verbose {
+            value 1;
+          }
+          enum very-verbose {
+            value 2;
+          }
+          enum debug {
+            value 3;
+          }
+        }
+        default verbose;
+      }
+    }
+  }
+
+
+  /// ========================================================================
+  /// ned-settings
+  /// ========================================================================
+
+  augment "/ncs:devices/ncs:global-settings/ncs:ned-settings" {
+    container extreme-xos {
+      uses developer-config-grouping;
+      uses proxy-settings-grouping;
+      uses connection-settings-grouping;
+      uses console-settings-grouping;
+      uses logger-settings-grouping;
+      uses general-settings-grouping;
+    }
+  }
+
+  augment "/ncs:devices/ncs:profiles/ncs:profile/ncs:ned-settings" {
+    container extreme-xos {
+      uses developer-config-grouping;
+      uses proxy-settings-grouping;
+      uses connection-settings-grouping;
+      uses console-settings-grouping;
+      uses logger-settings-grouping;
+      uses general-settings-grouping;
+    }
+  }
+
+  augment "/ncs:devices/ncs:device/ncs:ned-settings" {
+    // CDM style syntax:
+    //#if (SUPPORTS_CDM == "YES")
+    //#replace (//) (  )
+      when "derived-from(../ncs:device-type/ncs:cli/ncs:ned-id,'family:extreme-xos-cli')";
+    //#else
+//     when "../ncs:device-type/ncs:cli/ncs:ned-id = 'extreme-xos-id:extreme-xos'";
+    //#endif
+
+    container extreme-xos {
+      uses developer-config-grouping;
+      uses proxy-settings-grouping;
+      uses connection-settings-grouping;
+      uses console-settings-grouping;
+      uses logger-settings-grouping;
+      uses general-settings-grouping;
+    }
+  }
+}
