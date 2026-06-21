@@ -3,11 +3,11 @@
     <device>
       <name>{$HOSTNAME}</name>
       <config>
-        <interfaces xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-um-interface-cfg">
+        <interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
          <interface>
           <interface-name>loopback 92</interface-name>
           <ipv4>
-           <addresses xmlns="http://cisco.com/ns/yang/Cisco-IOS-XR-um-if-ip-address-cfg">
+           <addresses>
             <address>
              <address>{$LOOPBACK}</address>
              <netmask>255.255.255.0</netmask>
