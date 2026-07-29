@@ -3,9 +3,6 @@ module CFS {
   namespace "http://example.com/CFS";
   prefix CFS;
 
-  import ietf-inet-types {
-    prefix inet;
-  }
   import tailf-common {
     prefix tailf;
   }
@@ -14,7 +11,7 @@ module CFS {
   }
 
   description
-    "Bla bla...";
+    "Customer-facing service: request loopbacks for a device.";
 
   revision 2016-01-01 {
     description
@@ -22,7 +19,7 @@ module CFS {
   }
 
   list CFS {
-    description "This is an RFS skeleton service";
+    description "CFS that triggers an RFS to create loopbacks";
 
     key name;
     leaf name {
@@ -34,16 +31,12 @@ module CFS {
     uses ncs:service-data;
     ncs:servicepoint CFS-servicepoint;
 
-    // may replace this with other ways of refering to the devices.
-    leaf-list device {
+    leaf hostname {
+      tailf:info "Device hostname to create loopbacks on";
+      mandatory true;
       type leafref {
         path "/ncs:devices/ncs:device/ncs:name";
       }
-    }
-
-    // replace with your own stuff here
-    leaf dummy {
-      type inet:ipv4-address;
     }
   }
 }

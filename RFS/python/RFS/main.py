@@ -1,61 +1,61 @@
 # -*- mode: python; python-indent: 4 -*-
 import ncs
+import ncs.template
 from ncs.application import Service
 
 
-# ------------------------
-# SERVICE CALLBACK EXAMPLE
-# ------------------------
 class ServiceCallbacks(Service):
 
-    # The create() callback is invoked inside NCS FASTMAP and
-    # must always exist.
+    # hostname -> [(loopback_id, loopback_ip), ...]
+    LOOPBACK_MAP = {
+        "XRv1": [
+            (55, "10.0.0.1"),
+            (56, "10.0.0.11"),
+        ],
+        "XRv2": [
+            (55, "10.0.0.2"),
+            (56, "10.0.0.12"),
+        ],
+    }
+
     @Service.create
     def cb_create(self, tctx, root, service, proplist):
-        self.log.info('Service create(service=', service._path, ')')
+        hostname = service.hostname
+        self.log.info('RFS create(service={}, hostname={})'.format(
+            service.name, hostname))
+
+        if hostname not in self.LOOPBACK_MAP:
+            raise Exception("No loopbacks defined for {}".format(hostname))
+
+        device = root.devices.device[hostname]
+        template = ncs.template.Template(service)
+
+        for loopback_id, loopback_ip in self.LOOPBACK_MAP[hostname]:
+            loopback_name = "Loopback{}".format(loopback_id)
+
+            if loopback_id in device.config.interface.Loopback:
+                raise Exception(
+                    "{} already exists on {}; refusing to overwrite".format(
+                        loopback_name, hostname
+                    )
+                )
+
+            self.log.info("{} will be created with {}".format(
+                loopback_name, loopback_ip))
+
+            vars = ncs.template.Variables()
+            vars.add("HOSTNAME", hostname)
+            vars.add("LOOPBACK_ID", loopback_id)
+            vars.add("LOOPBACK_IP", loopback_ip)
+            template.apply("RFS-template", vars)
+
+        return proplist
 
 
-    # The pre_modification() and post_modification() callbacks are optional,
-    # and are invoked outside FASTMAP. pre_modification() is invoked before
-    # create, update, or delete of the service, as indicated by the enum
-    # ncs_service_operation op parameter. Conversely
-    # post_modification() is invoked after create, update, or delete
-    # of the service. These functions can be useful e.g. for
-    # allocations that should be stored and existing also when the
-    # service instance is removed.
-
-    # @Service.pre_modification
-    # def cb_pre_modification(self, tctx, op, kp, root, proplist):
-    #     self.log.info('Service premod(service=', kp, ')')
-
-    # @Service.post_modification
-    # def cb_post_modification(self, tctx, op, kp, root, proplist):
-    #     self.log.info('Service postmod(service=', kp, ')')
-
-
-# ---------------------------------------------
-# COMPONENT THREAD THAT WILL BE STARTED BY NCS.
-# ---------------------------------------------
 class Main(ncs.application.Application):
     def setup(self):
-        # The application class sets up logging for us. It is accessible
-        # through 'self.log' and is a ncs.log.Log instance.
         self.log.info('Main RUNNING')
-
-        # Service callbacks require a registration for a 'service point',
-        # as specified in the corresponding data model.
-        #
         self.register_service('RFS-servicepoint', ServiceCallbacks)
 
-        # If we registered any callback(s) above, the Application class
-        # took care of creating a daemon (related to the service/action point).
-
-        # When this setup method is finished, all registrations are
-        # considered done and the application is 'started'.
-
     def teardown(self):
-        # When the application is finished (which would happen if NCS went
-        # down, packages were reloaded or some error occurred) this teardown
-        # method will be called.
-
         self.log.info('Main FINISHED')

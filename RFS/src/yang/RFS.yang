@@ -3,9 +3,6 @@ module RFS {
   namespace "http://example.com/RFS";
   prefix RFS;
 
-  import ietf-inet-types {
-    prefix inet;
-  }
   import tailf-common {
     prefix tailf;
   }
@@ -14,7 +11,7 @@ module RFS {
   }
 
   description
-    "Bla bla...";
+    "Resource-facing service: create loopbacks on a device.";
 
   revision 2016-01-01 {
     description
@@ -22,7 +19,7 @@ module RFS {
   }
 
   list RFS {
-    description "This is an RFS skeleton service";
+    description "RFS that creates device loopbacks from hostname";
 
     key name;
     leaf name {
@@ -34,16 +31,12 @@ module RFS {
     uses ncs:service-data;
     ncs:servicepoint RFS-servicepoint;
 
-    // may replace this with other ways of refering to the devices.
-    leaf-list device {
+    leaf hostname {
+      tailf:info "Device hostname";
+      mandatory true;
       type leafref {
         path "/ncs:devices/ncs:device/ncs:name";
       }
-    }
-
-    // replace with your own stuff here
-    leaf dummy {
-      type inet:ipv4-address;
     }
   }
 }

@@ -1,0 +1,20 @@
+<config-template xmlns="http://tail-f.com/ns/config/1.0">
+  <devices xmlns="http://tail-f.com/ns/ncs">
+    <device>
+      <name>{$HOSTNAME}</name>
+      <config>
+        <interface xmlns="http://tail-f.com/ned/cisco-ios-xr">
+          <Loopback>
+            <id>{$LOOPBACK_ID}</id>
+            <ipv4>
+              <address>
+                <ip>{$LOOPBACK_IP}</ip>
+                <mask>255.255.255.255</mask>
+              </address>
+            </ipv4>
+          </Loopback>
+        </interface>
+      </config>
+    </device>
+  </devices>
+</config-template>
