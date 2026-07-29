@@ -13,7 +13,8 @@ class ServiceCallbacks(Service):
 
     @Service.create
     def cb_create(self, tctx, root, service, proplist):
-        logical_hostname = service.hostname
+        # YANG enumerations are Enum objects in maagic; stringify for dict keys.
+        logical_hostname = str(service.hostname)
         self.log.info('CFS create(service={}, hostname={})'.format(
             service.name, logical_hostname))
 
