@@ -34,12 +34,14 @@ class ServiceCallbacks(Service):
         device = root.devices.device[hostname]
 
         # cisco-ios-xr: config/interface/Loopback{id=...}
-        exists = loopback_id in device.config.interface.Loopback
+        if loopback_id in device.config.interface.Loopback:
+            raise Exception(
+                "{} already exists on {}; refusing to overwrite".format(
+                    loopback_name, hostname
+                )
+            )
 
-        if exists:
-            self.log.info("{} already exists".format(loopback_name))
-        else:
-            self.log.info("{} will be created".format(loopback_name))
+        self.log.info("{} will be created".format(loopback_name))
 
         vars = ncs.template.Variables()
         vars.add("HOSTNAME", hostname)
