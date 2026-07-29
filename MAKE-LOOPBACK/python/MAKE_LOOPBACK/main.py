@@ -33,15 +33,8 @@ class ServiceCallbacks(Service):
 
         device = root.devices.device[hostname]
 
-        exists = False
-
-        try:
-            for intf in device.config.interface_configurations.interface_configuration:
-                if intf.interface_name == loopback_name:
-                    exists = True
-                    break
-        except:
-            exists = False
+        # cisco-ios-xr: config/interface/Loopback{id=...}
+        exists = loopback_id in device.config.interface.Loopback
 
         if exists:
             self.log.info("{} already exists".format(loopback_name))
