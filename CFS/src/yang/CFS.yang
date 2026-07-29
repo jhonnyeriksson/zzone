@@ -32,9 +32,16 @@ module CFS {
     ncs:servicepoint CFS-servicepoint;
 
     leaf hostname {
-      tailf:info "Logical hostname (e.g. router1); CFS maps this to a real device";
+      tailf:info "Logical hostname; CFS maps this to a real device";
       mandatory true;
-      type string;
+      type enumeration {
+        enum router1 {
+          description "Maps to device XRv1";
+        }
+        enum router2 {
+          description "Maps to device XRv2";
+        }
+      }
     }
   }
 }
