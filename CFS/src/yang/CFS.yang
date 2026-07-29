@@ -32,11 +32,9 @@ module CFS {
     ncs:servicepoint CFS-servicepoint;
 
     leaf hostname {
-      tailf:info "Device hostname to create loopbacks on";
+      tailf:info "Logical hostname (e.g. router1); CFS maps this to a real device";
       mandatory true;
-      type leafref {
-        path "/ncs:devices/ncs:device/ncs:name";
-      }
+      type string;
     }
   }
 }
